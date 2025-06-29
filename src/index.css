@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Set default background */
+body {
+  background-color: #fbfaf3;
+}
+
+/* KaTeX math rendering styles */
+.math-expression {
+  @apply inline-block;
+}
+
+/* Ensure math expressions have proper spacing */
+.katex-display {
+  @apply my-4;
+}
+
+/* Custom styles for better math rendering */
+.katex {
+  font-size: 1em !important;
+}
+
+.katex-display .katex {
+  font-size: 1.1em !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #fbfaf3;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #37c2a3;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #2dd4bf;
+}
+
+/* Smooth transitions for all elements */
+* {
+  @apply transition-colors duration-200;
+}
