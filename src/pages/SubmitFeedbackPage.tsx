@@ -151,7 +151,12 @@ export function SubmitFeedbackPage() {
 
     console.log('API Payload:', JSON.stringify(payload, null, 2))
 
-    const response = await fetch('/api/external/api/gen_answer', {
+    // Use Netlify function in production, proxy in development
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? '/.netlify/functions/generate-feedback'
+      : '/api/external/api/gen_answer'
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -282,17 +287,17 @@ export function SubmitFeedbackPage() {
 
   if (!test) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-cream">
         <Header />
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-cream">
       <Header />
       
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -309,8 +314,8 @@ export function SubmitFeedbackPage() {
 
         <Card className="mb-6">
           <CardHeader>
-            <h2 className="text-2xl font-bold text-gray-900">Submit Answer Sheets</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-2xl font-bold text-dark">Submit Answer Sheets</h2>
+            <p className="text-sm text-neutral-600">
               Upload images of completed answer sheets for: <strong>{test.subject} - {test.chapter}</strong>
             </p>
           </CardHeader>
@@ -318,13 +323,13 @@ export function SubmitFeedbackPage() {
 
         <Card className="mb-6">
           <CardContent className="p-6">
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <div className="border-2 border-dashed border-neutral-300 rounded-lg p-8 text-center">
+              <Upload className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
               <div className="space-y-2">
-                <p className="text-lg font-medium text-gray-900">
+                <p className="text-lg font-medium text-dark">
                   Upload Answer Sheet Images
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-neutral-600">
                   Select multiple images (JPG, PNG, PDF) of the completed answer sheets
                 </p>
               </div>
@@ -341,7 +346,7 @@ export function SubmitFeedbackPage() {
                   />
                   <label
                     htmlFor="file-upload"
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 cursor-pointer"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 cursor-pointer"
                   >
                     Choose Files
                   </label>
@@ -360,15 +365,15 @@ export function SubmitFeedbackPage() {
             </div>
 
             {uploadCompleted && (
-              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="mt-6 p-4 bg-primary-50 border border-primary-200 rounded-lg">
                 <div className="flex items-center mb-2">
-                  <CheckCircle className="h-5 w-5 text-green-600 mr-2" />
-                  <h3 className="text-sm font-medium text-green-800">Upload Completed!</h3>
+                  <CheckCircle className="h-5 w-5 text-primary-600 mr-2" />
+                  <h3 className="text-sm font-medium text-primary-800">Upload Completed!</h3>
                 </div>
-                <p className="text-sm text-green-700 mb-2">
+                <p className="text-sm text-primary-700 mb-2">
                   Successfully uploaded {uploadedFileUrls.length} files to bucket: question-papers-test/question-test-v1
                 </p>
-                <p className="text-xs text-green-600">
+                <p className="text-xs text-primary-600">
                   Files stored in variable: uploadedFileUrls
                 </p>
               </div>
@@ -376,18 +381,18 @@ export function SubmitFeedbackPage() {
 
             {uploadedFileUrls.length > 0 && (
               <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">
+                <h3 className="text-sm font-medium text-dark mb-3">
                   Uploaded Files ({uploadedFileUrls.length})
                 </h3>
                 <div className="max-h-40 overflow-y-auto space-y-2">
                   {uploadedFileUrls.map((url, index) => {
                     const fileName = url.split('/').pop() || `File ${index + 1}`
                     return (
-                      <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <FileText className="h-5 w-5 text-gray-400 mr-3" />
+                      <div key={index} className="flex items-center p-3 bg-neutral-50 rounded-lg">
+                        <FileText className="h-5 w-5 text-neutral-400 mr-3" />
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">{fileName}</p>
-                          <p className="text-xs text-gray-500 truncate">{url}</p>
+                          <p className="text-sm font-medium text-dark">{fileName}</p>
+                          <p className="text-xs text-neutral-500 truncate">{url}</p>
                         </div>
                       </div>
                     )
@@ -398,16 +403,16 @@ export function SubmitFeedbackPage() {
 
             {files.length > 0 && !uploadCompleted && (
               <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-900 mb-3">
+                <h3 className="text-sm font-medium text-dark mb-3">
                   Selected Files ({files.length})
                 </h3>
                 <div className="space-y-2">
                   {files.map((file, index) => (
-                    <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
-                      <FileText className="h-5 w-5 text-gray-400 mr-3" />
+                    <div key={index} className="flex items-center p-3 bg-neutral-50 rounded-lg">
+                      <FileText className="h-5 w-5 text-neutral-400 mr-3" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{file.name}</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm font-medium text-dark">{file.name}</p>
+                        <p className="text-sm text-neutral-500">
                           {(file.size / 1024 / 1024).toFixed(2)} MB
                         </p>
                       </div>
@@ -431,10 +436,10 @@ export function SubmitFeedbackPage() {
 
         <Card>
           <CardContent className="p-6 text-center">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-dark mb-2">
               Ready to Evaluate?
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-neutral-600 mb-4">
               Our AI will analyze the answer sheets and provide detailed feedback using OCR and intelligent evaluation
             </p>
             <Button

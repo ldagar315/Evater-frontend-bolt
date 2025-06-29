@@ -110,7 +110,12 @@ export function CreateTestPage() {
     length: string
     special_instructions: string[]
   }): Promise<ApiQuestion[]> => {
-    const response = await fetch('/api/external/api/gen_question', {
+    // Use Netlify function in production, proxy in development
+    const apiUrl = process.env.NODE_ENV === 'production' 
+      ? '/.netlify/functions/generate-questions'
+      : '/api/external/api/gen_question'
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -200,14 +205,14 @@ export function CreateTestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-cream">
       <Header />
       
       <div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <Card>
           <CardHeader>
-            <h2 className="text-2xl font-bold text-gray-900">Create New Test</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-2xl font-bold text-dark">Create New Test</h2>
+            <p className="text-sm text-neutral-600">
               Fill in the details below to generate a custom test using AI
             </p>
           </CardHeader>
@@ -247,7 +252,7 @@ export function CreateTestPage() {
               />
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-dark mb-3">
                   Difficulty Level
                 </label>
                 <div className="flex space-x-4">
@@ -268,7 +273,7 @@ export function CreateTestPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-dark mb-3">
                   Test Length
                 </label>
                 <div className="flex space-x-4">
@@ -289,7 +294,7 @@ export function CreateTestPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
+                <label className="block text-sm font-medium text-dark mb-3">
                   Special Instructions
                 </label>
                 <div className="space-y-2">
