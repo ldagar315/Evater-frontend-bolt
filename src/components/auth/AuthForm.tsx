@@ -3,7 +3,7 @@ import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { Card, CardContent, CardHeader } from '../ui/Card'
 import { useAuthContext } from '../../contexts/AuthContext'
-import { GraduationCap, Sparkles } from 'lucide-react'
+import { GraduationCap, Sparkles, AlertCircle } from 'lucide-react'
 
 interface AuthFormProps {
   onSuccess: () => void
@@ -18,12 +18,21 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const { signIn, signUp, signInWithGoogle } = useAuthContext()
+  const { signIn, signUp, signInWithGoogle, error: authError } = useAuthContext()
+
+  // Check if Supabase is configured
+  const supabaseConfigured = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
+
+    if (!supabaseConfigured) {
+      setError('Authentication service is not configured. Please contact support.')
+      setLoading(false)
+      return
+    }
 
     if (isSignUp && password !== confirmPassword) {
       setError('Passwords do not match')
@@ -49,6 +58,11 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
   }
 
   const handleGoogleSignIn = async () => {
+    if (!supabaseConfigured) {
+      setError('Authentication service is not configured. Please contact support.')
+      return
+    }
+
     setError('')
     setGoogleLoading(true)
 
@@ -80,6 +94,38 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
           <p className="text-neutral-600 font-medium">Next Gen Learning</p>
         </div>
 
+        {/* Configuration Warning */}
+        {!supabaseConfigured && (
+          <Card className="mb-6 border-yellow-200 bg-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 text-yellow-600 mr-3 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h3 className="text-sm font-medium text-yellow-800">Service Configuration Required</h3>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    The authentication service is not properly configured. Please contact support or check back later.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Auth Error Display */}
+        {authError && (
+          <Card className="mb-6 border-red-200 bg-red-50">
+            <CardContent className="p-4">
+              <div className="flex items-start">
+                <AlertCircle className="h-5 w-5 text-red-600 mr-3 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h3 className="text-sm font-medium text-red-800">Authentication Error</h3>
+                  <p className="text-sm text-red-700 mt-1">{authError}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Card className="shadow-lg">
           <CardHeader>
             <div className="text-center">
@@ -105,7 +151,7 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                 className="w-full flex items-center justify-center space-x-3 py-3"
                 onClick={handleGoogleSignIn}
                 loading={googleLoading}
-                disabled={loading}
+                disabled={loading || !supabaseConfigured}
               >
                 {!googleLoading && (
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -150,6 +196,7 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="Enter your email"
+                disabled={!supabaseConfigured}
               />
               
               <Input
@@ -159,6 +206,7 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="Enter your password"
+                disabled={!supabaseConfigured}
               />
               
               {isSignUp && (
@@ -169,6 +217,7 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   placeholder="Confirm your password"
+                  disabled={!supabaseConfigured}
                 />
               )}
               
@@ -182,7 +231,7 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                 type="submit"
                 className="w-full py-3 text-base font-medium"
                 loading={loading}
-                disabled={googleLoading}
+                disabled={googleLoading || !supabaseConfigured}
               >
                 {isSignUp ? 'Create Your Account' : 'Sign In to Evater'}
               </Button>
@@ -193,7 +242,7 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
                 type="button"
                 onClick={() => setIsSignUp(!isSignUp)}
                 className="text-sm text-primary-600 hover:text-primary-700 font-medium transition-colors duration-200"
-                disabled={loading || googleLoading}
+                disabled={loading || googleLoading || !supabaseConfigured}
               >
                 {isSignUp 
                   ? 'Already have an account? Sign in' 

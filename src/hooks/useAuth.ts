@@ -12,14 +12,30 @@ export function useAuth() {
 
     const initializeAuth = async () => {
       try {
+        // Check if Supabase is properly configured
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+        if (!supabaseUrl || !supabaseAnonKey) {
+          console.warn('Supabase environment variables not configured')
+          if (mounted) {
+            setError('Authentication service not configured. Please check environment variables.')
+            setLoading(false)
+          }
+          return
+        }
+
         // Get initial session
         const { data: { session }, error: sessionError } = await supabase.auth.getSession()
         
         if (sessionError) {
           console.error('Session error:', sessionError)
-          setError('Failed to initialize authentication')
+          if (mounted) {
+            setError('Failed to initialize authentication')
+          }
         } else if (mounted) {
           setUser(session?.user ?? null)
+          setError(null)
         }
       } catch (err) {
         console.error('Auth initialization error:', err)
