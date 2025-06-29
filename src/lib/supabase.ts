@@ -10,6 +10,8 @@ console.log('Environment check:', {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+let supabase: any
+
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables:', {
     VITE_SUPABASE_URL: supabaseUrl ? 'Set' : 'Missing',
@@ -36,10 +38,12 @@ if (!supabaseUrl || !supabaseAnonKey) {
     }
   } as any
   
-  export { fallbackClient as supabase }
+  supabase = fallbackClient
 } else {
-  export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+  supabase = createClient(supabaseUrl, supabaseAnonKey)
 }
+
+export { supabase }
 
 export type Json =
   | string
