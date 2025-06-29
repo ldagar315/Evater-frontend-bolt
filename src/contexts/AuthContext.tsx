@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth'
 interface AuthContextType {
   user: User | null
   loading: boolean
+  error: string | null
   signUp: (email: string, password: string) => Promise<any>
   signIn: (email: string, password: string) => Promise<any>
   signInWithGoogle: () => Promise<any>

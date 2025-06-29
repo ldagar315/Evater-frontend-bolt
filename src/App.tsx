@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { LoadingFallback } from './components/LoadingFallback'
 import { AuthProvider, useAuthContext } from './contexts/AuthContext'
 import { AppStateProvider } from './contexts/AppStateContext'
 import { useProfile } from './hooks/useProfile'
@@ -13,13 +15,26 @@ import { ViewFeedbackPage } from './pages/ViewFeedbackPage'
 import { GeneralFeedbackPage } from './pages/GeneralFeedbackPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuthContext()
+  const { user, loading, error } = useAuthContext()
   const { profile, loading: profileLoading } = useProfile(user?.id)
 
   if (loading || profileLoading) {
+    return <LoadingFallback />
+  }
+
+  if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-cream flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
+          <h2 className="text-xl font-bold text-dark mb-2">Authentication Error</h2>
+          <p className="text-neutral-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     )
   }
@@ -36,12 +51,25 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 function AppRoutes() {
-  const { user, loading } = useAuthContext()
+  const { user, loading, error } = useAuthContext()
 
   if (loading) {
+    return <LoadingFallback />
+  }
+
+  if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-cream flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
+          <h2 className="text-xl font-bold text-dark mb-2">Service Unavailable</h2>
+          <p className="text-neutral-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     )
   }
@@ -95,13 +123,17 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <AppStateProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
-      </AppStateProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppStateProvider>
+          <Router>
+            <Suspense fallback={<LoadingFallback />}>
+              <AppRoutes />
+            </Suspense>
+          </Router>
+        </AppStateProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   )
 }
 

@@ -1,13 +1,45 @@
 import { createClient } from '@supabase/supabase-js'
 
+// Debug environment variables
+console.log('Environment check:', {
+  NODE_ENV: import.meta.env.MODE,
+  SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL ? 'Set' : 'Missing',
+  SUPABASE_ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY ? 'Set' : 'Missing'
+})
+
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+  console.error('Missing Supabase environment variables:', {
+    VITE_SUPABASE_URL: supabaseUrl ? 'Set' : 'Missing',
+    VITE_SUPABASE_ANON_KEY: supabaseAnonKey ? 'Set' : 'Missing'
+  })
+  
+  // Create a fallback client to prevent app crashes
+  const fallbackClient = createClient(
+    'https://placeholder.supabase.co',
+    'placeholder-key'
+  )
+  
+  // Override methods to show helpful errors
+  const originalAuth = fallbackClient.auth
+  fallbackClient.auth = {
+    ...originalAuth,
+    getSession: async () => {
+      console.error('Supabase not configured - missing environment variables')
+      return { data: { session: null }, error: null }
+    },
+    onAuthStateChange: () => {
+      console.error('Supabase not configured - missing environment variables')
+      return { data: { subscription: { unsubscribe: () => {} } } }
+    }
+  } as any
+  
+  export { fallbackClient as supabase }
+} else {
+  export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 }
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export type Json =
   | string
