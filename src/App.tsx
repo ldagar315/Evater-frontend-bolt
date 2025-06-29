@@ -2,6 +2,7 @@ import React, { Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { LoadingFallback } from './components/LoadingFallback'
+import { Footer } from './components/layout/Footer'
 import { AuthProvider, useAuthContext } from './contexts/AuthContext'
 import { AppStateProvider } from './contexts/AppStateContext'
 import { useProfile } from './hooks/useProfile'
@@ -75,49 +76,54 @@ function AppRoutes() {
   }
 
   return (
-    <Routes>
-      {!user ? (
-        <>
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="*" element={<Navigate to="/auth" replace />} />
-        </>
-      ) : (
-        <>
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/home" element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          } />
-          <Route path="/create-test" element={
-            <ProtectedRoute>
-              <CreateTestPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/view-test/:testId?" element={
-            <ProtectedRoute>
-              <ViewTestPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/submit-feedback/:testId?" element={
-            <ProtectedRoute>
-              <SubmitFeedbackPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/view-feedback/:evaluationId?" element={
-            <ProtectedRoute>
-              <ViewFeedbackPage />
-            </ProtectedRoute>
-          } />
-          <Route path="/general-feedback" element={
-            <ProtectedRoute>
-              <GeneralFeedbackPage />
-            </ProtectedRoute>
-          } />
-          <Route path="*" element={<Navigate to="/home" replace />} />
-        </>
-      )}
-    </Routes>
+    <div className="min-h-screen flex flex-col bg-cream">
+      <div className="flex-1">
+        <Routes>
+          {!user ? (
+            <>
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="*" element={<Navigate to="/auth" replace />} />
+            </>
+          ) : (
+            <>
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/home" element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              } />
+              <Route path="/create-test" element={
+                <ProtectedRoute>
+                  <CreateTestPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/view-test/:testId?" element={
+                <ProtectedRoute>
+                  <ViewTestPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/submit-feedback/:testId?" element={
+                <ProtectedRoute>
+                  <SubmitFeedbackPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/view-feedback/:evaluationId?" element={
+                <ProtectedRoute>
+                  <ViewFeedbackPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/general-feedback" element={
+                <ProtectedRoute>
+                  <GeneralFeedbackPage />
+                </ProtectedRoute>
+              } />
+              <Route path="*" element={<Navigate to="/home" replace />} />
+            </>
+          )}
+        </Routes>
+      </div>
+      <Footer />
+    </div>
   )
 }
 
