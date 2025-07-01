@@ -53,8 +53,12 @@ export function LandingPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-                  <Sparkles className="h-6 w-6 text-white" />
+                <div className="w-12 h-8 flex items-center justify-center">
+                  <img 
+                    src="/Evater_logo_2.png" 
+                    alt="Evater Logo" 
+                    className="h-8 w-auto object-contain"
+                  />
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-dark">Evater</h1>

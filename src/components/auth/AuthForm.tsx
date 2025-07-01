@@ -3,7 +3,7 @@ import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import { Card, CardContent, CardHeader } from '../ui/Card'
 import { useAuthContext } from '../../contexts/AuthContext'
-import { GraduationCap, Sparkles, AlertCircle } from 'lucide-react'
+import { Sparkles, AlertCircle } from 'lucide-react'
 
 interface AuthFormProps {
   onSuccess: () => void
@@ -85,8 +85,12 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
       <div className="max-w-md w-full">
         {/* Logo and Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-2xl shadow-lg mb-4">
-            <GraduationCap className="h-10 w-10 text-white" />
+          <div className="inline-flex items-center justify-center w-24 h-16 mb-4">
+            <img 
+              src="/Evater_logo_2.png" 
+              alt="Evater Logo" 
+              className="h-16 w-auto object-contain"
+            />
           </div>
           <h1 className="text-3xl font-bold text-dark mb-2">
             Evater

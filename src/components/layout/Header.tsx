@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LogOut, User, GraduationCap } from 'lucide-react'
+import { LogOut, User } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAuthContext } from '../../contexts/AuthContext'
 
@@ -19,8 +19,12 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-                <GraduationCap className="h-6 w-6 text-white" />
+              <div className="w-12 h-8 flex items-center justify-center">
+                <img 
+                  src="/Evater_logo_2.png" 
+                  alt="Evater Logo" 
+                  className="h-8 w-auto object-contain"
+                />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-dark">
