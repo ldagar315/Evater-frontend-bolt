@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock } from 'lucide-react'
+import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History } from 'lucide-react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
 import { useAppState } from '../contexts/AppStateContext'
@@ -17,6 +17,14 @@ export function HomePage() {
       path: '/create-test',
       color: 'bg-primary-50 hover:bg-primary-100 border-primary-200',
       iconColor: 'text-primary-600'
+    },
+    {
+      title: 'Previous Tests',
+      description: 'View all your previously created tests',
+      icon: History,
+      path: '/previous-tests',
+      color: 'bg-purple-50 hover:bg-purple-100 border-purple-200',
+      iconColor: 'text-purple-600'
     },
     {
       title: 'View Last Generated Test',
@@ -67,7 +75,7 @@ export function HomePage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {navigationOptions.map((option) => {
             const Icon = option.icon
             const isDisabled = option.disabled
@@ -79,21 +87,21 @@ export function HomePage() {
                 }`}
                 onClick={() => handleNavigation(option.path, isDisabled)}
               >
-                <CardContent className="p-8 text-center">
-                  <div className="flex justify-center mb-6">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${isDisabled ? 'bg-neutral-200' : 'bg-white shadow-sm'}`}>
-                      <Icon className={`h-8 w-8 ${isDisabled ? 'text-neutral-400' : option.iconColor}`} />
+                <CardContent className="p-6 text-center">
+                  <div className="flex justify-center mb-4">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isDisabled ? 'bg-neutral-200' : 'bg-white shadow-sm'}`}>
+                      <Icon className={`h-6 w-6 ${isDisabled ? 'text-neutral-400' : option.iconColor}`} />
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-dark mb-3">
+                  <h3 className="text-lg font-semibold text-dark mb-2">
                     {option.title}
                   </h3>
                   <p className={`text-sm leading-relaxed ${isDisabled ? 'text-neutral-400' : 'text-neutral-600'}`}>
                     {option.description}
                   </p>
                   {isDisabled && (
-                    <div className="mt-4">
-                      <span className="inline-block bg-neutral-200 text-neutral-500 px-3 py-1 rounded-full text-xs font-medium">
+                    <div className="mt-3">
+                      <span className="inline-block bg-neutral-200 text-neutral-500 px-2 py-1 rounded-full text-xs font-medium">
                         Not Available
                       </span>
                     </div>
