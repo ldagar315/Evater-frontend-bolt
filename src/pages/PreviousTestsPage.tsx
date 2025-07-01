@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, FileText, Calendar, BookOpen, Eye, Search, Filter } from 'lucide-react'
 import { Button } from '../components/ui/Button'
@@ -6,99 +6,62 @@ import { Input } from '../components/ui/Input'
 import { Select } from '../components/ui/Select'
 import { Card, CardContent, CardHeader } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
-
-interface TestRecord {
-  id: number
-  created_at: string
-  subject: string
-  topic: string
-  grade: string
-  difficulty: string
-  question_count: number
-}
-
-// Dummy data for now
-const dummyTests: TestRecord[] = [
-  {
-    id: 1,
-    created_at: '2024-01-15T10:30:00Z',
-    subject: 'Mathematics',
-    topic: 'Quadratic Equations',
-    grade: '10',
-    difficulty: 'Medium',
-    question_count: 8
-  },
-  {
-    id: 2,
-    created_at: '2024-01-12T14:45:00Z',
-    subject: 'Physics',
-    topic: 'Newton\'s Laws of Motion',
-    grade: '11',
-    difficulty: 'Hard',
-    question_count: 6
-  },
-  {
-    id: 3,
-    created_at: '2024-01-10T09:15:00Z',
-    subject: 'Chemistry',
-    topic: 'Periodic Table',
-    grade: '9',
-    difficulty: 'Easy',
-    question_count: 10
-  },
-  {
-    id: 4,
-    created_at: '2024-01-08T16:20:00Z',
-    subject: 'Mathematics',
-    topic: 'Trigonometry',
-    grade: '12',
-    difficulty: 'Hard',
-    question_count: 7
-  },
-  {
-    id: 5,
-    created_at: '2024-01-05T11:00:00Z',
-    subject: 'Biology',
-    topic: 'Cell Structure',
-    grade: '10',
-    difficulty: 'Medium',
-    question_count: 9
-  },
-  {
-    id: 6,
-    created_at: '2024-01-03T13:30:00Z',
-    subject: 'English',
-    topic: 'Grammar and Composition',
-    grade: '8',
-    difficulty: 'Easy',
-    question_count: 12
-  },
-  {
-    id: 7,
-    created_at: '2024-01-01T08:45:00Z',
-    subject: 'History',
-    topic: 'World War II',
-    grade: '11',
-    difficulty: 'Medium',
-    question_count: 5
-  }
-]
+import { useAuthContext } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
+import { QuestionsCreated } from '../types'
 
 export function PreviousTestsPage() {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
+  
+  const [tests, setTests] = useState<QuestionsCreated[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [subjectFilter, setSubjectFilter] = useState('')
   const [gradeFilter, setGradeFilter] = useState('')
 
+  useEffect(() => {
+    if (user) {
+      fetchTests()
+    }
+  }, [user])
+
+  const fetchTests = async () => {
+    try {
+      setLoading(true)
+      setError('')
+
+      const { data, error } = await supabase
+        .from('Questions_Created')
+        .select('*')
+        .eq('created_by', user!.id)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      setTests(data || [])
+    } catch (err) {
+      console.error('Error fetching tests:', err)
+      setError('Failed to load tests. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Get unique subjects and grades for filters
-  const uniqueSubjects = [...new Set(dummyTests.map(test => test.subject))].sort()
-  const uniqueGrades = [...new Set(dummyTests.map(test => test.grade))].sort((a, b) => parseInt(a) - parseInt(b))
+  const uniqueSubjects = [...new Set(tests.map(test => test.subject).filter(Boolean))].sort()
+  const uniqueGrades = [...new Set(tests.map(test => test.grade).filter(Boolean))].sort((a, b) => {
+    const numA = parseInt(a!)
+    const numB = parseInt(b!)
+    return numA - numB
+  })
 
   // Filter tests based on search and filters
-  const filteredTests = dummyTests.filter(test => {
+  const filteredTests = tests.filter(test => {
     const matchesSearch = searchTerm === '' || 
-      test.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      test.topic.toLowerCase().includes(searchTerm.toLowerCase())
+      (test.subject && test.subject.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (test.chapter && test.chapter.toLowerCase().includes(searchTerm.toLowerCase()))
     
     const matchesSubject = subjectFilter === '' || test.subject === subjectFilter
     const matchesGrade = gradeFilter === '' || test.grade === gradeFilter
@@ -116,7 +79,9 @@ export function PreviousTestsPage() {
     })
   }
 
-  const getDifficultyColor = (difficulty: string) => {
+  const getDifficultyColor = (difficulty: string | null | undefined) => {
+    if (!difficulty) return 'bg-neutral-100 text-neutral-800'
+    
     switch (difficulty.toLowerCase()) {
       case 'easy':
         return 'bg-green-100 text-green-800'
@@ -127,6 +92,31 @@ export function PreviousTestsPage() {
       default:
         return 'bg-neutral-100 text-neutral-800'
     }
+  }
+
+  const getQuestionCount = (test: QuestionsCreated): number => {
+    if (!test.test) return 0
+    if (Array.isArray(test.test)) return test.test.length
+    if (typeof test.test === 'object' && test.test.questions) {
+      return Array.isArray(test.test.questions) ? test.test.questions.length : 0
+    }
+    return 0
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-cream">
+        <Header />
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+              <p className="text-neutral-600">Loading your tests...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -143,6 +133,15 @@ export function PreviousTestsPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>
+          <Button
+            onClick={fetchTests}
+            variant="outline"
+            size="sm"
+            className="flex items-center"
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
         </div>
 
         <Card className="mb-6">
@@ -156,6 +155,16 @@ export function PreviousTestsPage() {
             </p>
           </CardHeader>
         </Card>
+
+        {error && (
+          <Card className="mb-6">
+            <CardContent className="p-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Filters and Search */}
         <Card className="mb-6">
@@ -208,7 +217,7 @@ export function PreviousTestsPage() {
         {/* Results Summary */}
         <div className="mb-6 flex items-center justify-between">
           <p className="text-sm text-neutral-600">
-            Showing {filteredTests.length} of {dummyTests.length} tests
+            Showing {filteredTests.length} of {tests.length} tests
           </p>
           <div className="flex items-center space-x-2 text-sm text-neutral-600">
             <Calendar className="h-4 w-4" />
@@ -222,11 +231,13 @@ export function PreviousTestsPage() {
             {filteredTests.length === 0 ? (
               <div className="p-12 text-center">
                 <FileText className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-dark mb-2">No Tests Found</h3>
+                <h3 className="text-lg font-semibold text-dark mb-2">
+                  {tests.length === 0 ? 'No Tests Created Yet' : 'No Tests Found'}
+                </h3>
                 <p className="text-neutral-600 mb-4">
-                  {searchTerm || subjectFilter || gradeFilter 
-                    ? 'No tests match your current filters. Try adjusting your search criteria.'
-                    : 'You haven\'t created any tests yet. Create your first test to get started!'
+                  {tests.length === 0 
+                    ? 'You haven\'t created any tests yet. Create your first test to get started!'
+                    : 'No tests match your current filters. Try adjusting your search criteria.'
                   }
                 </p>
                 <Button
@@ -234,7 +245,7 @@ export function PreviousTestsPage() {
                   className="flex items-center"
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
-                  Create Your First Test
+                  {tests.length === 0 ? 'Create Your First Test' : 'Create New Test'}
                 </Button>
               </div>
             ) : (
@@ -249,7 +260,7 @@ export function PreviousTestsPage() {
                         Subject
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Topic
+                        Topic/Chapter
                       </th>
                       <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                         Grade
@@ -284,27 +295,29 @@ export function PreviousTestsPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <BookOpen className="h-4 w-4 text-primary-600 mr-2" />
-                            <span className="text-sm font-medium text-dark">{test.subject}</span>
+                            <span className="text-sm font-medium text-dark">
+                              {test.subject || 'N/A'}
+                            </span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-dark max-w-xs truncate" title={test.topic}>
-                            {test.topic}
+                          <div className="text-sm text-dark max-w-xs truncate" title={test.chapter || ''}>
+                            {test.chapter || 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Grade {test.grade}
+                            Grade {test.grade || 'N/A'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(test.difficulty)}`}>
-                            {test.difficulty}
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(test.difficulty_level)}`}>
+                            {test.difficulty_level || 'N/A'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-dark font-medium">
-                            {test.question_count} questions
+                            {getQuestionCount(test)} questions
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -346,13 +359,16 @@ export function PreviousTestsPage() {
                 </div>
                 <div className="text-center p-4 bg-neutral-50 rounded-lg">
                   <div className="text-2xl font-bold text-neutral-600">
-                    {filteredTests.reduce((sum, test) => sum + test.question_count, 0)}
+                    {filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0)}
                   </div>
                   <div className="text-sm text-neutral-800">Total Questions</div>
                 </div>
                 <div className="text-center p-4 bg-pink-50 rounded-lg">
                   <div className="text-2xl font-bold text-pink-600">
-                    {Math.round(filteredTests.reduce((sum, test) => sum + test.question_count, 0) / filteredTests.length)}
+                    {filteredTests.length > 0 
+                      ? Math.round(filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0) / filteredTests.length)
+                      : 0
+                    }
                   </div>
                   <div className="text-sm text-pink-800">Avg Questions</div>
                 </div>
