@@ -6,99 +6,125 @@ import { Input } from '../components/ui/Input'
 import { Select } from '../components/ui/Select'
 import { Card, CardContent, CardHeader } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
+import { useAuthContext } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
+import { FeedbackTest, QuestionsCreated, FeedbackResponse } from '../types'
 
-// Dummy data for now - will be replaced with Supabase data
-const dummyFeedbacks = [
-  {
-    id: 1,
-    created_at: '2024-01-15T10:30:00Z',
-    marks_scored: 85,
-    total_marks: 100,
-    subject: 'Mathematics',
-    topic: 'Algebra',
-    difficulty_level: 'Medium',
-    test_id: 101,
-    percentage: 85
-  },
-  {
-    id: 2,
-    created_at: '2024-01-12T14:45:00Z',
-    marks_scored: 72,
-    total_marks: 80,
-    subject: 'Physics',
-    topic: 'Mechanics',
-    difficulty_level: 'Hard',
-    test_id: 102,
-    percentage: 90
-  },
-  {
-    id: 3,
-    created_at: '2024-01-10T09:15:00Z',
-    marks_scored: 45,
-    total_marks: 50,
-    subject: 'Chemistry',
-    topic: 'Organic Chemistry',
-    difficulty_level: 'Easy',
-    test_id: 103,
-    percentage: 90
-  },
-  {
-    id: 4,
-    created_at: '2024-01-08T16:20:00Z',
-    marks_scored: 38,
-    total_marks: 60,
-    subject: 'Biology',
-    topic: 'Cell Structure',
-    difficulty_level: 'Medium',
-    test_id: 104,
-    percentage: 63
-  },
-  {
-    id: 5,
-    created_at: '2024-01-05T11:00:00Z',
-    marks_scored: 92,
-    total_marks: 100,
-    subject: 'Mathematics',
-    topic: 'Calculus',
-    difficulty_level: 'Hard',
-    test_id: 105,
-    percentage: 92
-  },
-  {
-    id: 6,
-    created_at: '2024-01-03T13:30:00Z',
-    marks_scored: 67,
-    total_marks: 75,
-    subject: 'English',
-    topic: 'Literature',
-    difficulty_level: 'Medium',
-    test_id: 106,
-    percentage: 89
-  }
-]
+interface FeedbackWithTest extends FeedbackTest {
+  test_details?: QuestionsCreated
+  marks_scored?: number
+  total_marks?: number
+  percentage?: number
+}
 
 export function PreviousFeedbacksPage() {
   const navigate = useNavigate()
+  const { user } = useAuthContext()
   
-  const [feedbacks, setFeedbacks] = useState(dummyFeedbacks)
-  const [loading, setLoading] = useState(false)
+  const [feedbacks, setFeedbacks] = useState<FeedbackWithTest[]>([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [subjectFilter, setSubjectFilter] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState('')
 
+  useEffect(() => {
+    if (user) {
+      fetchFeedbacks()
+    }
+  }, [user])
+
+  const fetchFeedbacks = async () => {
+    try {
+      setLoading(true)
+      setError('')
+
+      // First, fetch all feedbacks for the current user
+      const { data: feedbackData, error: feedbackError } = await supabase
+        .from('FeedbackTest')
+        .select('*')
+        .eq('given_by', user!.id)
+        .order('created_at', { ascending: false })
+
+      if (feedbackError) throw feedbackError
+
+      if (!feedbackData || feedbackData.length === 0) {
+        setFeedbacks([])
+        return
+      }
+
+      // Get unique test IDs to fetch test details
+      const testIds = [...new Set(feedbackData.map(f => f.for_test).filter(Boolean))]
+      
+      // Fetch test details for all referenced tests
+      const { data: testData, error: testError } = await supabase
+        .from('Questions_Created')
+        .select('*')
+        .in('id', testIds)
+
+      if (testError) throw testError
+
+      // Create a map of test details for quick lookup
+      const testMap = new Map(testData?.map(test => [test.id, test]) || [])
+
+      // Process feedbacks and calculate scores
+      const processedFeedbacks: FeedbackWithTest[] = feedbackData.map(feedback => {
+        const testDetails = testMap.get(feedback.for_test!)
+        let marksScored = 0
+        let totalMarks = 0
+
+        // Calculate marks from feedback data
+        if (feedback.feedback && Array.isArray(feedback.feedback)) {
+          const feedbackArray = feedback.feedback as FeedbackResponse[]
+          marksScored = feedbackArray.reduce((sum, item) => sum + (item.feedback?.max_scored || 0), 0)
+          totalMarks = feedbackArray.reduce((sum, item) => sum + (item.maximum_marks || 0), 0)
+        }
+
+        const percentage = totalMarks > 0 ? Math.round((marksScored / totalMarks) * 100) : 0
+
+        return {
+          ...feedback,
+          test_details: testDetails,
+          marks_scored: marksScored,
+          total_marks: totalMarks,
+          percentage
+        }
+      })
+
+      setFeedbacks(processedFeedbacks)
+    } catch (err) {
+      console.error('Error fetching feedbacks:', err)
+      setError('Failed to load feedback data. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Get unique subjects and difficulties for filters
-  const uniqueSubjects = [...new Set(feedbacks.map(feedback => feedback.subject))].sort()
-  const uniqueDifficulties = [...new Set(feedbacks.map(feedback => feedback.difficulty_level))].sort()
+  const uniqueSubjects = [...new Set(
+    feedbacks
+      .map(feedback => feedback.test_details?.subject)
+      .filter(Boolean)
+  )].sort()
+  
+  const uniqueDifficulties = [...new Set(
+    feedbacks
+      .map(feedback => feedback.test_details?.difficulty_level)
+      .filter(Boolean)
+  )].sort()
 
   // Filter feedbacks based on search and filters
   const filteredFeedbacks = feedbacks.filter(feedback => {
+    const subject = feedback.test_details?.subject || ''
+    const topic = feedback.test_details?.chapter || ''
+    const difficulty = feedback.test_details?.difficulty_level || ''
+
     const matchesSearch = searchTerm === '' || 
-      feedback.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      feedback.topic.toLowerCase().includes(searchTerm.toLowerCase())
+      subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      topic.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesSubject = subjectFilter === '' || feedback.subject === subjectFilter
-    const matchesDifficulty = difficultyFilter === '' || feedback.difficulty_level === difficultyFilter
+    const matchesSubject = subjectFilter === '' || subject === subjectFilter
+    const matchesDifficulty = difficultyFilter === '' || difficulty === difficultyFilter
 
     return matchesSearch && matchesSubject && matchesDifficulty
   })
@@ -152,11 +178,27 @@ export function PreviousFeedbacksPage() {
 
   // Calculate stats
   const averageScore = filteredFeedbacks.length > 0 
-    ? Math.round(filteredFeedbacks.reduce((sum, feedback) => sum + feedback.percentage, 0) / filteredFeedbacks.length)
+    ? Math.round(filteredFeedbacks.reduce((sum, feedback) => sum + (feedback.percentage || 0), 0) / filteredFeedbacks.length)
     : 0
 
-  const totalMarksScored = filteredFeedbacks.reduce((sum, feedback) => sum + feedback.marks_scored, 0)
-  const totalMarksAvailable = filteredFeedbacks.reduce((sum, feedback) => sum + feedback.total_marks, 0)
+  const totalMarksScored = filteredFeedbacks.reduce((sum, feedback) => sum + (feedback.marks_scored || 0), 0)
+  const totalMarksAvailable = filteredFeedbacks.reduce((sum, feedback) => sum + (feedback.total_marks || 0), 0)
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-cream">
+        <Header />
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+              <p className="text-neutral-600">Loading your feedback history...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-cream">
@@ -172,13 +214,24 @@ export function PreviousFeedbacksPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>
-          <Button
-            onClick={() => navigate('/create-test')}
-            className="flex items-center"
-          >
-            <BookOpen className="h-4 w-4 mr-2" />
-            Create New Test
-          </Button>
+          <div className="flex space-x-3">
+            <Button
+              onClick={fetchFeedbacks}
+              variant="outline"
+              size="sm"
+              className="flex items-center"
+            >
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+            <Button
+              onClick={() => navigate('/create-test')}
+              className="flex items-center"
+            >
+              <BookOpen className="h-4 w-4 mr-2" />
+              Create New Test
+            </Button>
+          </div>
         </div>
 
         <Card className="mb-6">
@@ -315,13 +368,25 @@ export function PreviousFeedbacksPage() {
                     : 'No evaluations match your current filters. Try adjusting your search criteria.'
                   }
                 </p>
-                <Button
-                  onClick={() => navigate('/create-test')}
-                  className="flex items-center"
-                >
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  {feedbacks.length === 0 ? 'Create Your First Test' : 'Create New Test'}
-                </Button>
+                <div className="flex space-x-4 justify-center">
+                  <Button
+                    onClick={() => navigate('/create-test')}
+                    className="flex items-center"
+                  >
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    {feedbacks.length === 0 ? 'Create Your First Test' : 'Create New Test'}
+                  </Button>
+                  {feedbacks.length === 0 && (
+                    <Button
+                      onClick={() => navigate('/previous-tests')}
+                      variant="outline"
+                      className="flex items-center"
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      View Previous Tests
+                    </Button>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -373,41 +438,41 @@ export function PreviousFeedbacksPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <Award className="h-4 w-4 text-primary-600 mr-2" />
-                            <span className={`text-lg font-bold ${getPerformanceColor(feedback.percentage)}`}>
-                              {feedback.marks_scored}
+                            <span className={`text-lg font-bold ${getPerformanceColor(feedback.percentage || 0)}`}>
+                              {feedback.marks_scored || 0}
                             </span>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm font-medium text-dark">
-                            {feedback.total_marks}
+                            {feedback.total_marks || 0}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <BookOpen className="h-4 w-4 text-secondary-600 mr-2" />
                             <span className="text-sm font-medium text-dark">
-                              {feedback.subject}
+                              {feedback.test_details?.subject || 'N/A'}
                             </span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-dark max-w-xs truncate" title={feedback.topic}>
-                            {feedback.topic}
+                          <div className="text-sm text-dark max-w-xs truncate" title={feedback.test_details?.chapter || ''}>
+                            {feedback.test_details?.chapter || 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(feedback.difficulty_level)}`}>
-                            {feedback.difficulty_level}
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(feedback.test_details?.difficulty_level || '')}`}>
+                            {feedback.test_details?.difficulty_level || 'N/A'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex flex-col">
-                            <span className={`text-lg font-bold ${getPerformanceColor(feedback.percentage)}`}>
-                              {feedback.percentage}%
+                            <span className={`text-lg font-bold ${getPerformanceColor(feedback.percentage || 0)}`}>
+                              {feedback.percentage || 0}%
                             </span>
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPerformanceBadgeColor(feedback.percentage)} mt-1`}>
-                              {getPerformanceLabel(feedback.percentage)}
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPerformanceBadgeColor(feedback.percentage || 0)} mt-1`}>
+                              {getPerformanceLabel(feedback.percentage || 0)}
                             </span>
                           </div>
                         </td>
@@ -442,7 +507,7 @@ export function PreviousFeedbacksPage() {
                 <div className="p-4 bg-green-50 rounded-lg border border-green-200">
                   <h4 className="font-semibold text-green-900 mb-2">Best Performance</h4>
                   <div className="text-2xl font-bold text-green-600 mb-1">
-                    {Math.max(...filteredFeedbacks.map(f => f.percentage))}%
+                    {Math.max(...filteredFeedbacks.map(f => f.percentage || 0))}%
                   </div>
                   <p className="text-sm text-green-700">
                     Your highest score achieved
@@ -452,10 +517,10 @@ export function PreviousFeedbacksPage() {
                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <h4 className="font-semibold text-blue-900 mb-2">Most Attempted</h4>
                   <div className="text-lg font-bold text-blue-600 mb-1">
-                    {uniqueSubjects.reduce((prev, current) => 
-                      filteredFeedbacks.filter(f => f.subject === current).length > 
-                      filteredFeedbacks.filter(f => f.subject === prev).length ? current : prev
-                    )}
+                    {uniqueSubjects.length > 0 ? uniqueSubjects.reduce((prev, current) => 
+                      filteredFeedbacks.filter(f => f.test_details?.subject === current).length > 
+                      filteredFeedbacks.filter(f => f.test_details?.subject === prev).length ? current : prev
+                    ) : 'N/A'}
                   </div>
                   <p className="text-sm text-blue-700">
                     Subject with most evaluations
@@ -466,9 +531,9 @@ export function PreviousFeedbacksPage() {
                   <h4 className="font-semibold text-purple-900 mb-2">Improvement Trend</h4>
                   <div className="text-lg font-bold text-purple-600 mb-1">
                     {filteredFeedbacks.length >= 2 && 
-                     filteredFeedbacks[0].percentage > filteredFeedbacks[1].percentage ? '↗️ Improving' : 
+                     (filteredFeedbacks[0].percentage || 0) > (filteredFeedbacks[1].percentage || 0) ? '↗️ Improving' : 
                      filteredFeedbacks.length >= 2 && 
-                     filteredFeedbacks[0].percentage < filteredFeedbacks[1].percentage ? '↘️ Declining' : '→ Stable'}
+                     (filteredFeedbacks[0].percentage || 0) < (filteredFeedbacks[1].percentage || 0) ? '↘️ Declining' : '→ Stable'}
                   </div>
                   <p className="text-sm text-purple-700">
                     Based on recent evaluations
