@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins } from 'lucide-react'
+import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins, User, GraduationCap, School } from 'lucide-react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
 import { useAppState } from '../contexts/AppStateContext'
@@ -73,7 +73,79 @@ export function HomePage() {
       <Header />
       
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Welcome Section with Credits */}
+        {/* Account Status Section - Full Width */}
+        <Card className="mb-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center mr-4">
+                  <User className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-dark mb-1">Account Status</h2>
+                  <p className="text-sm text-neutral-600">Your current account information and credits</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-8">
+                {/* Name */}
+                <div className="text-center">
+                  <div className="flex items-center mb-1">
+                    <User className="h-4 w-4 text-neutral-500 mr-1" />
+                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">Name</span>
+                  </div>
+                  <div className="text-lg font-bold text-dark">
+                    {profile?.name || profile?.user_name || 'Not set'}
+                  </div>
+                </div>
+
+                {/* Grade */}
+                <div className="text-center">
+                  <div className="flex items-center mb-1">
+                    <GraduationCap className="h-4 w-4 text-neutral-500 mr-1" />
+                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">Grade</span>
+                  </div>
+                  <div className="text-lg font-bold text-dark">
+                    Grade {profile?.grade || profile?.class_level || 'N/A'}
+                  </div>
+                </div>
+
+                {/* School */}
+                <div className="text-center max-w-32">
+                  <div className="flex items-center mb-1">
+                    <School className="h-4 w-4 text-neutral-500 mr-1" />
+                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">School</span>
+                  </div>
+                  <div className="text-lg font-bold text-dark truncate" title={profile?.school || 'Not set'}>
+                    {profile?.school || 'Not set'}
+                  </div>
+                </div>
+
+                {/* Credits */}
+                <div className="text-center">
+                  <div className="flex items-center mb-1">
+                    <Coins className="h-4 w-4 text-yellow-600 mr-1" />
+                    <span className="text-xs font-medium text-yellow-800 uppercase tracking-wide">Credits</span>
+                  </div>
+                  <div className="flex items-center justify-center">
+                    <span className="text-2xl font-bold text-yellow-700">
+                      {profile?.credits !== null && profile?.credits !== undefined ? profile.credits : '---'}
+                    </span>
+                  </div>
+                  {profile?.credits !== null && profile?.credits !== undefined && profile.credits <= 5 && (
+                    <div className="mt-1">
+                      <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">
+                        {profile.credits === 0 ? 'No Credits' : 'Low Credits'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Welcome Section */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-2xl shadow-lg mb-6">
             <Sparkles className="h-10 w-10 text-white" />
@@ -81,31 +153,9 @@ export function HomePage() {
           <h1 className="text-4xl font-bold text-dark mb-4">
             Welcome Back to Evater
           </h1>
-          <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed mb-6">
+          <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
             Ready to create, evaluate, and enhance your learning experience
           </p>
-          
-          {/* Credits Display */}
-          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-xl shadow-sm">
-            <Coins className="h-6 w-6 text-yellow-600 mr-3" />
-            <div className="text-left">
-              <div className="text-sm font-medium text-yellow-800">Available Credits</div>
-              <div className="text-2xl font-bold text-yellow-700">
-                {profile?.credits !== null && profile?.credits !== undefined ? profile.credits : '---'}
-              </div>
-            </div>
-          </div>
-          
-          {profile?.credits !== null && profile?.credits !== undefined && profile.credits <= 5 && (
-            <div className="mt-4 inline-flex items-center px-4 py-2 bg-red-50 border border-red-200 rounded-lg">
-              <span className="text-sm text-red-700">
-                {profile.credits === 0 
-                  ? '⚠️ No credits remaining. Contact support to add more credits.'
-                  : `⚠️ Low credits remaining (${profile.credits}). Consider adding more credits soon.`
-                }
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Quick Actions */}
@@ -146,47 +196,14 @@ export function HomePage() {
           })}
         </div>
 
-        {/* Account & Activity Overview */}
+        {/* Recent Activity Overview */}
         <Card className="mb-8">
           <CardContent className="p-8">
             <div className="flex items-center mb-6">
               <Clock className="h-6 w-6 text-primary-600 mr-3" />
-              <h2 className="text-2xl font-bold text-dark">Account & Recent Activity</h2>
+              <h2 className="text-2xl font-bold text-dark">Recent Activity</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Account Info */}
-              <div className="p-6 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border-2 border-yellow-200">
-                <h3 className="font-semibold text-yellow-900 mb-4 flex items-center">
-                  <Coins className="h-5 w-5 mr-2" />
-                  Account Status
-                </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-yellow-800">Name:</span>
-                    <span className="font-medium text-yellow-900">{profile?.name || profile?.user_name || 'Not set'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-yellow-800">Grade:</span>
-                    <span className="font-medium text-yellow-900">Grade {profile?.grade || profile?.class_level || 'Not set'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-yellow-800">School:</span>
-                    <span className="font-medium text-yellow-900 truncate max-w-32" title={profile?.school || 'Not set'}>
-                      {profile?.school || 'Not set'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center pt-2 border-t border-yellow-300">
-                    <span className="text-yellow-800 font-medium">Credits:</span>
-                    <div className="flex items-center">
-                      <Coins className="h-4 w-4 text-yellow-600 mr-1" />
-                      <span className="font-bold text-lg text-yellow-700">
-                        {profile?.credits !== null && profile?.credits !== undefined ? profile.credits : '---'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Last Generated Test */}
               <div className="p-6 bg-primary-50 rounded-xl border border-primary-200">
                 <h3 className="font-semibold text-primary-900 mb-4 flex items-center">
