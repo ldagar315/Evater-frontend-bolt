@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Target, BookOpen } from 'lucide-react'
+import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, BookOpen, Clock, TrendingUp } from 'lucide-react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
 import { useAppState } from '../contexts/AppStateContext'
@@ -53,24 +53,20 @@ export function HomePage() {
       <Header />
       
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        {/* Hero Section */}
+        {/* Welcome Section */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-2xl shadow-lg mb-6">
             <Sparkles className="h-10 w-10 text-white" />
           </div>
           <h1 className="text-4xl font-bold text-dark mb-4">
-            Welcome to Evater
+            Welcome Back to Evater
           </h1>
           <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-            Your AI-powered platform for intelligent test generation and comprehensive evaluation
+            Ready to create, evaluate, and enhance your learning experience
           </p>
-          <div className="mt-4 inline-flex items-center px-4 py-2 bg-secondary-100 rounded-full border border-secondary-200">
-            <Target className="h-4 w-4 text-secondary-600 mr-2" />
-            <span className="text-sm font-medium text-dark">Get Smarter, Faster</span>
-          </div>
         </div>
 
-        {/* Navigation Cards */}
+        {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {navigationOptions.map((option) => {
             const Icon = option.icon
@@ -108,12 +104,12 @@ export function HomePage() {
           })}
         </div>
 
-        {/* Latest Generations Status */}
+        {/* Recent Activity */}
         <Card className="mb-8">
           <CardContent className="p-8">
             <div className="flex items-center mb-6">
-              <BookOpen className="h-6 w-6 text-primary-600 mr-3" />
-              <h2 className="text-2xl font-bold text-dark">Latest Generations</h2>
+              <Clock className="h-6 w-6 text-primary-600 mr-3" />
+              <h2 className="text-2xl font-bold text-dark">Recent Activity</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="p-6 bg-primary-50 rounded-xl border border-primary-200">
@@ -155,37 +151,36 @@ export function HomePage() {
           </CardContent>
         </Card>
 
-        {/* Features Overview */}
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            <h2 className="text-2xl font-bold text-dark mb-8 text-center">
-              Why Choose Evater?
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center p-6 bg-primary-50 rounded-xl border border-primary-200">
-                <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="h-6 w-6 text-white" />
-                </div>
-                <div className="text-2xl font-bold text-primary-700 mb-2">AI-Powered</div>
-                <p className="text-sm text-neutral-600 leading-relaxed">Intelligent test generation using advanced algorithms and machine learning</p>
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="bg-gradient-to-br from-primary-500 to-primary-600 text-white">
+            <CardContent className="p-6 text-center">
+              <TrendingUp className="h-8 w-8 mx-auto mb-3 text-white/90" />
+              <div className="text-2xl font-bold mb-1">
+                {appState.last_generated_test ? '1' : '0'}
               </div>
-              <div className="text-center p-6 bg-secondary-50 rounded-xl border border-secondary-200">
-                <div className="w-12 h-12 bg-secondary-500 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Target className="h-6 w-6 text-white" />
-                </div>
-                <div className="text-2xl font-bold text-secondary-700 mb-2">OCR Evaluation</div>
-                <p className="text-sm text-neutral-600 leading-relaxed">Automated answer sheet analysis and precise scoring with detailed insights</p>
+              <p className="text-primary-100 text-sm">Tests Created</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-br from-secondary-500 to-secondary-600 text-white">
+            <CardContent className="p-6 text-center">
+              <BookOpen className="h-8 w-8 mx-auto mb-3 text-white/90" />
+              <div className="text-2xl font-bold mb-1">
+                {appState.last_generated_feedback ? '1' : '0'}
               </div>
-              <div className="text-center p-6 bg-neutral-50 rounded-xl border border-neutral-200">
-                <div className="w-12 h-12 bg-neutral-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <MessageSquare className="h-6 w-6 text-white" />
-                </div>
-                <div className="text-2xl font-bold text-neutral-700 mb-2">Smart Feedback</div>
-                <p className="text-sm text-neutral-600 leading-relaxed">Comprehensive insights and personalized improvement suggestions</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+              <p className="text-secondary-100 text-sm">Evaluations Done</p>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-br from-neutral-600 to-neutral-700 text-white">
+            <CardContent className="p-6 text-center">
+              <Sparkles className="h-8 w-8 mx-auto mb-3 text-white/90" />
+              <div className="text-2xl font-bold mb-1">AI</div>
+              <p className="text-neutral-200 text-sm">Powered Platform</p>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* General Feedback Section */}
         <Card className="bg-pink-50 border-2 border-pink-200">
