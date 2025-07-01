@@ -6,6 +6,7 @@ import { Footer } from './components/layout/Footer'
 import { AuthProvider, useAuthContext } from './contexts/AuthContext'
 import { AppStateProvider } from './contexts/AppStateContext'
 import { useProfile } from './hooks/useProfile'
+import { LandingPage } from './pages/LandingPage'
 import { AuthPage } from './pages/AuthPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { HomePage } from './pages/HomePage'
@@ -79,10 +80,13 @@ function AppRoutes() {
     <div className="min-h-screen flex flex-col bg-cream">
       <div className="flex-1">
         <Routes>
+          {/* Landing page for non-authenticated users */}
+          <Route path="/" element={!user ? <LandingPage /> : <Navigate to="/home" replace />} />
+          
           {!user ? (
             <>
               <Route path="/auth" element={<AuthPage />} />
-              <Route path="*" element={<Navigate to="/auth" replace />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </>
           ) : (
             <>
@@ -122,7 +126,8 @@ function AppRoutes() {
           )}
         </Routes>
       </div>
-      <Footer />
+      {/* Only show footer on authenticated pages */}
+      {user && <Footer />}
     </div>
   )
 }
