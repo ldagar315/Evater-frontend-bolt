@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins, User, GraduationCap, School, Crown } from 'lucide-react'
+import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins } from 'lucide-react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
 import { useAppState } from '../contexts/AppStateContext'
@@ -67,18 +67,6 @@ export function HomePage() {
       navigate(path)
     }
   }
-
-  const getCreditsStatus = () => {
-    const credits = profile?.credits
-    if (credits === null || credits === undefined) return { status: 'unknown', color: 'text-neutral-500', bgColor: 'bg-neutral-100' }
-    if (credits >= 50) return { status: 'excellent', color: 'text-green-600', bgColor: 'bg-green-100' }
-    if (credits >= 20) return { status: 'good', color: 'text-blue-600', bgColor: 'bg-blue-100' }
-    if (credits >= 10) return { status: 'moderate', color: 'text-yellow-600', bgColor: 'bg-yellow-100' }
-    if (credits >= 1) return { status: 'low', color: 'text-orange-600', bgColor: 'bg-orange-100' }
-    return { status: 'empty', color: 'text-red-600', bgColor: 'bg-red-100' }
-  }
-
-  const creditsStatus = getCreditsStatus()
 
   return (
     <div className="min-h-screen bg-cream">
@@ -166,102 +154,35 @@ export function HomePage() {
               <h2 className="text-2xl font-bold text-dark">Account & Recent Activity</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Beautiful Account Status */}
-              <div className="relative overflow-hidden">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl"></div>
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200/30 to-pink-200/30 rounded-full -translate-y-16 translate-x-16"></div>
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-indigo-200/30 to-blue-200/30 rounded-full translate-y-12 -translate-x-12"></div>
-                
-                {/* Content */}
-                <div className="relative p-6 border-2 border-purple-200/50 rounded-2xl backdrop-blur-sm">
-                  {/* Header with Crown Icon */}
-                  <div className="flex items-center justify-between mb-6">
+              {/* Account Info */}
+              <div className="p-6 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl border-2 border-yellow-200">
+                <h3 className="font-semibold text-yellow-900 mb-4 flex items-center">
+                  <Coins className="h-5 w-5 mr-2" />
+                  Account Status
+                </h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-yellow-800">Name:</span>
+                    <span className="font-medium text-yellow-900">{profile?.name || profile?.user_name || 'Not set'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-yellow-800">Grade:</span>
+                    <span className="font-medium text-yellow-900">Grade {profile?.grade || profile?.class_level || 'Not set'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-yellow-800">School:</span>
+                    <span className="font-medium text-yellow-900 truncate max-w-32" title={profile?.school || 'Not set'}>
+                      {profile?.school || 'Not set'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 border-t border-yellow-300">
+                    <span className="text-yellow-800 font-medium">Credits:</span>
                     <div className="flex items-center">
-                      <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                        <Crown className="h-5 w-5 text-white" />
-                      </div>
-                      <div className="ml-3">
-                        <h3 className="font-bold text-purple-900 text-lg">Account Status</h3>
-                        <p className="text-xs text-purple-600">Premium Member</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Profile Information */}
-                  <div className="space-y-4">
-                    {/* Name */}
-                    <div className="flex items-center justify-between p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-200/30">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg flex items-center justify-center">
-                          <User className="h-4 w-4 text-white" />
-                        </div>
-                        <span className="ml-3 text-sm font-medium text-purple-800">Name</span>
-                      </div>
-                      <span className="font-semibold text-purple-900 text-sm">
-                        {profile?.name || profile?.user_name || 'Not set'}
+                      <Coins className="h-4 w-4 text-yellow-600 mr-1" />
+                      <span className="font-bold text-lg text-yellow-700">
+                        {profile?.credits !== null && profile?.credits !== undefined ? profile.credits : '---'}
                       </span>
                     </div>
-
-                    {/* Grade */}
-                    <div className="flex items-center justify-between p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-200/30">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-500 rounded-lg flex items-center justify-center">
-                          <GraduationCap className="h-4 w-4 text-white" />
-                        </div>
-                        <span className="ml-3 text-sm font-medium text-purple-800">Grade</span>
-                      </div>
-                      <span className="font-semibold text-purple-900 text-sm">
-                        Grade {profile?.grade || profile?.class_level || 'Not set'}
-                      </span>
-                    </div>
-
-                    {/* School */}
-                    <div className="flex items-center justify-between p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-purple-200/30">
-                      <div className="flex items-center">
-                        <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center">
-                          <School className="h-4 w-4 text-white" />
-                        </div>
-                        <span className="ml-3 text-sm font-medium text-purple-800">School</span>
-                      </div>
-                      <span className="font-semibold text-purple-900 text-sm truncate max-w-32" title={profile?.school || 'Not set'}>
-                        {profile?.school || 'Not set'}
-                      </span>
-                    </div>
-
-                    {/* Credits - Highlighted */}
-                    <div className="p-4 bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm rounded-xl border-2 border-yellow-300/50 shadow-lg">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className={`w-10 h-10 ${creditsStatus.bgColor} rounded-xl flex items-center justify-center shadow-md`}>
-                            <Coins className={`h-5 w-5 ${creditsStatus.color}`} />
-                          </div>
-                          <div className="ml-3">
-                            <span className="text-sm font-bold text-yellow-800">Credits</span>
-                            <div className="flex items-center mt-1">
-                              <div className={`w-2 h-2 ${creditsStatus.bgColor} rounded-full mr-1`}></div>
-                              <span className="text-xs text-yellow-700 capitalize">{creditsStatus.status}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className={`text-2xl font-bold ${creditsStatus.color}`}>
-                            {profile?.credits !== null && profile?.credits !== undefined ? profile.credits : '---'}
-                          </div>
-                          <div className="text-xs text-yellow-700">Available</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Button */}
-                  <div className="mt-6">
-                    <button
-                      onClick={() => navigate('/profile')}
-                      className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                    >
-                      Edit Profile
-                    </button>
                   </div>
                 </div>
               </div>
