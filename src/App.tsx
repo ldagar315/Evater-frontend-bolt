@@ -16,6 +16,7 @@ import { SubmitFeedbackPage } from './pages/SubmitFeedbackPage'
 import { ViewFeedbackPage } from './pages/ViewFeedbackPage'
 import { GeneralFeedbackPage } from './pages/GeneralFeedbackPage'
 import { PreviousTestsPage } from './pages/PreviousTestsPage'
+import { PreviousFeedbacksPage } from './pages/PreviousFeedbacksPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, error } = useAuthContext()
@@ -105,6 +106,11 @@ function AppRoutes() {
               <Route path="/previous-tests" element={
                 <ProtectedRoute>
                   <PreviousTestsPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/previous-feedbacks" element={
+                <ProtectedRoute>
+                  <PreviousFeedbacksPage />
                 </ProtectedRoute>
               } />
               <Route path="/view-test/:testId?" element={
