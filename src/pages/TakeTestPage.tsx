@@ -396,15 +396,6 @@ export function TakeTestPage() {
               <h2 className="text-2xl font-bold text-white mb-6">
                 {currentQuestion.isMultipleCorrect ? 'Select all correct answers' : 'Select the correct answer'}
               </h2>
-              
-              {/* Question illustration area */}
-              <div className="flex justify-center mb-6">
-                <div className="w-32 h-32 bg-primary-100 rounded-full flex items-center justify-center">
-                  <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center">
-                    <span className="text-lg font-bold text-white">Q{currentQuestion.question_number}</span>
-                  </div>
-                </div>
-              </div>
 
               {/* Question header with number and text in one row */}
               <div className="max-w-4xl mx-auto mb-8">
