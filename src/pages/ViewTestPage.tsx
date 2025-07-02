@@ -296,6 +296,32 @@ export function ViewTestPage() {
           </CardHeader>
         </Card>
 
+        {/* Take MCQ Test Card - Moved to top, just above questions */}
+        {hasMCQQuestions(test) && (
+          <Card className="mb-6 bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200">
+            <CardContent className="p-6 text-center">
+              <div className="flex items-center justify-center mb-4">
+                <Play className="h-12 w-12 text-primary-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-dark mb-2">
+                Take MCQ Test
+              </h3>
+              <p className="text-neutral-600 mb-4">
+                {isMCQOnly(test) 
+                  ? 'Take this test in interactive MCQ mode with instant feedback'
+                  : 'Take the MCQ questions from this test in interactive mode'
+                }
+              </p>
+              <Button
+                onClick={() => navigate(`/take-test/${test.id}`)}
+                className="w-full"
+              >
+                Start MCQ Test
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
         {questions.length === 0 ? (
           <Card>
             <CardContent className="p-6 text-center">
@@ -321,56 +347,27 @@ export function ViewTestPage() {
               )}
             </div>
 
-            {/* Action Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Take Test Card - Only show if test has MCQ questions */}
-              {hasMCQQuestions(test) && (
-                <Card className="bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200">
-                  <CardContent className="p-6 text-center">
-                    <div className="flex items-center justify-center mb-4">
-                      <Play className="h-12 w-12 text-primary-600" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-dark mb-2">
-                      Take MCQ Test
-                    </h3>
-                    <p className="text-neutral-600 mb-4">
-                      {isMCQOnly(test) 
-                        ? 'Take this test in interactive MCQ mode with instant feedback'
-                        : 'Take the MCQ questions from this test in interactive mode'
-                      }
-                    </p>
-                    <Button
-                      onClick={() => navigate(`/take-test/${test.id}`)}
-                      className="w-full"
-                    >
-                      Start MCQ Test
-                    </Button>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Evaluate Test Card */}
-              <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-                <CardContent className="p-6 text-center">
-                  <div className="flex items-center justify-center mb-4">
-                    <FileCheck className="h-12 w-12 text-green-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-dark mb-2">
-                    Evaluate Answer Sheets
-                  </h3>
-                  <p className="text-neutral-600 mb-4">
-                    Upload answer sheets to get AI-powered feedback and scoring
-                  </p>
-                  <Button
-                    onClick={() => navigate(`/submit-feedback/${test.id}`)}
-                    variant="secondary"
-                    className="w-full"
-                  >
-                    Evaluate Test
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Evaluate Test Card - Only this one remains at the bottom */}
+            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+              <CardContent className="p-6 text-center">
+                <div className="flex items-center justify-center mb-4">
+                  <FileCheck className="h-12 w-12 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-dark mb-2">
+                  Evaluate Answer Sheets
+                </h3>
+                <p className="text-neutral-600 mb-4">
+                  Upload answer sheets to get AI-powered feedback and scoring
+                </p>
+                <Button
+                  onClick={() => navigate(`/submit-feedback/${test.id}`)}
+                  variant="secondary"
+                  className="w-full"
+                >
+                  Evaluate Test
+                </Button>
+              </CardContent>
+            </Card>
           </>
         )}
       </div>
