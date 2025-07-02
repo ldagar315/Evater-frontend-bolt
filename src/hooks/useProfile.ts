@@ -38,16 +38,34 @@ export function useProfile(userId: string | undefined) {
     if (!userId) return { error: 'No user ID' }
 
     try {
+      // Get the current user's email from auth
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      const profilePayload = {
+        ...profileData,
+        created_by: userId, // Set to the authenticated user's ID
+        email: user?.email || profileData.email, // Use auth email if available
+        user_name: profileData.name || profileData.user_name, // Ensure user_name is set
+        credits: 100 // Set default credits for new users
+      }
+
+      console.log('Creating profile with payload:', profilePayload)
+
       const { data, error } = await supabase
         .from('Users')
-        .insert([{ ...profileData, created_by: userId }])
+        .insert([profilePayload])
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('Profile creation error:', error)
+        throw error
+      }
+      
       setProfile(data)
       return { data, error: null }
     } catch (error) {
+      console.error('Profile creation failed:', error)
       return { data: null, error }
     }
   }

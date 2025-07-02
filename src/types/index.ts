@@ -43,15 +43,15 @@ export interface FeedbackResponse {
 // Database table types matching your schema
 export interface UserProfile {
   id: string
-  user_name?: string
-  email?: string
-  profile_picture?: string
+  user_name?: string | null
+  email?: string | null
+  profile_picture?: string | null
   created_by: string
-  grade?: number
-  school?: string
-  credits?: number
-  name?: string
-  class_level?: number
+  grade?: number | null
+  school?: string | null
+  credits?: number | null
+  name?: string | null
+  class_level?: number | null
   created_at: string
 }
 
