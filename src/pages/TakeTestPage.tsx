@@ -530,15 +530,6 @@ export function TakeTestPage() {
                     : "Incorrect. The correct answer(s) are highlighted in green above."
                   }
                 </p>
-                {/* Debug info in development */}
-                {process.env.NODE_ENV === 'development' && (
-                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-                    <strong>Debug Info:</strong><br />
-                    Selected: {selectedOptions.join(', ')}<br />
-                    Correct: {userAnswers[currentQuestionIndex]?.correctOptions?.join(', ')}<br />
-                    Is Correct: {String(userAnswers[currentQuestionIndex]?.isCorrect)}
-                  </div>
-                )}
               </div>
             )}
           </CardContent>
