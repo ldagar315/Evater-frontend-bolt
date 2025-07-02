@@ -12,7 +12,7 @@ import { QuestionsCreated, Question } from '../types'
 interface MCQOption {
   id: string
   text: string
-  isCorrect: boolean
+  is_correct: boolean
 }
 
 interface MCQQuestion extends Question {
@@ -93,22 +93,55 @@ export function TakeTestPage() {
         return
       }
 
-      // Convert questions to MCQ format with dummy options for now
+      console.log('Raw MCQ Questions from DB:', mcqQuestions) // Debug log
+
+      // Convert questions to MCQ format with proper option handling
       const formattedQuestions: MCQQuestion[] = mcqQuestions.map((q: Question) => {
         const isMultipleCorrect = q.question_type === 'mcq_multi'
         
-        // Generate options from the existing options or create dummy ones
+        // Process options from the database
         let mcqOptions: MCQOption[] = []
         
         if (q.options && q.options.length > 0) {
-          mcqOptions = q.options.map((option, index) => ({
-            id: `option_${index}`,
-            text: typeof option === 'string' ? option : option.text,
-            isCorrect: index === 0 // For demo, make first option correct
-          }))
+          console.log('Processing options for question:', q.question_number, q.options) // Debug log
+          
+          mcqOptions = q.options.map((option, index) => {
+            // Handle both string options and object options
+            if (typeof option === 'string') {
+              // If it's a string, we need to determine correctness differently
+              // For now, we'll use a fallback approach
+              return {
+                id: `option_${index}`,
+                text: option,
+                is_correct: index === 0 // Fallback: assume first option is correct
+              }
+            } else if (typeof option === 'object' && option !== null) {
+              // Handle object options with is_correct field
+              return {
+                id: `option_${index}`,
+                text: option.text || option.label || String(option),
+                is_correct: Boolean(option.is_correct || option.isCorrect || false)
+              }
+            } else {
+              // Fallback for any other format
+              return {
+                id: `option_${index}`,
+                text: String(option),
+                is_correct: false
+              }
+            }
+          })
         } else {
-          // Generate dummy options based on question content
+          // Generate dummy options if none exist (fallback)
           mcqOptions = generateDummyOptions(q.question_text, isMultipleCorrect)
+        }
+
+        console.log('Formatted options for question:', q.question_number, mcqOptions) // Debug log
+
+        // Ensure at least one option is correct
+        const hasCorrectOption = mcqOptions.some(opt => opt.is_correct)
+        if (!hasCorrectOption && mcqOptions.length > 0) {
+          mcqOptions[0].is_correct = true // Make first option correct as fallback
         }
 
         return {
@@ -117,6 +150,8 @@ export function TakeTestPage() {
           isMultipleCorrect
         }
       })
+
+      console.log('Final formatted questions:', formattedQuestions) // Debug log
 
       setTest(data)
       setQuestions(formattedQuestions)
@@ -145,13 +180,13 @@ export function TakeTestPage() {
       return baseOptions.map((text, index) => ({
         id: `option_${index}`,
         text,
-        isCorrect: index === 0 || index === 2 // Multiple correct for demo
+        is_correct: index === 0 || index === 2 // Multiple correct for demo
       }))
     } else {
       return baseOptions.map((text, index) => ({
         id: `option_${index}`,
         text,
-        isCorrect: index === 0 // Single correct
+        is_correct: index === 0 // Single correct
       }))
     }
   }
@@ -179,11 +214,19 @@ export function TakeTestPage() {
       // Show answer first
       const currentQuestion = questions[currentQuestionIndex]
       const correctOptions = currentQuestion.mcq_options
-        .filter(option => option.isCorrect)
+        .filter(option => option.is_correct) // Use is_correct field
         .map(option => option.id)
       
+      console.log('Checking answer for question:', currentQuestion.question_number)
+      console.log('Selected options:', selectedOptions)
+      console.log('Correct options:', correctOptions)
+      
+      // Check if answer is correct
       const isCorrect = selectedOptions.length === correctOptions.length &&
-        selectedOptions.every(id => correctOptions.includes(id))
+        selectedOptions.every(id => correctOptions.includes(id)) &&
+        correctOptions.every(id => selectedOptions.includes(id))
+
+      console.log('Is answer correct?', isCorrect)
 
       // Update user answers
       const updatedAnswers = [...userAnswers]
@@ -229,10 +272,10 @@ export function TakeTestPage() {
         : 'bg-white border-neutral-300 text-neutral-700 hover:bg-neutral-50'
     }
 
-    // Show answer state
-    if (option.isCorrect) {
+    // Show answer state - use is_correct field
+    if (option.is_correct) {
       return 'bg-green-100 border-green-500 text-green-900'
-    } else if (isSelected && !option.isCorrect) {
+    } else if (isSelected && !option.is_correct) {
       return 'bg-red-100 border-red-500 text-red-900'
     } else {
       return 'bg-neutral-100 border-neutral-300 text-neutral-600'
@@ -246,9 +289,10 @@ export function TakeTestPage() {
       return null
     }
 
-    if (option.isCorrect) {
+    // Use is_correct field for icon display
+    if (option.is_correct) {
       return <CheckCircle className="h-5 w-5 text-green-600" />
-    } else if (isSelected && !option.isCorrect) {
+    } else if (isSelected && !option.is_correct) {
       return <XCircle className="h-5 w-5 text-red-600" />
     }
     
@@ -486,6 +530,15 @@ export function TakeTestPage() {
                     : "Incorrect. The correct answer(s) are highlighted in green above."
                   }
                 </p>
+                {/* Debug info in development */}
+                {process.env.NODE_ENV === 'development' && (
+                  <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
+                    <strong>Debug Info:</strong><br />
+                    Selected: {selectedOptions.join(', ')}<br />
+                    Correct: {userAnswers[currentQuestionIndex]?.correctOptions?.join(', ')}<br />
+                    Is Correct: {String(userAnswers[currentQuestionIndex]?.isCorrect)}
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
