@@ -393,7 +393,7 @@ export function TakeTestPage() {
         <Card className="mb-8 bg-slate-800 border-slate-700">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-4">
+              <h2 className="text-2xl font-bold text-white mb-6">
                 {currentQuestion.isMultipleCorrect ? 'Select all correct answers' : 'Select the correct answer'}
               </h2>
               
@@ -406,12 +406,13 @@ export function TakeTestPage() {
                 </div>
               </div>
 
-              {/* Question text */}
-              <div className="text-lg text-white mb-8 max-w-3xl mx-auto">
+              {/* Question text - FIXED: Ensure this is always displayed */}
+              <div className="text-xl text-white mb-8 max-w-4xl mx-auto leading-relaxed bg-slate-700 p-6 rounded-xl">
+                <div className="mb-2 text-sm text-slate-300 font-medium">Question:</div>
                 {currentQuestion.contains_math_expression ? (
-                  <MathText text={currentQuestion.question_text} className="leading-relaxed" />
+                  <MathText text={currentQuestion.question_text} className="text-white" />
                 ) : (
-                  <p>{currentQuestion.question_text}</p>
+                  <p className="text-white">{currentQuestion.question_text}</p>
                 )}
               </div>
 
@@ -427,7 +428,7 @@ export function TakeTestPage() {
             </div>
 
             {/* Options */}
-            <div className="space-y-4 max-w-2xl mx-auto">
+            <div className="space-y-4 max-w-3xl mx-auto">
               {currentQuestion.mcq_options.map((option, index) => (
                 <button
                   key={option.id}
@@ -456,7 +457,7 @@ export function TakeTestPage() {
 
             {/* Answer explanation */}
             {showAnswer && (
-              <div className="mt-8 p-6 bg-slate-700 rounded-xl max-w-2xl mx-auto">
+              <div className="mt-8 p-6 bg-slate-700 rounded-xl max-w-3xl mx-auto">
                 <h4 className="font-semibold text-white mb-2">Explanation:</h4>
                 <p className="text-slate-300 text-sm">
                   {userAnswers[currentQuestionIndex]?.isCorrect 
