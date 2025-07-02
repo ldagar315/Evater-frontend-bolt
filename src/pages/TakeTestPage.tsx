@@ -371,10 +371,6 @@ export function TakeTestPage() {
           </Button>
           
           <div className="flex items-center space-x-6 text-white">
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-2" />
-              <span className="font-medium">{formatTime(timeElapsed)}</span>
-            </div>
             <div className="text-sm">
               Question {currentQuestionIndex + 1} of {questions.length}
             </div>
@@ -388,6 +384,19 @@ export function TakeTestPage() {
               className="bg-primary-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
+          </div>
+        </div>
+
+        {/* Timer Element - Moved to top */}
+        <div className="mb-8 flex justify-center">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl px-6 py-4 shadow-lg">
+            <div className="flex items-center text-white">
+              <Clock className="h-5 w-5 mr-3 text-primary-400" />
+              <div className="text-center">
+                <div className="text-2xl font-bold">{formatTime(timeElapsed)}</div>
+                <div className="text-sm text-slate-400">Time Taken</div>
+              </div>
+            </div>
           </div>
         </div>
 
