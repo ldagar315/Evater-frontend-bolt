@@ -191,6 +191,21 @@ export function TakeTestPage() {
     }
   }
 
+  const playSound = (isCorrect: boolean) => {
+    try {
+      const soundFile = isCorrect ? '/yeah-boy-114478.mp3' : '/roblox-death-sound-effect.mp3'
+      const audio = new Audio(soundFile)
+      audio.volume = 0.5 // Set volume to 50%
+      audio.play().catch(error => {
+        console.log('Could not play sound:', error)
+        // Silently fail - don't break the user experience
+      })
+    } catch (error) {
+      console.log('Sound playback error:', error)
+      // Silently fail - don't break the user experience
+    }
+  }
+
   const handleOptionSelect = (optionId: string) => {
     if (showAnswer) return // Don't allow selection after showing answer
 
@@ -227,6 +242,9 @@ export function TakeTestPage() {
         correctOptions.every(id => selectedOptions.includes(id))
 
       console.log('Is answer correct?', isCorrect)
+
+      // Play sound effect based on correctness
+      playSound(isCorrect)
 
       // Update user answers
       const updatedAnswers = [...userAnswers]
