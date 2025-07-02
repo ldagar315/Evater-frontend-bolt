@@ -401,27 +401,40 @@ export function TakeTestPage() {
               <div className="flex justify-center mb-6">
                 <div className="w-32 h-32 bg-primary-100 rounded-full flex items-center justify-center">
                   <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center">
-                    <span className="text-2xl font-bold text-white">Q{currentQuestion.question_number}</span>
+                    <span className="text-lg font-bold text-white">Q{currentQuestion.question_number}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Question text - FIXED: Ensure this is always displayed */}
-              <div className="text-xl text-white mb-8 max-w-4xl mx-auto leading-relaxed bg-slate-700 p-6 rounded-xl">
-                <div className="mb-2 text-sm text-slate-300 font-medium">Question:</div>
-                {currentQuestion.contains_math_expression ? (
-                  <MathText text={currentQuestion.question_text} className="text-white" />
-                ) : (
-                  <p className="text-white">{currentQuestion.question_text}</p>
-                )}
+              {/* Question header with number and text in one row */}
+              <div className="max-w-4xl mx-auto mb-8">
+                <div className="flex items-start gap-6 bg-slate-700 p-6 rounded-xl">
+                  {/* Question number - smaller size */}
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center">
+                      <span className="text-lg font-bold text-white">{currentQuestion.question_number}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Question text */}
+                  <div className="flex-1 text-left">
+                    <div className="text-lg text-white leading-relaxed">
+                      {currentQuestion.contains_math_expression ? (
+                        <MathText text={currentQuestion.question_text} className="text-white" />
+                      ) : (
+                        <p className="text-white">{currentQuestion.question_text}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Question type and marks */}
-              <div className="flex justify-center space-x-4 mb-8">
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+              {/* Question type and marks - larger and more prominent */}
+              <div className="flex justify-center space-x-6 mb-8">
+                <span className="bg-blue-500 text-white px-6 py-3 rounded-xl text-lg font-bold shadow-lg">
                   {currentQuestion.isMultipleCorrect ? 'Multiple Correct' : 'Single Correct'}
                 </span>
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-green-500 text-white px-6 py-3 rounded-xl text-lg font-bold shadow-lg">
                   {currentQuestion.maximum_marks} marks
                 </span>
               </div>
