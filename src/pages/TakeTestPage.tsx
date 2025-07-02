@@ -320,17 +320,17 @@ export function TakeTestPage() {
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="p-6 bg-primary-50 rounded-xl">
+                <div className="p-6 bg-primary-50 rounded-xl border border-primary-200">
                   <div className="text-3xl font-bold text-primary-600 mb-2">{score}%</div>
                   <div className="text-sm text-primary-800">Final Score</div>
                 </div>
-                <div className="p-6 bg-secondary-50 rounded-xl">
+                <div className="p-6 bg-secondary-50 rounded-xl border border-secondary-200">
                   <div className="text-3xl font-bold text-secondary-600 mb-2">
                     {userAnswers.filter(a => a.isCorrect).length}/{questions.length}
                   </div>
                   <div className="text-sm text-secondary-800">Correct Answers</div>
                 </div>
-                <div className="p-6 bg-neutral-50 rounded-xl">
+                <div className="p-6 bg-neutral-50 rounded-xl border border-neutral-200">
                   <div className="text-3xl font-bold text-neutral-600 mb-2">{formatTime(timeElapsed)}</div>
                   <div className="text-sm text-neutral-800">Time Taken</div>
                 </div>
@@ -355,7 +355,7 @@ export function TakeTestPage() {
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-cream">
       <Header />
       
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -364,14 +364,14 @@ export function TakeTestPage() {
           <Button
             variant="ghost"
             onClick={() => navigate('/previous-tests')}
-            className="flex items-center text-white hover:text-primary-300"
+            className="flex items-center text-neutral-700 hover:text-primary-600"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Exit Test
           </Button>
           
-          <div className="flex items-center space-x-6 text-white">
-            <div className="text-sm">
+          <div className="flex items-center space-x-6 text-neutral-700">
+            <div className="text-sm font-medium">
               Question {currentQuestionIndex + 1} of {questions.length}
             </div>
           </div>
@@ -379,52 +379,58 @@ export function TakeTestPage() {
 
         {/* Progress bar */}
         <div className="mb-8">
-          <div className="w-full bg-slate-700 rounded-full h-2">
+          <div className="w-full bg-neutral-200 rounded-full h-3 shadow-inner">
             <div 
-              className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-primary-500 to-primary-600 h-3 rounded-full transition-all duration-300 shadow-sm"
               style={{ width: `${progress}%` }}
             />
+          </div>
+          <div className="flex justify-between text-sm text-neutral-600 mt-2">
+            <span>Progress</span>
+            <span>{Math.round(progress)}% Complete</span>
           </div>
         </div>
 
         {/* Timer Element - Moved to top */}
         <div className="mb-8 flex justify-center">
-          <div className="bg-slate-800 border border-slate-700 rounded-xl px-6 py-4 shadow-lg">
-            <div className="flex items-center text-white">
-              <Clock className="h-5 w-5 mr-3 text-primary-400" />
-              <div className="text-center">
-                <div className="text-2xl font-bold">{formatTime(timeElapsed)}</div>
-                <div className="text-sm text-slate-400">Time Taken</div>
+          <Card className="bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
+            <CardContent className="px-6 py-4">
+              <div className="flex items-center text-primary-800">
+                <Clock className="h-5 w-5 mr-3 text-primary-600" />
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary-700">{formatTime(timeElapsed)}</div>
+                  <div className="text-sm text-primary-600">Time Taken</div>
+                </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Question Card */}
-        <Card className="mb-8 bg-slate-800 border-slate-700">
+        <Card className="mb-8 shadow-lg border-neutral-200">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-6">
+              <h2 className="text-2xl font-bold text-dark mb-6">
                 {currentQuestion.isMultipleCorrect ? 'Select all correct answers' : 'Select the correct answer'}
               </h2>
 
               {/* Question header with number and text in one row */}
               <div className="max-w-4xl mx-auto mb-8">
-                <div className="flex items-start gap-6 bg-slate-700 p-6 rounded-xl">
+                <div className="flex items-start gap-6 bg-neutral-50 p-6 rounded-xl border border-neutral-200">
                   {/* Question number - smaller size */}
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center shadow-sm">
                       <span className="text-lg font-bold text-white">{currentQuestion.question_number}</span>
                     </div>
                   </div>
                   
                   {/* Question text */}
                   <div className="flex-1 text-left">
-                    <div className="text-lg text-white leading-relaxed">
+                    <div className="text-lg text-dark leading-relaxed">
                       {currentQuestion.contains_math_expression ? (
-                        <MathText text={currentQuestion.question_text} className="text-white" />
+                        <MathText text={currentQuestion.question_text} className="text-dark" />
                       ) : (
-                        <p className="text-white">{currentQuestion.question_text}</p>
+                        <p className="text-dark">{currentQuestion.question_text}</p>
                       )}
                     </div>
                   </div>
@@ -450,12 +456,12 @@ export function TakeTestPage() {
                   onClick={() => handleOptionSelect(option.id)}
                   disabled={showAnswer}
                   className={`w-full p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ${getOptionStyle(option)} ${
-                    showAnswer ? 'cursor-default' : 'cursor-pointer hover:scale-[1.02]'
+                    showAnswer ? 'cursor-default' : 'cursor-pointer hover:scale-[1.02] hover:shadow-md'
                   }`}
                 >
                   <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-slate-600 text-white flex items-center justify-center mr-4 font-bold">
-                      {index + 1}
+                    <div className="w-8 h-8 rounded-full bg-neutral-600 text-white flex items-center justify-center mr-4 font-bold">
+                      {String.fromCharCode(65 + index)}
                     </div>
                     <span className="text-left font-medium">
                       {currentQuestion.contains_math_expression ? (
@@ -472,9 +478,9 @@ export function TakeTestPage() {
 
             {/* Answer explanation */}
             {showAnswer && (
-              <div className="mt-8 p-6 bg-slate-700 rounded-xl max-w-3xl mx-auto">
-                <h4 className="font-semibold text-white mb-2">Explanation:</h4>
-                <p className="text-slate-300 text-sm">
+              <div className="mt-8 p-6 bg-neutral-50 rounded-xl max-w-3xl mx-auto border border-neutral-200">
+                <h4 className="font-semibold text-dark mb-2">Explanation:</h4>
+                <p className="text-neutral-700 text-sm">
                   {userAnswers[currentQuestionIndex]?.isCorrect 
                     ? "Correct! Well done on selecting the right answer(s)."
                     : "Incorrect. The correct answer(s) are highlighted in green above."
@@ -491,7 +497,7 @@ export function TakeTestPage() {
             onClick={handleNext}
             disabled={selectedOptions.length === 0 && !showAnswer}
             size="lg"
-            className="px-8 py-3 text-lg font-medium"
+            className="px-8 py-3 text-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           >
             {!showAnswer ? (
               'Submit Answer'
