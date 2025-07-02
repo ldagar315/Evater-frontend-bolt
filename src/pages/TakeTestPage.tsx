@@ -51,13 +51,15 @@ export function TakeTestPage() {
   }, [testId, user])
 
   useEffect(() => {
-    // Timer for elapsed time
-    const timer = setInterval(() => {
-      setTimeElapsed(prev => prev + 1)
-    }, 1000)
+    // Timer for elapsed time - only run if test is not completed
+    if (!testCompleted) {
+      const timer = setInterval(() => {
+        setTimeElapsed(prev => prev + 1)
+      }, 1000)
 
-    return () => clearInterval(timer)
-  }, [])
+      return () => clearInterval(timer)
+    }
+  }, [testCompleted])
 
   const fetchTest = async () => {
     try {
@@ -209,7 +211,7 @@ export function TakeTestPage() {
     const correctAnswers = userAnswers.filter(answer => answer.isCorrect).length
     const finalScore = Math.round((correctAnswers / questions.length) * 100)
     setScore(finalScore)
-    setTestCompleted(true)
+    setTestCompleted(true) // This will stop the timer via useEffect dependency
   }
 
   const formatTime = (seconds: number) => {
