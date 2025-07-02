@@ -12,6 +12,7 @@ import { ProfilePage } from './pages/ProfilePage'
 import { HomePage } from './pages/HomePage'
 import { CreateTestPage } from './pages/CreateTestPage'
 import { ViewTestPage } from './pages/ViewTestPage'
+import { TakeTestPage } from './pages/TakeTestPage'
 import { SubmitFeedbackPage } from './pages/SubmitFeedbackPage'
 import { ViewFeedbackPage } from './pages/ViewFeedbackPage'
 import { GeneralFeedbackPage } from './pages/GeneralFeedbackPage'
@@ -116,6 +117,11 @@ function AppRoutes() {
               <Route path="/view-test/:testId?" element={
                 <ProtectedRoute>
                   <ViewTestPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/take-test/:testId" element={
+                <ProtectedRoute>
+                  <TakeTestPage />
                 </ProtectedRoute>
               } />
               <Route path="/submit-feedback/:testId?" element={
