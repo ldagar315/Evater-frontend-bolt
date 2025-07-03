@@ -1,21 +1,19 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BookOpen, TrendingUp, ArrowLeft } from 'lucide-react'
+import { BookOpen, ArrowLeft } from 'lucide-react'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
 import { BlogCard } from '../components/blog/BlogCard'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent } from '../components/ui/Card'
 import { useAuthContext } from '../contexts/AuthContext'
-import { blogPosts, getFeaturedPosts } from '../data/blogPosts'
+import { blogPosts } from '../data/blogPosts'
 
 export function BlogPage() {
   const navigate = useNavigate()
   const { user } = useAuthContext()
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
-
-  const featuredPosts = getFeaturedPosts()
 
   // Get all published posts
   const filteredPosts = useMemo(() => {
@@ -73,24 +71,6 @@ export function BlogPage() {
             </div>
           </div>
         </section>
-
-        {/* Featured Posts */}
-        {featuredPosts.length > 0 && (
-          <section className="py-16 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center mb-12">
-                <TrendingUp className="h-6 w-6 text-primary-600 mr-3" />
-                <h2 className="text-3xl font-bold text-dark">Featured Articles</h2>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {featuredPosts.map((post) => (
-                  <BlogCard key={post.id} post={post} featured />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* Results Summary */}
         <section className="py-8 bg-cream">
