@@ -18,6 +18,8 @@ import { ViewFeedbackPage } from './pages/ViewFeedbackPage'
 import { GeneralFeedbackPage } from './pages/GeneralFeedbackPage'
 import { PreviousTestsPage } from './pages/PreviousTestsPage'
 import { PreviousFeedbacksPage } from './pages/PreviousFeedbacksPage'
+import { BlogPage } from './pages/BlogPage'
+import { BlogPostPage } from './pages/BlogPostPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, error } = useAuthContext()
@@ -83,8 +85,10 @@ function AppRoutes() {
     <div className="min-h-screen flex flex-col bg-cream">
       <div className="flex-1">
         <Routes>
-          {/* Landing page for non-authenticated users */}
+          {/* Public routes */}
           <Route path="/" element={!user ? <LandingPage /> : <Navigate to="/home" replace />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           
           {!user ? (
             <>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins, User, GraduationCap, School } from 'lucide-react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
+import { BlogSection } from '../components/blog/BlogSection'
 import { useAppState } from '../contexts/AppStateContext'
 import { useAuthContext } from '../contexts/AuthContext'
 import { useProfile } from '../hooks/useProfile'
@@ -244,6 +245,11 @@ export function HomePage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Blog Section for Dashboard */}
+        <div className="mb-8">
+          <BlogSection showInDashboard />
+        </div>
 
         {/* General Feedback Section */}
         <Card className="bg-pink-50 border-2 border-pink-200">

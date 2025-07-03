@@ -4,6 +4,7 @@ import { ArrowRight, Sparkles, Target, Brain, CheckCircle, Star, Users, Award, B
 import { Button } from '../components/ui/Button'
 import { Card, CardContent } from '../components/ui/Card'
 import { Footer } from '../components/layout/Footer'
+import { BlogSection } from '../components/blog/BlogSection'
 
 export function LandingPage() {
   const navigate = useNavigate()
@@ -66,15 +67,25 @@ export function LandingPage() {
                 </div>
               </div>
               
-              <Button
-                onClick={() => navigate('/auth')}
-                variant="outline"
-                size="sm"
-                className="flex items-center"
-              >
-                Sign In
-                <ArrowRight className="h-4 w-4 ml-1" />
-              </Button>
+              <div className="flex items-center space-x-4">
+                <Button
+                  onClick={() => navigate('/blog')}
+                  variant="ghost"
+                  size="sm"
+                  className="text-neutral-700 hover:text-primary-600"
+                >
+                  Blog
+                </Button>
+                <Button
+                  onClick={() => navigate('/auth')}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center"
+                >
+                  Sign In
+                  <ArrowRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
             </div>
           </div>
         </nav>
@@ -178,6 +189,9 @@ export function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* Blog Section */}
+        <BlogSection />
 
         {/* Benefits Section */}
         <section className="py-20 bg-white">
