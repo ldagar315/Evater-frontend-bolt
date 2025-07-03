@@ -7,7 +7,7 @@ import { BlogCard } from '../components/blog/BlogCard'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent } from '../components/ui/Card'
 import { useAuthContext } from '../contexts/AuthContext'
-import { blogPosts, blogCategories, getFeaturedPosts } from '../data/blogPosts'
+import { blogPosts, getFeaturedPosts } from '../data/blogPosts'
 
 export function BlogPage() {
   const navigate = useNavigate()
@@ -166,35 +166,6 @@ export function BlogPage() {
                 )}
               </>
             )}
-          </div>
-        </section>
-
-        {/* Categories Overview */}
-        <section className="py-16 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-dark mb-4">Explore by Category</h2>
-              <p className="text-neutral-600 max-w-2xl mx-auto">
-                Dive deeper into specific topics that interest you most
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {blogCategories.map((category) => (
-                <Card 
-                  key={category.id}
-                  className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary-200"
-                >
-                  <CardContent className="p-6 text-center">
-                    <h3 className="text-lg font-semibold text-dark mb-2">{category.name}</h3>
-                    <p className="text-neutral-600 text-sm mb-3">{category.description}</p>
-                    <span className="inline-block bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium">
-                      {category.post_count} articles
-                    </span>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </div>
         </section>
       </div>
