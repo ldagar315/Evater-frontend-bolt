@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Sparkles, Target, Brain, CheckCircle, Star, Users, Award, BookOpen, Zap } from 'lucide-react'
+import { ArrowRight, Sparkles, Target, Brain, CheckCircle, Star, Users, Award, BookOpen, Zap, Quote } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent } from '../components/ui/Card'
 import { Footer } from '../components/layout/Footer'
@@ -44,6 +44,30 @@ export function LandingPage() {
     'Detailed performance analytics',
     'Personalized learning recommendations',
     'Export tests in multiple formats'
+  ]
+
+  const testimonials = [
+    {
+      name: 'Darsh',
+      grade: 'Class 10th',
+      school: 'Presidium Sector-57',
+      content: 'Evater has completely transformed how I prepare for my board exams. The AI-generated tests are exactly what I need to practice, and the instant feedback helps me understand my mistakes immediately.',
+      rating: 5
+    },
+    {
+      name: 'Manvi',
+      grade: 'Class 7th',
+      school: 'Presidium Sec-57',
+      content: 'I love how Evater makes studying fun! The tests are challenging but fair, and I can see my progress improving every day. My teachers are impressed with my performance.',
+      rating: 5
+    },
+    {
+      name: 'Ishika',
+      grade: 'Class 10th',
+      school: 'Euro International Sector-45',
+      content: 'The OCR feature is amazing! I can upload my handwritten answers and get detailed feedback instantly. It\'s like having a personal tutor available 24/7.',
+      rating: 5
+    }
   ]
 
   return (
@@ -186,6 +210,56 @@ export function LandingPage() {
                   </Card>
                 )
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl lg:text-5xl font-bold text-dark mb-6">
+                What Students Say
+              </h2>
+              <p className="text-xl text-neutral-600 max-w-3xl mx-auto">
+                Hear from students who have transformed their learning experience with Evater
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-secondary-200">
+                  <CardContent className="p-8">
+                    <div className="flex justify-center mb-6">
+                      <div className="w-16 h-16 bg-secondary-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <Quote className="h-8 w-8 text-secondary-600" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-center mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                      ))}
+                    </div>
+                    
+                    <p className="text-neutral-700 mb-6 leading-relaxed italic">
+                      "{testimonial.content}"
+                    </p>
+                    
+                    <div className="text-center">
+                      <h4 className="text-lg font-bold text-dark mb-1">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-sm text-primary-600 font-medium mb-1">
+                        {testimonial.grade}
+                      </p>
+                      <p className="text-sm text-neutral-500">
+                        {testimonial.school}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
