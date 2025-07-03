@@ -136,8 +136,9 @@ So, grab your books, try these tips, and watch how you grow smarter every day. Y
 
 // Helper functions for blog data
 export const getFeaturedPosts = (): BlogPost[] => {
-  console.log('getFeaturedPosts called, returning:', blogPosts.filter(post => post.is_featured && post.status === 'published'))
-  return blogPosts.filter(post => post.is_featured && post.status === 'published')
+  const posts = blogPosts.filter(post => post.is_featured && post.status === 'published')
+  console.log('getFeaturedPosts called, returning:', posts)
+  return posts
 }
 
 export const getRecentPosts = (limit: number = 6): BlogPost[] => {
@@ -157,13 +158,15 @@ export const getPostBySlug = (slug: string): BlogPost | undefined => {
 }
 
 export const getPostsByCategory = (category: string): BlogPost[] => {
-  return blogPosts.filter(post => 
+  const posts = blogPosts.filter(post => 
     post.category === category && post.status === 'published'
   )
+  console.log('getPostsByCategory called with category:', category, 'returning:', posts)
+  return posts
 }
 
 export const getRelatedPosts = (currentPost: BlogPost, limit: number = 3): BlogPost[] => {
-  return blogPosts
+  const posts = blogPosts
     .filter(post => 
       post.id !== currentPost.id && 
       post.status === 'published' &&
@@ -171,15 +174,19 @@ export const getRelatedPosts = (currentPost: BlogPost, limit: number = 3): BlogP
        post.tags.some(tag => currentPost.tags.includes(tag)))
     )
     .slice(0, limit)
+  console.log('getRelatedPosts called for post:', currentPost.id, 'returning:', posts)
+  return posts
 }
 
 export const searchPosts = (query: string): BlogPost[] => {
   const lowercaseQuery = query.toLowerCase()
-  return blogPosts.filter(post =>
+  const posts = blogPosts.filter(post =>
     post.status === 'published' &&
     (post.title.toLowerCase().includes(lowercaseQuery) ||
      post.excerpt.toLowerCase().includes(lowercaseQuery) ||
      post.content.toLowerCase().includes(lowercaseQuery) ||
      post.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery)))
   )
+  console.log('searchPosts called with query:', query, 'returning:', posts)
+  return posts
 }

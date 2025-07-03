@@ -14,6 +14,11 @@ export function BlogSection({ showInDashboard = false }: BlogSectionProps) {
   const navigate = useNavigate()
   const recentPosts = getRecentPosts(showInDashboard ? 2 : 3)
 
+  const handlePostClick = (slug: string) => {
+    console.log('BlogSection handlePostClick called with slug:', slug)
+    navigate(`/blog/${slug}`)
+  }
+
   if (showInDashboard) {
     return (
       <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
@@ -28,7 +33,14 @@ export function BlogSection({ showInDashboard = false }: BlogSectionProps) {
               <div 
                 key={post.id}
                 className="cursor-pointer group"
-                onClick={() => navigate(`/blog/${post.slug}`)}
+                onClick={() => handlePostClick(post.slug)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handlePostClick(post.slug)
+                  }
+                }}
               >
                 <h4 className="font-medium text-dark group-hover:text-purple-600 transition-colors duration-200 line-clamp-2 mb-1">
                   {post.title}

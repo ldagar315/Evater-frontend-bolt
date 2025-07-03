@@ -22,6 +22,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
     
     try {
       navigate(`/blog/${post.slug}`)
+      console.log('Navigation completed successfully')
     } catch (error) {
       console.error('Navigation error:', error)
     }
@@ -40,6 +41,13 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
       <Card 
         className="group cursor-pointer overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-primary-200"
         onClick={handleClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            handleClick(e as any)
+          }
+        }}
       >
         <div className="relative h-64 overflow-hidden">
           <img
@@ -107,6 +115,13 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
     <Card 
       className="group cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary-200"
       onClick={handleClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleClick(e as any)
+        }
+      }}
     >
       <div className="flex">
         <div className="w-1/3 relative overflow-hidden">
