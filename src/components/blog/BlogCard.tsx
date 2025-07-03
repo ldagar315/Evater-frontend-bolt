@@ -12,8 +12,18 @@ interface BlogCardProps {
 export function BlogCard({ post, featured = false }: BlogCardProps) {
   const navigate = useNavigate()
 
-  const handleClick = () => {
-    navigate(`/blog/${post.slug}`)
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    console.log('BlogCard clicked:', post.slug) // Debug logging
+    console.log('Navigating to:', `/blog/${post.slug}`) // Debug logging
+    
+    try {
+      navigate(`/blog/${post.slug}`)
+    } catch (error) {
+      console.error('Navigation error:', error)
+    }
   }
 
   const formatDate = (dateString: string) => {
