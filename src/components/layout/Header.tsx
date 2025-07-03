@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { LogOut, User, ChevronDown, Coins, GraduationCap, School } from 'lucide-react'
 import { Button } from '../ui/Button'
 import { useAuthContext } from '../../contexts/AuthContext'
@@ -7,6 +7,7 @@ import { useProfile } from '../../hooks/useProfile'
 
 export function Header() {
   const navigate = useNavigate()
+  const location = useLocation()
   const { user, signOut } = useAuthContext()
   const { profile } = useProfile(user?.id)
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -31,12 +32,18 @@ export function Header() {
     }
   }, [])
 
+  // Check if we're on a blog page
+  const isBlogPage = location.pathname.startsWith('/blog')
+
   return (
     <header className="bg-white shadow-sm border-b border-neutral-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <div className="flex items-center space-x-3">
+            <div 
+              className="flex items-center space-x-3 cursor-pointer"
+              onClick={() => navigate(user ? '/home' : '/')}
+            >
               <div className="w-12 h-8 flex items-center justify-center">
                 <img 
                   src="/Evater_logo_2.png" 
@@ -53,9 +60,21 @@ export function Header() {
             </div>
           </div>
           
-          {user && (
-            <div className="flex items-center space-x-4">
-              {/* User Dropdown */}
+          <div className="flex items-center space-x-4">
+            {/* Blog link for non-authenticated users or when not on blog page */}
+            {(!user || !isBlogPage) && (
+              <Button
+                onClick={() => navigate('/blog')}
+                variant="ghost"
+                size="sm"
+                className="text-neutral-700 hover:text-primary-600"
+              >
+                Blog
+              </Button>
+            )}
+
+            {user ? (
+              /* User Dropdown */
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -162,8 +181,18 @@ export function Header() {
                   </div>
                 )}
               </div>
-            </div>
-          )}
+            ) : (
+              /* Sign In button for non-authenticated users */
+              <Button
+                onClick={() => navigate('/auth')}
+                variant="outline"
+                size="sm"
+                className="flex items-center"
+              >
+                Sign In
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </header>

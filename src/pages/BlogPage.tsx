@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, Filter, BookOpen, TrendingUp } from 'lucide-react'
+import { Search, Filter, BookOpen, TrendingUp, ArrowLeft } from 'lucide-react'
 import { Header } from '../components/layout/Header'
 import { Footer } from '../components/layout/Footer'
 import { BlogCard } from '../components/blog/BlogCard'
 import { Input } from '../components/ui/Input'
 import { Select } from '../components/ui/Select'
+import { Button } from '../components/ui/Button'
 import { Card, CardContent, CardHeader } from '../components/ui/Card'
 import { useAuthContext } from '../contexts/AuthContext'
 import { blogPosts, blogCategories, getFeaturedPosts, searchPosts } from '../data/blogPosts'
@@ -52,9 +53,26 @@ export function BlogPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-cream">
-      {user && <Header />}
+      {/* Always show header/navigation */}
+      <Header />
       
       <div className="flex-1">
+        {/* Navigation breadcrumb for non-authenticated users */}
+        {!user && (
+          <div className="bg-white border-b border-neutral-200 py-4">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/')}
+                className="flex items-center text-neutral-700 hover:text-primary-600"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Home
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-primary-50 via-cream to-secondary-50 py-16 lg:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -183,7 +201,7 @@ export function BlogPage() {
         </section>
 
         {/* Blog Posts Grid */}
-        <section className="py-12 bg-cream">
+        <section className="py-12 bg-cream" id="blog-posts">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {paginatedPosts.length === 0 ? (
               <Card>
