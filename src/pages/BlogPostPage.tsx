@@ -19,8 +19,13 @@ export function BlogPostPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log('BlogPostPage useEffect triggered with slug:', slug)
+    
     if (slug) {
+      console.log('Attempting to find post with slug:', slug)
       const foundPost = getPostBySlug(slug)
+      console.log('Found post:', foundPost)
+      
       if (foundPost) {
         setPost(foundPost)
         setRelatedPosts(getRelatedPosts(foundPost))
@@ -32,7 +37,12 @@ export function BlogPostPage() {
         if (metaDescription) {
           metaDescription.setAttribute('content', foundPost.seo?.meta_description || foundPost.excerpt)
         }
+      } else {
+        console.error('No post found for slug:', slug)
       }
+      setLoading(false)
+    } else {
+      console.error('No slug provided')
       setLoading(false)
     }
   }, [slug])
@@ -99,6 +109,8 @@ export function BlogPostPage() {
       })
   }
 
+  console.log('BlogPostPage render - loading:', loading, 'post:', post)
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-cream">
@@ -125,6 +137,8 @@ export function BlogPostPage() {
               <h2 className="text-xl font-bold text-dark mb-2">Article Not Found</h2>
               <p className="text-neutral-600 mb-4">
                 The article you're looking for doesn't exist or has been removed.
+                <br />
+                <small>Slug: {slug}</small>
               </p>
               <Button onClick={() => navigate('/blog')}>
                 Back to Blog

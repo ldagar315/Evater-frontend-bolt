@@ -18,6 +18,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
     
     console.log('BlogCard clicked:', post.slug) // Debug logging
     console.log('Navigating to:', `/blog/${post.slug}`) // Debug logging
+    console.log('Post data:', post) // Debug the full post object
     
     try {
       navigate(`/blog/${post.slug}`)
@@ -45,6 +46,10 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             src={post.featured_image}
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            onError={(e) => {
+              console.log('Image failed to load:', post.featured_image)
+              e.currentTarget.src = 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            }}
           />
           <div className="absolute top-4 left-4">
             <span className="bg-primary-500 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -81,6 +86,9 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
                 src={post.author.avatar || 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1'}
                 alt={post.author.name}
                 className="w-8 h-8 rounded-full mr-3"
+                onError={(e) => {
+                  e.currentTarget.src = 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1'
+                }}
               />
               <span className="text-sm font-medium text-dark">{post.author.name}</span>
             </div>
@@ -106,6 +114,10 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             src={post.featured_image}
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            onError={(e) => {
+              console.log('Image failed to load:', post.featured_image)
+              e.currentTarget.src = 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+            }}
           />
         </div>
         

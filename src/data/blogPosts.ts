@@ -136,18 +136,24 @@ So, grab your books, try these tips, and watch how you grow smarter every day. Y
 
 // Helper functions for blog data
 export const getFeaturedPosts = (): BlogPost[] => {
+  console.log('getFeaturedPosts called, returning:', blogPosts.filter(post => post.is_featured && post.status === 'published'))
   return blogPosts.filter(post => post.is_featured && post.status === 'published')
 }
 
 export const getRecentPosts = (limit: number = 6): BlogPost[] => {
-  return blogPosts
+  const posts = blogPosts
     .filter(post => post.status === 'published')
     .sort((a, b) => new Date(b.published_date).getTime() - new Date(a.published_date).getTime())
     .slice(0, limit)
+  console.log('getRecentPosts called, returning:', posts)
+  return posts
 }
 
 export const getPostBySlug = (slug: string): BlogPost | undefined => {
-  return blogPosts.find(post => post.slug === slug && post.status === 'published')
+  console.log('getPostBySlug called with slug:', slug)
+  const post = blogPosts.find(post => post.slug === slug && post.status === 'published')
+  console.log('getPostBySlug found post:', post)
+  return post
 }
 
 export const getPostsByCategory = (category: string): BlogPost[] => {
