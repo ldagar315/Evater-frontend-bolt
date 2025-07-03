@@ -106,7 +106,7 @@ export function HomePage() {
                     <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">Grade</span>
                   </div>
                   <div className="text-lg font-bold text-dark">
-                    Grade {profile?.grade || profile?.class_level || 'N/A'}
+                    Grade {profile?.grade || 'N/A'}
                   </div>
                 </div>
 

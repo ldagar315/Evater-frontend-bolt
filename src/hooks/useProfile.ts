@@ -42,10 +42,11 @@ export function useProfile(userId: string | undefined) {
       const { data: { user } } = await supabase.auth.getUser()
       
       const profilePayload = {
-        ...profileData,
-        created_by: userId, // Set to the authenticated user's ID
+        user_name: profileData.name || profileData.user_name, // Use name as user_name
         email: user?.email || profileData.email, // Use auth email if available
-        user_name: profileData.name || profileData.user_name, // Ensure user_name is set
+        grade: profileData.grade, // Only use grade, remove class_level
+        school: profileData.school,
+        created_by: userId, // Set to the authenticated user's ID
         credits: 100 // Set default credits for new users
       }
 
@@ -74,9 +75,12 @@ export function useProfile(userId: string | undefined) {
     if (!userId || !profile) return { error: 'No user ID or profile' }
 
     try {
+      // Remove class_level from updates if it exists
+      const { class_level, ...cleanUpdates } = updates as any
+      
       const { data, error } = await supabase
         .from('Users')
-        .update(updates)
+        .update(cleanUpdates)
         .eq('id', profile.id)
         .select()
         .single()

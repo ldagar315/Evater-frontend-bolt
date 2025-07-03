@@ -27,7 +27,7 @@ export function ProfilePage() {
   useEffect(() => {
     if (profile) {
       setName(profile.name || profile.user_name || '')
-      setSelectedGrade(profile.grade?.toString() || profile.class_level?.toString() || '')
+      setSelectedGrade(profile.grade?.toString() || '')
       setSchool(profile.school || '')
     }
   }, [profile])
@@ -53,7 +53,6 @@ export function ProfilePage() {
         name: name.trim(),
         user_name: name.trim(), // Set both name and user_name
         grade: parseInt(selectedGrade),
-        class_level: parseInt(selectedGrade), // Set both grade and class_level for compatibility
         school: school.trim(),
         email: user?.email || '',
       }

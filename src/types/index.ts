@@ -51,7 +51,6 @@ export interface UserProfile {
   school?: string | null
   credits?: number | null
   name?: string | null
-  class_level?: number | null
   created_at: string
 }
 

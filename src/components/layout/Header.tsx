@@ -94,7 +94,7 @@ export function Header() {
                             <span className="text-sm text-neutral-600">Grade:</span>
                           </div>
                           <span className="text-sm font-medium text-dark">
-                            Grade {profile?.grade || profile?.class_level || 'Not set'}
+                            Grade {profile?.grade || 'Not set'}
                           </span>
                         </div>
 
