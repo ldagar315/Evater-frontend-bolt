@@ -52,21 +52,24 @@ export function LandingPage() {
       grade: 'Class 10th',
       school: 'Presidium Sector-57',
       content: 'Evater has completely transformed how I prepare for my board exams. The AI-generated tests are exactly what I need to practice, and the instant feedback helps me understand my mistakes immediately.',
-      rating: 5
+      rating: 5,
+      image: 'https://images.pexels.com/photos/8197529/pexels-photo-8197529.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&dpr=1'
     },
     {
       name: 'Manvi',
       grade: 'Class 7th',
       school: 'Presidium Sec-57',
       content: 'I love how Evater makes studying fun! The tests are challenging but fair, and I can see my progress improving every day. My teachers are impressed with my performance.',
-      rating: 5
+      rating: 5,
+      image: 'https://images.pexels.com/photos/8197528/pexels-photo-8197528.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&dpr=1'
     },
     {
       name: 'Ishika',
       grade: 'Class 10th',
       school: 'Euro International Sector-45',
       content: 'The OCR feature is amazing! I can upload my handwritten answers and get detailed feedback instantly. It\'s like having a personal tutor available 24/7.',
-      rating: 5
+      rating: 5,
+      image: 'https://images.pexels.com/photos/8197530/pexels-photo-8197530.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&dpr=1'
     }
   ]
 
@@ -231,8 +234,16 @@ export function LandingPage() {
                 <Card key={index} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-secondary-200">
                   <CardContent className="p-8">
                     <div className="flex justify-center mb-6">
-                      <div className="w-16 h-16 bg-secondary-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <Quote className="h-8 w-8 text-secondary-600" />
+                      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-secondary-200 group-hover:border-secondary-400 transition-colors duration-300">
+                        <img
+                          src={testimonial.image}
+                          alt={testimonial.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          onError={(e) => {
+                            // Fallback to a default avatar if image fails to load
+                            e.currentTarget.src = 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&dpr=1'
+                          }}
+                        />
                       </div>
                     </div>
                     
@@ -242,7 +253,13 @@ export function LandingPage() {
                       ))}
                     </div>
                     
-                    <p className="text-neutral-700 mb-6 leading-relaxed italic">
+                    <div className="flex justify-center mb-6">
+                      <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
+                        <Quote className="h-6 w-6 text-secondary-600" />
+                      </div>
+                    </div>
+                    
+                    <p className="text-neutral-700 mb-6 leading-relaxed italic text-center">
                       "{testimonial.content}"
                     </p>
                     
