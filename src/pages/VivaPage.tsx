@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Mic, MicOff, Volume2, Play, Pause, MessageSquare, Brain, Award } from 'lucide-react'
+import { ArrowLeft, Mic, MicOff, Volume2, Play, Pause, MessageSquare, Brain, Award, AlertCircle } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 import { Select } from '../components/ui/Select'
@@ -118,10 +118,8 @@ export function VivaPage() {
   }
 
   const initializeWebSocket = () => {
-    // Use appropriate WebSocket URL based on environment
-    const wsUrl = process.env.NODE_ENV === 'production' 
-      ? 'wss://ldagar315--evater-v1-wrapper.modal.run/ws/viva'
-      : 'ws://localhost:8000/ws/viva' // Fallback for development
+    // Always use the external WebSocket endpoint
+    const wsUrl = 'wss://ldagar315--evater-v1-wrapper.modal.run/ws/viva'
 
     const ws = new WebSocket(wsUrl)
     wsRef.current = ws
