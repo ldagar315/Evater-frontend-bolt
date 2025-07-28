@@ -15,7 +15,7 @@ interface VivaQuestion {
 }
 
 interface VivaMessage {
-  type: 'question' | 'status' | 'error'
+  type: 'question' | 'status' | 'error' | 'feedback'
   content: string
   timestamp: Date
 }
@@ -150,6 +150,8 @@ export function VivaPage() {
           } else if (data.question) {
             setCurrentQuestion(data.question)
             addMessage('question', data.question)
+          } else if (data.answer) {
+            addMessage('feedback', data.answer)
           }
         }
       } catch (err) {
@@ -473,17 +475,21 @@ export function VivaPage() {
                   <div key={index} className={`flex items-start space-x-3 ${
                     message.type === 'question' ? 'bg-primary-50 p-4 rounded-lg' :
                     message.type === 'error' ? 'bg-red-50 p-4 rounded-lg' :
+                    message.type === 'feedback' ? 'bg-green-50 p-4 rounded-lg' :
                     'bg-neutral-50 p-4 rounded-lg'
                   }`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       message.type === 'question' ? 'bg-primary-500' :
                       message.type === 'error' ? 'bg-red-500' :
+                      message.type === 'feedback' ? 'bg-green-500' :
                       'bg-neutral-500'
                     }`}>
                       {message.type === 'question' ? (
                         <MessageSquare className="h-4 w-4 text-white" />
                       ) : message.type === 'error' ? (
                         <AlertCircle className="h-4 w-4 text-white" />
+                      ) : message.type === 'feedback' ? (
+                        <MessageSquare className="h-4 w-4 text-white" />
                       ) : (
                         <Brain className="h-4 w-4 text-white" />
                       )}
@@ -493,10 +499,12 @@ export function VivaPage() {
                         <span className={`text-sm font-medium ${
                           message.type === 'question' ? 'text-primary-900' :
                           message.type === 'error' ? 'text-red-900' :
+                          message.type === 'feedback' ? 'text-green-900' :
                           'text-neutral-900'
                         }`}>
                           {message.type === 'question' ? 'AI Question' :
                            message.type === 'error' ? 'Error' :
+                           message.type === 'feedback' ? 'AI Feedback' :
                            'System'}
                         </span>
                         <span className="text-xs text-neutral-500">
@@ -506,6 +514,7 @@ export function VivaPage() {
                       <p className={`text-sm ${
                         message.type === 'question' ? 'text-primary-800' :
                         message.type === 'error' ? 'text-red-800' :
+                        message.type === 'feedback' ? 'text-green-800' :
                         'text-neutral-700'
                       }`}>
                         {message.content}
