@@ -139,29 +139,18 @@ export function VivaPage() {
           
           if (data.status === 'connected') {
             addMessage('status', data.message)
-            // Send chapter information after a small delay to ensure backend is ready
-            setTimeout(() => {
-              const chapterInfo = {
-                grade: selectedGrade,
-                subject: subject,
-                chapter: chapter
-              }
-              console.log('Sending chapter info:', chapterInfo)
-              ws.send(JSON.stringify(chapterInfo))
-            }, 100)
+            // Send chapter information after receiving connected status
+            const chapterInfo = {
+              grade: selectedGrade,
+              subject: subject,
+              chapter: chapter
+            }
+            console.log('Sending chapter info:', chapterInfo)
+            ws.send(JSON.stringify(chapterInfo))
           } else if (data.question) {
-            console.log('Received question:', data.question)
             setCurrentQuestion(data.question)
             addMessage('question', data.question)
-          } else if (data.error) {
-            console.error('Backend error:', data.error)
-            addMessage('error', `Backend error: ${data.error}`)
-          } else {
-            console.log('Unknown message type:', data)
-            addMessage('status', JSON.stringify(data))
           }
-        } else {
-          console.log('Received binary data:', event.data)
         }
       } catch (err) {
         console.error('Error parsing WebSocket message:', err)
