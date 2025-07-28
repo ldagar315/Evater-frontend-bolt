@@ -128,26 +128,29 @@ export function VivaPage() {
       console.log('WebSocket connected')
       setWsConnected(true)
       addMessage('status', 'Connected to Viva session')
-      
-      // Send chapter information to initialize the viva
-      const chapterInfo = {
-        grade: selectedGrade,
-        subject: subject,
-        chapter: chapter
-      }
-      ws.send(JSON.stringify(chapterInfo))
     }
 
     ws.onmessage = (event) => {
       try {
-        const data = JSON.parse(event.data)
-        console.log('Received from WebSocket:', data)
-        
-        if (data.status === 'connected') {
-          addMessage('status', data.message)
-        } else if (data.question) {
-          setCurrentQuestion(data.question)
-          addMessage('question', data.question)
+        // Check if the message is JSON or binary
+        if (typeof event.data === 'string') {
+          const data = JSON.parse(event.data)
+          console.log('Received from WebSocket:', data)
+          
+          if (data.status === 'connected') {
+            addMessage('status', data.message)
+            // Send chapter information after receiving connected status
+            const chapterInfo = {
+              grade: selectedGrade,
+              subject: subject,
+              chapter: chapter
+            }
+            console.log('Sending chapter info:', chapterInfo)
+            ws.send(JSON.stringify(chapterInfo))
+          } else if (data.question) {
+            setCurrentQuestion(data.question)
+            addMessage('question', data.question)
+          }
         }
       } catch (err) {
         console.error('Error parsing WebSocket message:', err)
