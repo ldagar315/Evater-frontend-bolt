@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins, User, GraduationCap, School } from 'lucide-react'
+import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins, User, GraduationCap, School, Brain } from 'lucide-react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
 import { BlogSection } from '../components/blog/BlogSection'
@@ -38,6 +38,14 @@ export function HomePage() {
       path: '/previous-feedbacks',
       color: 'bg-blue-50 hover:bg-blue-100 border-blue-200',
       iconColor: 'text-blue-600'
+    },
+    {
+      title: 'AI Viva Session',
+      description: 'Interactive oral examination with AI',
+      icon: Brain,
+      path: '/viva',
+      color: 'bg-purple-50 hover:bg-purple-100 border-purple-200',
+      iconColor: 'text-purple-600'
     },
     {
       title: 'View Last Generated Test',

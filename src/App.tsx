@@ -20,6 +20,7 @@ import { PreviousTestsPage } from './pages/PreviousTestsPage'
 import { PreviousFeedbacksPage } from './pages/PreviousFeedbacksPage'
 import { BlogPage } from './pages/BlogPage'
 import { BlogPostPage } from './pages/BlogPostPage'
+import { VivaPage } from './pages/VivaPage'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, error } = useAuthContext()
@@ -141,6 +142,11 @@ function AppRoutes() {
               <Route path="/general-feedback" element={
                 <ProtectedRoute>
                   <GeneralFeedbackPage />
+                </ProtectedRoute>
+              } />
+              <Route path="/viva" element={
+                <ProtectedRoute>
+                  <VivaPage />
                 </ProtectedRoute>
               } />
               <Route path="*" element={<Navigate to="/home" replace />} />
