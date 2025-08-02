@@ -66,7 +66,7 @@ export function BlogPage() {
               </h1>
               
               <p className="text-xl lg:text-2xl text-neutral-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Discover the latest insights in educational technology, study techniques, and learning innovations
+                Discover the latest insights in edTech, study techniques, and learning innovations
               </p>
             </div>
           </div>

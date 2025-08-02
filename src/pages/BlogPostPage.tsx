@@ -297,7 +297,7 @@ export function BlogPostPage() {
               Ready to Transform Your Learning?
             </h2>
             <p className="text-xl text-white/90 mb-8">
-              Join thousands of educators and students using Evater to create better assessments
+              Join thousands of teachers and students using Evater to create better assessments
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
