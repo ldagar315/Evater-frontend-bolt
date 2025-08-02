@@ -129,6 +129,27 @@ export function VivaPage() {
     }])
   }
 
+  const getScoreColor = (score: number) => {
+    if (score >= 8) return 'text-green-600'
+    if (score >= 6) return 'text-yellow-600'
+    if (score >= 4) return 'text-orange-600'
+    return 'text-red-600'
+  }
+
+  const getScoreBadgeColor = (score: number) => {
+    if (score >= 8) return 'bg-green-100 text-green-800'
+    if (score >= 6) return 'bg-yellow-100 text-yellow-800'
+    if (score >= 4) return 'bg-orange-100 text-orange-800'
+    return 'bg-red-100 text-red-800'
+  }
+
+  const getPerformanceLabel = (score: number) => {
+    if (score >= 8) return 'Excellent'
+    if (score >= 6) return 'Good'
+    if (score >= 4) return 'Average'
+    return 'Needs Improvement'
+  }
+
   const initializeWebSocket = () => {
     // Always use the external WebSocket endpoint
     const wsUrl = 'wss://ldagar315--evater-v1-wrapper.modal.run/ws/viva'
