@@ -20,6 +20,16 @@ interface VivaMessage {
   timestamp: Date
 }
 
+interface ConceptScore {
+  correctness: number
+  depth: number
+  clarity: number
+}
+
+interface VivaResults {
+  scores: Record<string, ConceptScore>
+  feedback: string[]
+}
 export function VivaPage() {
   const navigate = useNavigate()
   const { user } = useAuthContext()
@@ -42,6 +52,8 @@ export function VivaPage() {
   const [currentQuestion, setCurrentQuestion] = useState('')
   const [messages, setMessages] = useState<VivaMessage[]>([])
   const [wsConnected, setWsConnected] = useState(false)
+  const [vivaResults, setVivaResults] = useState<VivaResults | null>(null)
+  const [sessionCompleted, setSessionCompleted] = useState(false)
   
   // WebSocket and audio refs
   const wsRef = useRef<WebSocket | null>(null)
@@ -152,6 +164,12 @@ export function VivaPage() {
             addMessage('question', data.question)
           } else if (data.answer) {
             addMessage('feedback', data.answer)
+          } else if (data.feedback) {
+            // Final session results
+            console.log('Received final feedback:', data.feedback)
+            setVivaResults(data.feedback)
+            setSessionCompleted(true)
+            addMessage('status', 'Viva session completed! View your results below.')
           }
         }
       } catch (err) {
@@ -257,6 +275,8 @@ export function VivaPage() {
     setWsConnected(false)
     setCurrentQuestion('')
     setMessages([])
+    setVivaResults(null)
+    setSessionCompleted(false)
   }
 
   const formatTime = (date: Date) => {
