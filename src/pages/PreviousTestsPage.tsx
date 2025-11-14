@@ -154,40 +154,16 @@ export function PreviousTestsPage() {
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-primary-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary-600">
+                  <div className="text-xl font-bold text-primary-600">
                     {filteredTests.length}
                   </div>
                   <div className="text-sm text-primary-800">Total Tests</div>
                 </div>
-                <div className="text-center p-4 bg-secondary-50 rounded-lg">
-                  <div className="text-2xl font-bold text-secondary-600">
+                <div className="text-center p-4 bg-primary-50 rounded-lg">
+                  <div className="text-xl font-bold text-primary-600">
                     {uniqueSubjects.length}
                   </div>
-                  <div className="text-sm text-secondary-800">Subjects</div>
-                </div>
-                <div className="text-center p-4 bg-neutral-50 rounded-lg">
-                  <div className="text-2xl font-bold text-neutral-600">
-                    {filteredTests.reduce(
-                      (sum, test) => sum + getQuestionCount(test),
-                      0
-                    )}
-                  </div>
-                  <div className="text-sm text-neutral-800">
-                    Total Questions
-                  </div>
-                </div>
-                <div className="text-center p-4 bg-pink-50 rounded-lg">
-                  <div className="text-2xl font-bold text-pink-600">
-                    {filteredTests.length > 0
-                      ? Math.round(
-                          filteredTests.reduce(
-                            (sum, test) => sum + getQuestionCount(test),
-                            0
-                          ) / filteredTests.length
-                        )
-                      : 0}
-                  </div>
-                  <div className="text-sm text-pink-800">Avg Questions</div>
+                  <div className="text-sm text-primary-800">Subjects</div>
                 </div>
               </div>
             </CardContent>
