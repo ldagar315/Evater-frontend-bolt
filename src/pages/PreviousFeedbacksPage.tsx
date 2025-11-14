@@ -273,73 +273,6 @@ export function PreviousFeedbacksPage() {
           </Card>
         )}
 
-        {/* Filters and Search */}
-        <Card className="mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-center mb-4">
-              <Filter className="h-5 w-5 text-neutral-600 mr-2" />
-              <h3 className="text-lg font-semibold text-dark">
-                Filter Feedbacks
-              </h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
-                <Input
-                  placeholder="Search by subject or topic..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <Select
-                value={subjectFilter}
-                onChange={(e) => setSubjectFilter(e.target.value)}
-                options={[
-                  { value: "", label: "All Subjects" },
-                  ...uniqueSubjects.map((subject) => ({
-                    value: subject,
-                    label: subject,
-                  })),
-                ]}
-              />
-              <Select
-                value={difficultyFilter}
-                onChange={(e) => setDifficultyFilter(e.target.value)}
-                options={[
-                  { value: "", label: "All Difficulties" },
-                  ...uniqueDifficulties.map((difficulty) => ({
-                    value: difficulty,
-                    label: difficulty,
-                  })),
-                ]}
-              />
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSearchTerm("");
-                  setSubjectFilter("");
-                  setDifficultyFilter("");
-                }}
-                className="flex items-center justify-center"
-              >
-                Clear Filters
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Results Summary */}
-        <div className="mb-6 flex items-center justify-between">
-          <p className="text-sm text-neutral-600">
-            Showing {filteredFeedbacks.length} of {feedbacks.length} evaluations
-          </p>
-          <div className="flex items-center space-x-2 text-sm text-neutral-600">
-            <Calendar className="h-4 w-4" />
-            <span>Sorted by evaluation date (newest first)</span>
-          </div>
-        </div>
-
         {/* Performance Insights */}
         {filteredFeedbacks.length > 0 && (
           <Card className="mt-6">
@@ -411,174 +344,73 @@ export function PreviousFeedbacksPage() {
           </Card>
         )}
 
-        {/* Feedbacks Table */}
-        <Card>
-          <CardContent className="p-0">
-            {filteredFeedbacks.length === 0 ? (
-              <div className="p-12 text-center">
-                <MessageSquare className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-dark mb-2">
-                  {feedbacks.length === 0
-                    ? "No Evaluations Yet"
-                    : "No Evaluations Found"}
-                </h3>
-                <p className="text-neutral-600 mb-4">
-                  {feedbacks.length === 0
-                    ? "You haven't submitted any answer sheets for evaluation yet. Create a test and submit your answers to get started!"
-                    : "No evaluations match your current filters. Try adjusting your search criteria."}
-                </p>
-                <div className="flex space-x-4 justify-center">
-                  <Button
-                    onClick={() => navigate("/create-test")}
-                    className="flex items-center"
-                  >
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    {feedbacks.length === 0
-                      ? "Create Your First Test"
-                      : "Create New Test"}
-                  </Button>
-                  {feedbacks.length === 0 && (
-                    <Button
-                      onClick={() => navigate("/previous-tests")}
-                      variant="outline"
-                      className="flex items-center"
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      View Previous Tests
-                    </Button>
-                  )}
-                </div>
+        {/* Filters and Search */}
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex items-center mb-4">
+              <Filter className="h-5 w-5 text-neutral-600 mr-2" />
+              <h3 className="text-lg font-semibold text-dark">
+                Filter Feedbacks
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                <Input
+                  placeholder="Search by subject or topic..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-neutral-50 border-b border-neutral-200">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Evaluation Date
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Marks Scored
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Total Marks
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Subject
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Topic
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Difficulty Level
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Performance
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-neutral-200">
-                    {filteredFeedbacks.map((feedback) => (
-                      <tr
-                        key={feedback.id}
-                        className="hover:bg-neutral-50 transition-colors duration-150"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 text-neutral-400 mr-2" />
-                            <div>
-                              <div className="text-sm font-medium text-dark">
-                                {formatDate(feedback.created_at).split(",")[0]}
-                              </div>
-                              <div className="text-xs text-neutral-500">
-                                {formatDate(feedback.created_at).split(",")[1]}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Award className="h-4 w-4 text-primary-600 mr-2" />
-                            <span
-                              className={`text-lg font-bold ${getPerformanceColor(
-                                feedback.percentage || 0
-                              )}`}
-                            >
-                              {feedback.marks_scored || 0}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm font-medium text-dark">
-                            {feedback.total_marks || 0}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <BookOpen className="h-4 w-4 text-secondary-600 mr-2" />
-                            <span className="text-sm font-medium text-dark">
-                              {feedback.test_details?.subject || "N/A"}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div
-                            className="text-sm text-dark max-w-xs truncate"
-                            title={feedback.test_details?.chapter || ""}
-                          >
-                            {feedback.test_details?.chapter || "N/A"}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(
-                              feedback.test_details?.difficulty_level || ""
-                            )}`}
-                          >
-                            {feedback.test_details?.difficulty_level || "N/A"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex flex-col">
-                            <span
-                              className={`text-lg font-bold ${getPerformanceColor(
-                                feedback.percentage || 0
-                              )}`}
-                            >
-                              {feedback.percentage || 0}%
-                            </span>
-                            <span
-                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${getPerformanceBadgeColor(
-                                feedback.percentage || 0
-                              )} mt-1`}
-                            >
-                              {getPerformanceLabel(feedback.percentage || 0)}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Button
-                            size="sm"
-                            onClick={() =>
-                              navigate(`/view-feedback/${feedback.id}`)
-                            }
-                            className="flex items-center"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View Feedback
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+              <Select
+                value={subjectFilter}
+                onChange={(e) => setSubjectFilter(e.target.value)}
+                options={[
+                  { value: "", label: "All Subjects" },
+                  ...uniqueSubjects.map((subject) => ({
+                    value: subject,
+                    label: subject,
+                  })),
+                ]}
+              />
+              <Select
+                value={difficultyFilter}
+                onChange={(e) => setDifficultyFilter(e.target.value)}
+                options={[
+                  { value: "", label: "All Difficulties" },
+                  ...uniqueDifficulties.map((difficulty) => ({
+                    value: difficulty,
+                    label: difficulty,
+                  })),
+                ]}
+              />
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSubjectFilter("");
+                  setDifficultyFilter("");
+                }}
+                className="flex items-center justify-center"
+              >
+                Clear Filters
+              </Button>
+            </div>
           </CardContent>
         </Card>
+
+        {/* Results Summary */}
+        <div className="mb-6 flex items-center justify-between">
+          <p className="text-sm text-neutral-600">
+            Showing {filteredFeedbacks.length} of {feedbacks.length} evaluations
+          </p>
+          <div className="flex items-center space-x-2 text-sm text-neutral-600">
+            <Calendar className="h-4 w-4" />
+            <span>Sorted by evaluation date (newest first)</span>
+          </div>
+        </div>
+        
         <Card>
           <CardContent className="p-0">
             {filteredFeedbacks.length === 0 ? (
