@@ -256,26 +256,14 @@ export function PreviousFeedbacksPage() {
                     Average Score
                   </div>
                 </div>
-                <div className="text-center p-4 bg-neutral-50 rounded-lg">
-                  <div className="text-2xl font-bold text-neutral-600">
-                    {totalMarksScored}/{totalMarksAvailable}
-                  </div>
-                  <div className="text-sm text-neutral-800">Total Marks</div>
                 </div>
-                <div className="text-center p-4 bg-pink-50 rounded-lg">
-                  <div className="text-2xl font-bold text-pink-600">
-                    {uniqueSubjects.length}
-                  </div>
-                  <div className="text-sm text-pink-800">Subjects Covered</div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         )}
 
         {/* Performance Insights */}
         {filteredFeedbacks.length > 0 && (
-          <Card className="mt-6">
+          <Card className="mt-6 mb-6">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-dark mb-4 flex items-center">
                 <TrendingUp className="h-5 w-5 text-primary-600 mr-2" />
