@@ -122,14 +122,15 @@ export function PreviousTestsPage() {
   return (
     <div className="min-h-screen bg-cream">
       <Header />
-      
-      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
 
+      <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center mb-2">
               <FileText className="h-5 w-5 text-primary-600 mr-2" />
-              <h1 className="text-lg font-semibold text-dark sm:text-2xl">Previous Tests</h1>
+              <h1 className="text-lg font-semibold text-dark sm:text-2xl">
+                Previous Tests
+              </h1>
             </div>
             <p className="text-sm text-neutral-600">
               View and manage all your previously created tests
@@ -150,7 +151,9 @@ export function PreviousTestsPage() {
         {filteredTests.length > 0 && (
           <Card className="mt-6">
             <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-dark mb-4">Quick Stats</h3>
+              <h3 className="text-lg font-semibold text-dark mb-4">
+                Quick Stats
+              </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-primary-50 rounded-lg">
                   <div className="text-2xl font-bold text-primary-600">
@@ -166,16 +169,25 @@ export function PreviousTestsPage() {
                 </div>
                 <div className="text-center p-4 bg-neutral-50 rounded-lg">
                   <div className="text-2xl font-bold text-neutral-600">
-                    {filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0)}
+                    {filteredTests.reduce(
+                      (sum, test) => sum + getQuestionCount(test),
+                      0
+                    )}
                   </div>
-                  <div className="text-sm text-neutral-800">Total Questions</div>
+                  <div className="text-sm text-neutral-800">
+                    Total Questions
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-pink-50 rounded-lg">
                   <div className="text-2xl font-bold text-pink-600">
-                    {filteredTests.length > 0 
-                      ? Math.round(filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0) / filteredTests.length)
-                      : 0
-                    }
+                    {filteredTests.length > 0
+                      ? Math.round(
+                          filteredTests.reduce(
+                            (sum, test) => sum + getQuestionCount(test),
+                            0
+                          ) / filteredTests.length
+                        )
+                      : 0}
                   </div>
                   <div className="text-sm text-pink-800">Avg Questions</div>
                 </div>
@@ -205,24 +217,30 @@ export function PreviousTestsPage() {
                 value={subjectFilter}
                 onChange={(e) => setSubjectFilter(e.target.value)}
                 options={[
-                  { value: '', label: 'All Subjects' },
-                  ...uniqueSubjects.map(subject => ({ value: subject, label: subject }))
+                  { value: "", label: "All Subjects" },
+                  ...uniqueSubjects.map((subject) => ({
+                    value: subject,
+                    label: subject,
+                  })),
                 ]}
               />
               <Select
                 value={gradeFilter}
                 onChange={(e) => setGradeFilter(e.target.value)}
                 options={[
-                  { value: '', label: 'All Grades' },
-                  ...uniqueGrades.map(grade => ({ value: grade, label: `Grade ${grade}` }))
+                  { value: "", label: "All Grades" },
+                  ...uniqueGrades.map((grade) => ({
+                    value: grade,
+                    label: `Grade ${grade}`,
+                  })),
                 ]}
               />
               <Button
                 variant="outline"
                 onClick={() => {
-                  setSearchTerm('')
-                  setSubjectFilter('')
-                  setGradeFilter('')
+                  setSearchTerm("");
+                  setSubjectFilter("");
+                  setGradeFilter("");
                 }}
                 className="flex items-center justify-center"
               >
@@ -250,20 +268,23 @@ export function PreviousTestsPage() {
               <div className="p-12 text-center">
                 <FileText className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-dark mb-2">
-                  {tests.length === 0 ? 'No Tests Created Yet' : 'No Tests Found'}
+                  {tests.length === 0
+                    ? "No Tests Created Yet"
+                    : "No Tests Found"}
                 </h3>
                 <p className="text-neutral-600 mb-4">
-                  {tests.length === 0 
-                    ? 'You haven\'t created any tests yet. Create your first test to get started!'
-                    : 'No tests match your current filters. Try adjusting your search criteria.'
-                  }
+                  {tests.length === 0
+                    ? "You haven't created any tests yet. Create your first test to get started!"
+                    : "No tests match your current filters. Try adjusting your search criteria."}
                 </p>
                 <Button
-                  onClick={() => navigate('/create-test')}
+                  onClick={() => navigate("/create-test")}
                   className="flex items-center"
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
-                  {tests.length === 0 ? 'Create Your First Test' : 'Create New Test'}
+                  {tests.length === 0
+                    ? "Create Your First Test"
+                    : "Create New Test"}
                 </Button>
               </div>
             ) : (
@@ -296,16 +317,19 @@ export function PreviousTestsPage() {
                   </thead>
                   <tbody className="bg-white divide-y divide-neutral-200">
                     {filteredTests.map((test) => (
-                      <tr key={test.id} className="hover:bg-neutral-50 transition-colors duration-150">
+                      <tr
+                        key={test.id}
+                        className="hover:bg-neutral-50 transition-colors duration-150"
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <Calendar className="h-4 w-4 text-neutral-400 mr-2" />
                             <div>
                               <div className="text-sm font-medium text-dark">
-                                {formatDate(test.created_at).split(',')[0]}
+                                {formatDate(test.created_at).split(",")[0]}
                               </div>
                               <div className="text-xs text-neutral-500">
-                                {formatDate(test.created_at).split(',')[1]}
+                                {formatDate(test.created_at).split(",")[1]}
                               </div>
                             </div>
                           </div>
@@ -314,23 +338,30 @@ export function PreviousTestsPage() {
                           <div className="flex items-center">
                             <BookOpen className="h-4 w-4 text-primary-600 mr-2" />
                             <span className="text-sm font-medium text-dark">
-                              {test.subject || 'N/A'}
+                              {test.subject || "N/A"}
                             </span>
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-dark max-w-xs truncate" title={test.chapter || ''}>
-                            {test.chapter || 'N/A'}
+                          <div
+                            className="text-sm text-dark max-w-xs truncate"
+                            title={test.chapter || ""}
+                          >
+                            {test.chapter || "N/A"}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Grade {test.grade || 'N/A'}
+                            Grade {test.grade || "N/A"}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(test.difficulty_level)}`}>
-                            {test.difficulty_level || 'N/A'}
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(
+                              test.difficulty_level
+                            )}`}
+                          >
+                            {test.difficulty_level || "N/A"}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -356,8 +387,193 @@ export function PreviousTestsPage() {
             )}
           </CardContent>
         </Card>
+        {/* Tests Table */}
+        <Card>
+          <CardContent className="p-0">
+            {/* --- EMPTY STATE (Renders regardless of screen size) --- */}
+            {filteredTests.length === 0 ? (
+              <div className="p-12 text-center">
+                <FileText className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-dark mb-2">
+                  {tests.length === 0
+                    ? "No Tests Created Yet"
+                    : "No Tests Found"}
+                </h3>
+                <p className="text-neutral-600 mb-4">
+                  {tests.length === 0
+                    ? "You haven't created any tests yet. Create your first test to get started!"
+                    : "No tests match your current filters. Try adjusting your search criteria."}
+                </p>
+                <Button
+                  onClick={() => navigate("/create-test")}
+                  className="flex items-center"
+                >
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  {tests.length === 0
+                    ? "Create Your First Test"
+                    : "Create New Test"}
+                </Button>
+              </div>
+            ) : (
+              <>
+                {/* ============================================== */}
+                {/* 1. TABLE LAYOUT (For Large Screens/Laptops) */}
+                {/* Hidden by default, shown from 'lg' breakpoint up */}
+                {/* ============================================== */}
+                <div className="hidden lg:block">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead className="bg-neutral-50 border-b border-neutral-200">
+                        <tr>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                            Created Date
+                          </th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                            Subject
+                          </th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                            Topic/Chapter
+                          </th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                            Grade
+                          </th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                            Difficulty
+                          </th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                            Questions
+                          </th>
+                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-neutral-200">
+                        {filteredTests.map((test) => (
+                          <tr
+                            key={test.id}
+                            className="hover:bg-neutral-50 transition-colors duration-150"
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <Calendar className="h-4 w-4 text-neutral-400 mr-2" />
+                                <div>
+                                  <div className="text-sm font-medium text-dark">
+                                    {formatDate(test.created_at).split(",")[0]}
+                                  </div>
+                                  <div className="text-xs text-neutral-500">
+                                    {formatDate(test.created_at).split(",")[1]}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <BookOpen className="h-4 w-4 text-primary-600 mr-2" />
+                                <span className="text-sm font-medium text-dark">
+                                  {test.subject || "N/A"}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <div
+                                className="text-sm text-dark max-w-xs truncate"
+                                title={test.chapter || ""}
+                              >
+                                {test.chapter || "N/A"}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                Grade {test.grade || "N/A"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(
+                                  test.difficulty_level
+                                )}`}
+                              >
+                                {test.difficulty_level || "N/A"}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-dark font-medium">
+                                {getQuestionCount(test)} questions
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <Button
+                                size="sm"
+                                onClick={() =>
+                                  navigate(`/view-test/${test.id}`)
+                                }
+                                className="flex items-center"
+                              >
+                                <Eye className="h-4 w-4 mr-1" />
+                                View Test
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
 
+                {/* ============================================== */}
+                {/* 2. CARD LAYOUT (For Mobile/Small Screens) */}
+                {/* Shown by default, hidden from 'lg' breakpoint up */}
+                {/* ============================================== */}
+                <div className="lg:hidden p-4 space-y-4">
+                  {filteredTests.map((test) => (
+                    <div
+                      key={test.id}
+                      className="border border-neutral-200 rounded-lg p-4 shadow-sm"
+                    >
+                      {/* Row 1: Subject, Grade, Chapter */}
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1 min-w-0 pr-2">
+                          <p className="text-xs font-medium text-neutral-500 uppercase">
+                            Subject / Chapter
+                          </p>
+                          <div
+                            className="text-base font-semibold text-dark truncate"
+                            title={test.chapter || ""}
+                          >
+                            {test.subject || "N/A"} - {test.chapter || "N/A"}
+                          </div>
+                        </div>
+                        <span className="flex-shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                          Grade {test.grade || "N/A"}
+                        </span>
+                      </div>
+
+                      {/* Row 2: Date, Button */}
+                      <div className="flex justify-between items-center pt-2 border-t border-neutral-100">
+                        <div className="flex items-center text-sm text-neutral-600">
+                          <Calendar className="h-4 w-4 mr-1 text-neutral-400" />
+                          <span className="text-xs">
+                            {formatDate(test.created_at).split(",")[0]}
+                          </span>
+                        </div>
+                        <Button
+                          size="sm"
+                          onClick={() => navigate(`/view-test/${test.id}`)}
+                          className="flex items-center flex-shrink-0"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          View
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
-  )
+  );
 }
