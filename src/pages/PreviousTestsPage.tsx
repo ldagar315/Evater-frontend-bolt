@@ -124,31 +124,12 @@ export function PreviousTestsPage() {
       <Header />
       
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/home')}
-            className="flex items-center"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Button>
-          <Button
-            onClick={fetchTests}
-            variant="outline"
-            size="sm"
-            className="flex items-center"
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-        </div>
 
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center mb-2">
-              <FileText className="h-6 w-6 text-primary-600 mr-2" />
-              <h1 className="text-2xl font-bold text-dark">Previous Tests</h1>
+              <FileText className="h-5 w-5 text-primary-600 mr-2" />
+              <h1 className="text-lg font-semibold text-dark sm:text-2xl">Previous Tests</h1>
             </div>
             <p className="text-sm text-neutral-600">
               View and manage all your previously created tests
@@ -161,6 +142,43 @@ export function PreviousTestsPage() {
             <CardContent className="p-4">
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                 <p className="text-sm text-red-600">{error}</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        {/* Summary Stats */}
+        {filteredTests.length > 0 && (
+          <Card className="mt-6">
+            <CardContent className="p-6">
+              <h3 className="text-lg font-semibold text-dark mb-4">Quick Stats</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-primary-50 rounded-lg">
+                  <div className="text-2xl font-bold text-primary-600">
+                    {filteredTests.length}
+                  </div>
+                  <div className="text-sm text-primary-800">Total Tests</div>
+                </div>
+                <div className="text-center p-4 bg-secondary-50 rounded-lg">
+                  <div className="text-2xl font-bold text-secondary-600">
+                    {uniqueSubjects.length}
+                  </div>
+                  <div className="text-sm text-secondary-800">Subjects</div>
+                </div>
+                <div className="text-center p-4 bg-neutral-50 rounded-lg">
+                  <div className="text-2xl font-bold text-neutral-600">
+                    {filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0)}
+                  </div>
+                  <div className="text-sm text-neutral-800">Total Questions</div>
+                </div>
+                <div className="text-center p-4 bg-pink-50 rounded-lg">
+                  <div className="text-2xl font-bold text-pink-600">
+                    {filteredTests.length > 0 
+                      ? Math.round(filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0) / filteredTests.length)
+                      : 0
+                    }
+                  </div>
+                  <div className="text-sm text-pink-800">Avg Questions</div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -339,43 +357,6 @@ export function PreviousTestsPage() {
           </CardContent>
         </Card>
 
-        {/* Summary Stats */}
-        {filteredTests.length > 0 && (
-          <Card className="mt-6">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-semibold text-dark mb-4">Quick Stats</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-primary-50 rounded-lg">
-                  <div className="text-2xl font-bold text-primary-600">
-                    {filteredTests.length}
-                  </div>
-                  <div className="text-sm text-primary-800">Total Tests</div>
-                </div>
-                <div className="text-center p-4 bg-secondary-50 rounded-lg">
-                  <div className="text-2xl font-bold text-secondary-600">
-                    {uniqueSubjects.length}
-                  </div>
-                  <div className="text-sm text-secondary-800">Subjects</div>
-                </div>
-                <div className="text-center p-4 bg-neutral-50 rounded-lg">
-                  <div className="text-2xl font-bold text-neutral-600">
-                    {filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0)}
-                  </div>
-                  <div className="text-sm text-neutral-800">Total Questions</div>
-                </div>
-                <div className="text-center p-4 bg-pink-50 rounded-lg">
-                  <div className="text-2xl font-bold text-pink-600">
-                    {filteredTests.length > 0 
-                      ? Math.round(filteredTests.reduce((sum, test) => sum + getQuestionCount(test), 0) / filteredTests.length)
-                      : 0
-                    }
-                  </div>
-                  <div className="text-sm text-pink-800">Avg Questions</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   )
