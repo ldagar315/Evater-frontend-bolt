@@ -41,21 +41,18 @@ export function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div 
-              className="flex items-center space-x-3 cursor-pointer"
+              className="flex items-center space-y-1 cursor-pointer mt-1"
               onClick={() => navigate(user ? '/home' : '/')}
             >
-              <div className="w-12 h-8 flex items-center justify-center">
+              <div className="w-24 h-auto flex items-center justify-center">
                 <img 
                   src="/Evater_logo_2.png" 
                   alt="Evater Logo" 
-                  className="h-8 w-auto object-contain"
+                  className="w-24 h-auto object-fill"
                 />
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-dark">
-                  Evater
-                </h1>
-                <p className="text-xs text-neutral-600 font-medium">Next Gen Learning</p>
+              <div className="ml-2">
+                <p className="text-md text-neutral-900 font-semibold">Next Gen Learning</p>
               </div>
             </div>
           </div>

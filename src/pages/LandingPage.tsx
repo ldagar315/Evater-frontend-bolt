@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Sparkles, Target, Brain, CheckCircle, Star, Users, Award, BookOpen, Zap, Quote } from 'lucide-react'
 import { Button } from '../components/ui/Button'
 import { Card, CardContent } from '../components/ui/Card'
-import { Footer } from '../components/layout/Footer'
+import { Header } from '../components/layout/Header'
 import { BlogSection } from '../components/blog/BlogSection'
 
 export function LandingPage() {
@@ -18,8 +18,8 @@ export function LandingPage() {
     },
     {
       icon: Target,
-      title: 'OCR Answer Evaluation',
-      description: 'Upload handwritten answer sheets and get instant, accurate scoring with detailed feedback using cutting-edge OCR technology.',
+      title: 'AI-Powered Evaluation',
+      description: 'Upload handwritten answer sheets and get instant, accurate scoring with detailed feedback using cutting-edge AI technology.',
       color: 'bg-secondary-50 text-secondary-600'
     },
     {
@@ -53,7 +53,7 @@ export function LandingPage() {
       school: 'Presidium Sector-57',
       content: 'Evater has completely transformed how I prepare for my board exams. The AI-generated tests are exactly what I need to practice, and the instant feedback helps me understand my mistakes immediately.',
       rating: 5,
-      image: 'https://images.pexels.com/photos/8197529/pexels-photo-8197529.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&dpr=1'
+      image: '/IMG-20251020-WA0056.jpg'
     },
     {
       name: 'Manvi',
@@ -61,15 +61,15 @@ export function LandingPage() {
       school: 'Presidium Sec-57',
       content: 'I love how Evater makes studying fun! The tests are challenging but fair, and I can see my progress improving every day. My teachers are impressed with my performance.',
       rating: 5,
-      image: 'https://images.pexels.com/photos/8197528/pexels-photo-8197528.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&dpr=1'
+      image: '/IMG-20230912-WA0025.jpg'
     },
     {
       name: 'Ishika',
       grade: 'Class 10th',
       school: 'Euro International Sector-45',
-      content: 'The OCR feature is amazing! I can upload my handwritten answers and get detailed feedback instantly. It\'s like having a personal tutor available 24/7.',
+      content: 'The AI checking feature is amazing! I can upload my handwritten answers and get detailed feedback instantly. It\'s like having a personal tutor available 24/7.',
       rating: 5,
-      image: 'https://images.pexels.com/photos/8197530/pexels-photo-8197530.jpeg?auto=compress&cs=tinysrgb&w=300&h=300&dpr=1'
+      image: '/IMG_20241028_145336.jpg'
     }
   ]
 
@@ -77,57 +77,20 @@ export function LandingPage() {
     <div className="min-h-screen flex flex-col bg-cream">
       <div className="flex-1">
         {/* Navigation */}
-        <nav className="bg-white/80 backdrop-blur-sm border-b border-neutral-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-8 flex items-center justify-center">
-                  <img 
-                    src="/Evater_logo_2.png" 
-                    alt="Evater Logo" 
-                    className="h-8 w-auto object-contain"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-dark">Evater</h1>
-                  <p className="text-xs text-neutral-600 font-medium">Next Gen Learning</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-4">
-                <Button
-                  onClick={() => navigate('/blog')}
-                  variant="ghost"
-                  size="sm"
-                  className="text-neutral-700 hover:text-primary-600"
-                >
-                  Blog
-                </Button>
-                <Button
-                  onClick={() => navigate('/auth')}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center"
-                >
-                  Sign In
-                  <ArrowRight className="h-4 w-4 ml-1" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </nav>
+        <Header />
 
         {/* Hero Section */}
         <section className="relative py-20 lg:py-32 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-cream to-secondary-50"></div>
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <div className="inline-flex items-center px-4 py-2 bg-primary-100 rounded-full border border-primary-200 mb-8">
-                <Zap className="h-4 w-4 text-primary-600 mr-2" />
-                <span className="text-sm font-medium text-primary-800">Powered by Advanced AI</span>
-              </div>
+                  <img 
+                    src="/Evater_logo_2.png" 
+                    alt="Evater Logo" 
+                    className="h-56 w-auto object-contain mx-auto"
+                  />
               
-              <h1 className="text-5xl lg:text-7xl font-bold text-dark mb-8 leading-tight">
+              <h1 className="text-5xl lg:text-7xl font-bold text-dark mb-8 mt-8 leading-tight">
                 The Future of
                 <span className="block bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
                   Test Creation
@@ -234,7 +197,7 @@ export function LandingPage() {
                 <Card key={index} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-secondary-200">
                   <CardContent className="p-8">
                     <div className="flex justify-center mb-6">
-                      <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-secondary-200 group-hover:border-secondary-400 transition-colors duration-300">
+                      <div className="w-full h-64 overflow-hidden">
                         <img
                           src={testimonial.image}
                           alt={testimonial.name}
@@ -361,7 +324,6 @@ export function LandingPage() {
         </section>
       </div>
       
-      <Footer />
     </div>
   )
 }

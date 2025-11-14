@@ -36,33 +36,14 @@ export function BlogPage() {
       <Header />
       
       <div className="flex-1">
-        {/* Navigation breadcrumb for non-authenticated users */}
-        {!user && (
-          <div className="bg-white border-b border-neutral-200 py-4">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/')}
-                className="flex items-center text-neutral-700 hover:text-primary-600"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
-              </Button>
-            </div>
-          </div>
-        )}
 
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-primary-50 via-cream to-secondary-50 py-16 lg:py-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <div className="inline-flex items-center px-4 py-2 bg-primary-100 rounded-full border border-primary-200 mb-8">
-                <BookOpen className="h-4 w-4 text-primary-600 mr-2" />
-                <span className="text-sm font-medium text-primary-800">Educational Insights & Updates</span>
-              </div>
               
               <h1 className="text-4xl lg:text-6xl font-bold text-dark mb-6 leading-tight">
-                Evater Blog
+                Blogs by Evater
               </h1>
               
               <p className="text-xl lg:text-2xl text-neutral-600 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -149,8 +130,6 @@ export function BlogPage() {
           </div>
         </section>
       </div>
-      
-      <Footer />
     </div>
   )
 }
