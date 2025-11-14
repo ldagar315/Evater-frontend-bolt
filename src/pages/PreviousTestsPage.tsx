@@ -272,25 +272,25 @@ export function PreviousTestsPage() {
                     <table className="w-full">
                       <thead className="bg-neutral-50 border-b border-neutral-200">
                         <tr>
-                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                          <th className="px-2 py-2 lg:px-6 lg:py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                             Created Date
                           </th>
-                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                          <th className="px-2 py-2 lg:px-6 lg:py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                             Subject
                           </th>
-                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                          <th className="px-2 py-2 lg:px-6 lg:py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                             Topic/Chapter
                           </th>
-                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                          <th className="px-2 py-2 lg:px-6 lg:py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                             Grade
                           </th>
-                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                          <th className="px-2 py-2 lg:px-6 lg:py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                             Difficulty
                           </th>
-                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                          <th className="px-2 py-2 lg:px-6 lg:py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                             Questions
                           </th>
-                          <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                          <th className="px-2 py-2 lg:px-6 lg:py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                             Actions
                           </th>
                         </tr>
@@ -301,7 +301,7 @@ export function PreviousTestsPage() {
                             key={test.id}
                             className="hover:bg-neutral-50 transition-colors duration-150"
                           >
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-2 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
                               <div className="flex items-center">
                                 <Calendar className="h-4 w-4 text-neutral-400 mr-2" />
                                 <div>
@@ -314,7 +314,7 @@ export function PreviousTestsPage() {
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-2 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
                               <div className="flex items-center">
                                 <BookOpen className="h-4 w-4 text-primary-600 mr-2" />
                                 <span className="text-sm font-medium text-dark">
@@ -322,7 +322,7 @@ export function PreviousTestsPage() {
                                 </span>
                               </div>
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-2 py-2 lg:px-6 lg:py-4">
                               <div
                                 className="text-sm text-dark max-w-xs truncate"
                                 title={test.chapter || ""}
@@ -330,12 +330,12 @@ export function PreviousTestsPage() {
                                 {test.chapter || "N/A"}
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-2 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
                               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                 Grade {test.grade || "N/A"}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-2 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
                               <span
                                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(
                                   test.difficulty_level
@@ -344,12 +344,12 @@ export function PreviousTestsPage() {
                                 {test.difficulty_level || "N/A"}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-2 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
                               <div className="text-sm text-dark font-medium">
                                 {getQuestionCount(test)} questions
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
+                            <td className="px-2 py-2 lg:px-6 lg:py-4 whitespace-nowrap">
                               <Button
                                 size="sm"
                                 onClick={() =>
