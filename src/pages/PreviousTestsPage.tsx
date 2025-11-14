@@ -376,7 +376,7 @@ export function PreviousTestsPage() {
                   {filteredTests.map((test) => (
                     <div
                       key={test.id}
-                      className="border border-neutral-200 rounded-lg p-1 shadow-sm"
+                      className="border border-neutral-200 rounded-lg p-4 shadow-sm"
                     >
                       {/* Row 1: Subject, Grade, Chapter */}
                       <div className="flex justify-between items-start mb-2">
