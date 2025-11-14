@@ -129,7 +129,7 @@ export function HomePage() {
                       Grade
                     </span>
                   </div>
-                  <div className="text-base font-semibold ml-4 text-dark sm:text-lg">
+                  <div className="text-sm font-medium ml-4 text-dark sm:text-lg">
                     Grade {profile?.grade || "N/A"}
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export function HomePage() {
                     </span>
                   </div>
                   <div
-                    className="text-base font-semibold ml-4 text-dark sm:text-lg truncate"
+                    className="text-sm font-medium ml-4 text-dark sm:text-lg truncate"
                     title={profile?.school || "Not set"}
                   >
                     {profile?.school || "Not set"}
@@ -159,7 +159,7 @@ export function HomePage() {
                     </span>
                   </div>
                   <div className="flex items-center ml-4 justify-center">
-                    <span className="text-base font-semibold text-yellow-700 sm:text-2xl sm:font-bold">
+                    <span className="text-sm font-medium text-yellow-700 sm:text-2xl sm:font-bold">
                       {profile?.credits !== null &&
                       profile?.credits !== undefined
                         ? profile.credits
