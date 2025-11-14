@@ -87,19 +87,29 @@ export function HomePage() {
           role="alert"
         >
           {/* DEV ONLY: highlight that auth is bypassed locally */}
-          <p className="font-semibold">Auth bypass enabled for local development</p>
-          <p>Remove VITE_BYPASS_AUTH before committing or deploying to production.</p>
+          <p className="font-semibold">
+            Auth bypass enabled for local development
+          </p>
+          <p>
+            Remove VITE_BYPASS_AUTH before committing or deploying to
+            production.
+          </p>
         </div>
       )}
-      
+
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center w-48 h-auto">
-            <img src="/Evater_logo_2.png" alt="Evater Logo" className="w-48 h-auto object-fill" />
+            <img
+              src="/Evater_logo_2.png"
+              alt="Evater Logo"
+              className="w-48 h-auto object-fill"
+            />
           </div>
           <h1 className="text-4xl font-bold text-dark mb-4">
-            Welcome back, {profile?.name ? profile.name.split(' ')[0] : 'Educator'}!
+            Welcome back,{" "}
+            {profile?.user_name ? profile.user_name.split(" ")[0] : "Educator"}!
           </h1>
           <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
             Ready to create, evaluate, and enhance your learning experience
@@ -109,58 +119,62 @@ export function HomePage() {
         <Card className="mb-8 bg-gradient-to-r from-yellow-50 to-orange-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center justify-evenly w-full">
-                {/* Name */}
-                <div className="text-center">
-                  <div className="flex items-center mb-1">
-                    <User className="h-4 w-4 text-neutral-500 mr-1" />
-                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">Name</span>
-                  </div>
-                  <div className="text-lg font-bold text-dark">
-                    {profile?.name || profile?.user_name || 'Not set'}
-                  </div>
-                </div>
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between w-full">
 
                 {/* Grade */}
-                <div className="text-center">
-                  <div className="flex items-center mb-1">
+                <div className="flex items-center flex-row sm:flex-col">
+                  <div className="flex items-center">
                     <GraduationCap className="h-4 w-4 text-neutral-500 mr-1" />
-                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">Grade</span>
+                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">
+                      Grade
+                    </span>
                   </div>
-                  <div className="text-lg font-bold text-dark">
-                    Grade {profile?.grade || 'N/A'}
+                  <div className="text-base font-semibold ml-4 text-dark sm:text-lg">
+                    Grade {profile?.grade || "N/A"}
                   </div>
                 </div>
 
                 {/* School */}
-                <div className="text-center max-w-32">
-                  <div className="flex items-center mb-1">
+                <div className="flex items-center flex-row sm:flex-col">
+                  <div className="flex items-center">
                     <School className="h-4 w-4 text-neutral-500 mr-1" />
-                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">School</span>
+                    <span className="text-xs font-medium text-neutral-600 uppercase tracking-wide">
+                      School
+                    </span>
                   </div>
-                  <div className="text-lg font-bold text-dark truncate" title={profile?.school || 'Not set'}>
-                    {profile?.school || 'Not set'}
+                  <div
+                    className="text-base font-semibold ml-4 text-dark sm:text-lg truncate"
+                    title={profile?.school || "Not set"}
+                  >
+                    {profile?.school || "Not set"}
                   </div>
                 </div>
 
                 {/* Credits */}
-                <div className="text-center">
-                  <div className="flex items-center mb-1">
+                <div className="flex items-center flex-row sm:flex-col">
+                  <div className="flex items-center">
                     <Coins className="h-4 w-4 text-yellow-600 mr-1" />
-                    <span className="text-xs font-medium text-yellow-800 uppercase tracking-wide">Credits</span>
-                  </div>
-                  <div className="flex items-center justify-center">
-                    <span className="text-2xl font-bold text-yellow-700">
-                      {profile?.credits !== null && profile?.credits !== undefined ? profile.credits : '---'}
+                    <span className="text-xs font-medium text-yellow-800 uppercase tracking-wide">
+                      Credits
                     </span>
                   </div>
-                  {profile?.credits !== null && profile?.credits !== undefined && profile.credits <= 5 && (
-                    <div className="mt-1">
-                      <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">
-                        {profile.credits === 0 ? 'No Credits' : 'Low Credits'}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-center ml-4 justify-center">
+                    <span className="text-base font-semibold text-yellow-700 sm:text-2xl sm:font-bold">
+                      {profile?.credits !== null &&
+                      profile?.credits !== undefined
+                        ? profile.credits
+                        : "---"}
+                    </span>
+                  </div>
+                  {profile?.credits !== null &&
+                    profile?.credits !== undefined &&
+                    profile.credits <= 5 && (
+                      <div className="mt-1">
+                        <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">
+                          {profile.credits === 0 ? "No Credits" : "Low Credits"}
+                        </span>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -170,26 +184,42 @@ export function HomePage() {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {navigationOptions.map((option) => {
-            const Icon = option.icon
-            const isDisabled = option.disabled
+            const Icon = option.icon;
+            const isDisabled = option.disabled;
             return (
               <div
                 key={option.path}
-                className={`cursor-pointer transition-all duration-300 ${option.color} hover:shadow-lg rounded-2xl shadow-sm border-2 transform hover:scale-105 hover:-translate-y-1 ${
-                  isDisabled ? 'opacity-60 cursor-not-allowed hover:scale-100 hover:translate-y-0' : ''
+                className={`cursor-pointer transition-all duration-300 ${
+                  option.color
+                } hover:shadow-lg rounded-2xl shadow-sm border-2 transform hover:scale-105 hover:-translate-y-1 ${
+                  isDisabled
+                    ? "opacity-60 cursor-not-allowed hover:scale-100 hover:translate-y-0"
+                    : ""
                 }`}
                 onClick={() => handleNavigation(option.path, isDisabled)}
               >
                 <CardContent className="p-6 text-center">
                   <div className="flex justify-center mb-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isDisabled ? 'bg-neutral-200' : 'bg-white shadow-sm'}`}>
-                      <Icon className={`h-6 w-6 ${isDisabled ? 'text-neutral-400' : option.iconColor}`} />
+                    <div
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                        isDisabled ? "bg-neutral-200" : "bg-white shadow-sm"
+                      }`}
+                    >
+                      <Icon
+                        className={`h-6 w-6 ${
+                          isDisabled ? "text-neutral-400" : option.iconColor
+                        }`}
+                      />
                     </div>
                   </div>
                   <h3 className="text-lg font-semibold text-dark mb-2">
                     {option.title}
                   </h3>
-                  <p className={`text-sm leading-relaxed ${isDisabled ? 'text-neutral-400' : 'text-neutral-600'}`}>
+                  <p
+                    className={`text-sm leading-relaxed ${
+                      isDisabled ? "text-neutral-400" : "text-neutral-600"
+                    }`}
+                  >
                     {option.description}
                   </p>
                   {isDisabled && (
@@ -201,10 +231,9 @@ export function HomePage() {
                   )}
                 </CardContent>
               </div>
-            )
+            );
           })}
         </div>
-
 
         {/* General Feedback Section */}
         <Card className="bg-primary-100">
@@ -214,12 +243,16 @@ export function HomePage() {
                 <Heart className="h-8 w-8 text-white" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-dark mb-4">Help Us Improve</h2>
+            <h2 className="text-2xl font-bold text-dark mb-4">
+              Help Us Improve
+            </h2>
             <p className="text-neutral-600 mb-6 max-w-2xl mx-auto leading-relaxed">
-              Your feedback helps us make Evater better for everyone. Share your thoughts, suggestions, or report any issues to help us create the perfect learning experience.
+              Your feedback helps us make Evater better for everyone. Share your
+              thoughts, suggestions, or report any issues to help us create the
+              perfect learning experience.
             </p>
             <button
-              onClick={() => navigate('/general-feedback')}
+              onClick={() => navigate("/general-feedback")}
               className="inline-flex items-center px-8 py-4 bg-primary-500 text-white font-medium rounded-xl hover:bg-primary-600 transition-colors duration-200 shadow-sm hover:shadow-md"
             >
               <MessageSquare className="h-5 w-5 mr-3" />
@@ -229,5 +262,5 @@ export function HomePage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
