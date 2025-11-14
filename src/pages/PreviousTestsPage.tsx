@@ -124,19 +124,17 @@ export function PreviousTestsPage() {
       <Header />
 
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <Card className="mb-6">
-          <CardHeader>
+            <div className = "mb-6">
             <div className="flex items-center mb-2">
-              <FileText className="h-5 w-5 text-primary-600 mr-2" />
-              <h1 className="text-lg font-semibold text-dark sm:text-2xl">
+
+              <h1 className="text-xl font-semibold text-dark sm:text-2xl">
                 Previous Tests
               </h1>
             </div>
             <p className="text-sm text-neutral-600">
               View and manage all your previously created tests
             </p>
-          </CardHeader>
-        </Card>
+          </div>
 
         {error && (
           <Card className="mb-6">
@@ -402,21 +400,21 @@ export function PreviousTestsPage() {
                   {filteredTests.map((test) => (
                     <div
                       key={test.id}
-                      className="border border-neutral-200 rounded-lg p-4 shadow-sm"
+                      className="border border-neutral-200 rounded-lg p-1 shadow-sm"
                     >
                       {/* Row 1: Subject, Grade, Chapter */}
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1 min-w-0 pr-2">
                           <p className="text-xs font-medium text-neutral-500 uppercase">
-                            {test.chapter || ""}
+                            {test.subject || ""}
                           </p>
                           <div
                             className="text-xs font-semibold text-dark truncate"
                           >
-                            {test.subject || "N/A"} - {test.chapter || "N/A"}
+                            {test.chapter || "N/A"}
                           </div>
                         </div>
-                        <span className="flex-shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        <span className="flex-shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-200 text-primary-800">
                           Grade {test.grade || "N/A"}
                         </span>
                       </div>
@@ -435,7 +433,7 @@ export function PreviousTestsPage() {
                           className="flex items-center flex-shrink-0"
                         >
                           <Eye className="h-4 w-4 mr-1" />
-                          View
+                          View Test
                         </Button>
                       </div>
                     </div>
