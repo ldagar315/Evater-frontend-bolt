@@ -205,46 +205,14 @@ export function PreviousFeedbacksPage() {
       <Header />
       
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/home')}
-            className="flex items-center"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </Button>
-          <div className="flex space-x-3">
-            <Button
-              onClick={fetchFeedbacks}
-              variant="outline"
-              size="sm"
-              className="flex items-center"
-            >
-              <MessageSquare className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
-            <Button
-              onClick={() => navigate('/create-test')}
-              className="flex items-center"
-            >
-              <BookOpen className="h-4 w-4 mr-2" />
-              Create New Test
-            </Button>
-          </div>
-        </div>
-
-        <Card className="mb-6">
-          <CardHeader>
+            <div className="mb-6">
             <div className="flex items-center mb-2">
-              <MessageSquare className="h-6 w-6 text-primary-600 mr-2" />
               <h1 className="text-2xl font-bold text-dark">Previous Feedbacks</h1>
             </div>
             <p className="text-sm text-neutral-600">
               View and analyze all your previous test evaluations and performance feedback
             </p>
-          </CardHeader>
-        </Card>
+          </div>
 
         {error && (
           <Card className="mb-6">
