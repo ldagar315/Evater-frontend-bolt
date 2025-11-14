@@ -235,7 +235,7 @@ export function PreviousTestsPage() {
           </div>
         </div>
         {/* Tests Table */}
-        <Card>
+        <Card className = "px-2 py-2 lg:px-6 lg:py-4 ">
           <CardContent className="p-0">
             {/* --- EMPTY STATE (Renders regardless of screen size) --- */}
             {filteredTests.length === 0 ? (
