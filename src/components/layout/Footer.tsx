@@ -1,33 +1,43 @@
 import React from 'react'
-import { ExternalLink } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
+const footerLinks = [
+  { label: 'Home', to: '/home' },
+  { label: 'Create Test', to: '/create-test' },
+  { label: 'Previous Tests', to: '/previous-tests' },
+  { label: 'Previous Feedbacks', to: '/previous-feedbacks' },
+  { label: 'Blog', to: '/blog' }
+]
 
 export function Footer() {
+  const currentYear = new Date().getFullYear()
+
   return (
-    <footer className="bg-white border-t border-neutral-200 py-6 mt-auto">
+    <footer className="bg-white border-t border-neutral-200 py-8 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center space-y-4">
-          {/* Built with Bolt.new badge */}
-          <a
-            href="https://bolt.new"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm font-medium rounded-full hover:from-purple-700 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
-          >
-            <svg
-              className="w-4 h-4 mr-2"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z" />
-            </svg>
-            Built with Bolt.new
-            <ExternalLink className="w-3 h-3 ml-1" />
-          </a>
-          
-          {/* Copyright */}
-          <p className="text-xs text-neutral-500">
-            © {new Date().getFullYear()} Evater. All rights reserved.
-          </p>
+        <div className="flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+          <div>
+            <p className="text-lg font-semibold text-dark">Evater</p>
+            <p className="text-sm text-neutral-600">
+              Helping educators craft smarter assessments with AI.
+            </p>
+          </div>
+
+          <nav className="flex flex-wrap items-center justify-center gap-4 text-sm font-medium text-neutral-600">
+            {footerLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="hover:text-primary-600 transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="mt-6 border-t border-neutral-200 pt-4 text-center text-xs text-neutral-500">
+          © {currentYear} Evater. All rights reserved.
         </div>
       </div>
     </footer>

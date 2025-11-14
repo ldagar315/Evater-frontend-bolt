@@ -21,10 +21,16 @@ import { PreviousFeedbacksPage } from './pages/PreviousFeedbacksPage'
 import { BlogPage } from './pages/BlogPage'
 import { BlogPostPage } from './pages/BlogPostPage'
 import { VivaPage } from './pages/VivaPage'
+import { BYPASS_AUTH } from './lib/auth/devBypass'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, error } = useAuthContext()
   const { profile, loading: profileLoading } = useProfile(user?.id)
+
+  if (BYPASS_AUTH) {
+    // DEV ONLY: skip protected-route checks when auth is bypassed locally
+    return <>{children}</>
+  }
 
   if (loading || profileLoading) {
     return <LoadingFallback />

@@ -1,14 +1,25 @@
 import { useEffect, useState } from 'react'
 import { User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
+import { BYPASS_AUTH, DEV_USER, logAuthBypassWarning } from '../lib/auth/devBypass'
 
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(BYPASS_AUTH ? DEV_USER : null)
+  const [loading, setLoading] = useState(!BYPASS_AUTH)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
+
+    if (BYPASS_AUTH) {
+      logAuthBypassWarning('useAuth bootstrap')
+      setUser(DEV_USER)
+      setError(null)
+      setLoading(false)
+      return () => {
+        mounted = false
+      }
+    }
 
     const initializeAuth = async () => {
       try {
@@ -70,6 +81,11 @@ export function useAuth() {
   }, [])
 
   const signUp = async (email: string, password: string) => {
+    if (BYPASS_AUTH) {
+      logAuthBypassWarning('signUp noop')
+      setUser(DEV_USER)
+      return { data: { user: DEV_USER } as any, error: null }
+    }
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -83,6 +99,11 @@ export function useAuth() {
   }
 
   const signIn = async (email: string, password: string) => {
+    if (BYPASS_AUTH) {
+      logAuthBypassWarning('signIn noop')
+      setUser(DEV_USER)
+      return { data: { user: DEV_USER } as any, error: null }
+    }
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -96,6 +117,11 @@ export function useAuth() {
   }
 
   const signInWithGoogle = async () => {
+    if (BYPASS_AUTH) {
+      logAuthBypassWarning('signInWithGoogle noop')
+      setUser(DEV_USER)
+      return { data: { user: DEV_USER } as any, error: null }
+    }
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -111,6 +137,11 @@ export function useAuth() {
   }
 
   const signOut = async () => {
+    if (BYPASS_AUTH) {
+      logAuthBypassWarning('signOut noop')
+      setUser(DEV_USER)
+      return { error: null }
+    }
     try {
       const { error } = await supabase.auth.signOut()
       return { error }

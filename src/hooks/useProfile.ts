@@ -1,28 +1,38 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { UserProfile } from '../types'
+import { BYPASS_AUTH, buildDevProfile, logAuthBypassWarning } from '../lib/auth/devBypass'
 
 export function useProfile(userId: string | undefined) {
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState<UserProfile | null>(
+    BYPASS_AUTH ? buildDevProfile({ created_by: userId }) : null
+  )
+  const [loading, setLoading] = useState(!BYPASS_AUTH)
 
   useEffect(() => {
+    if (BYPASS_AUTH) {
+      logAuthBypassWarning('useProfile bootstrap')
+      setProfile(buildDevProfile({ created_by: userId }))
+      setLoading(false)
+      return
+    }
+
     if (!userId) {
       setLoading(false)
       return
     }
 
-    fetchProfile()
+    fetchProfile(userId)
   }, [userId])
 
-  const fetchProfile = async () => {
-    if (!userId) return
+  const fetchProfile = async (targetUserId: string) => {
+    if (!targetUserId) return
 
     try {
       const { data, error } = await supabase
         .from('Users')
         .select('*')
-        .eq('created_by', userId)
+        .eq('created_by', targetUserId)
         .single()
 
       if (error && error.code !== 'PGRST116') throw error
@@ -35,6 +45,18 @@ export function useProfile(userId: string | undefined) {
   }
 
   const createProfile = async (profileData: Omit<UserProfile, 'id' | 'created_at' | 'created_by'>) => {
+    if (BYPASS_AUTH) {
+      const mockProfile = buildDevProfile({
+        ...profileData,
+        name: profileData.name ?? profileData.user_name ?? 'Dev User',
+        user_name: profileData.user_name ?? profileData.name ?? 'Dev User',
+        created_by: userId,
+      })
+      setProfile(mockProfile)
+      logAuthBypassWarning('createProfile noop')
+      return { data: mockProfile, error: null }
+    }
+
     if (!userId) return { error: 'No user ID' }
 
     try {
@@ -72,6 +94,17 @@ export function useProfile(userId: string | undefined) {
   }
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
+    if (BYPASS_AUTH) {
+      const mockProfile = buildDevProfile({
+        ...profile,
+        ...updates,
+        created_by: userId,
+      })
+      setProfile(mockProfile)
+      logAuthBypassWarning('updateProfile noop')
+      return { data: mockProfile, error: null }
+    }
+
     if (!userId || !profile) return { error: 'No user ID or profile' }
 
     try {

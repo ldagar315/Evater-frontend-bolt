@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { PlusCircle, FileText, MessageSquare, Heart, Sparkles, Clock, History, BarChart3, Coins, User, GraduationCap, School, Brain } from 'lucide-react'
 import { Card, CardContent } from '../components/ui/Card'
 import { Header } from '../components/layout/Header'
-import { BlogSection } from '../components/blog/BlogSection'
+// import { BlogSection } from '../components/blog/BlogSection'
 import { useAppState } from '../contexts/AppStateContext'
 import { useAuthContext } from '../contexts/AuthContext'
 import { useProfile } from '../hooks/useProfile'
+import { BYPASS_AUTH } from '../lib/auth/devBypass'
 
 export function HomePage() {
   const navigate = useNavigate()
@@ -20,7 +21,7 @@ export function HomePage() {
       description: 'Generate a new test with AI assistance',
       icon: PlusCircle,
       path: '/create-test',
-      color: 'bg-primary-50 hover:bg-primary-100 border-primary-200',
+      color: 'bg-primary-50 hover:bg-primary-100',
       iconColor: 'text-primary-600'
     },
     {
@@ -28,7 +29,7 @@ export function HomePage() {
       description: 'View all your previously created tests',
       icon: History,
       path: '/previous-tests',
-      color: 'bg-purple-50 hover:bg-purple-100 border-purple-200',
+      color: 'bg-purple-50 hover:bg-purple-100',
       iconColor: 'text-purple-600'
     },
     {
@@ -36,7 +37,7 @@ export function HomePage() {
       description: 'View all your previous test evaluations',
       icon: BarChart3,
       path: '/previous-feedbacks',
-      color: 'bg-blue-50 hover:bg-blue-100 border-blue-200',
+      color: 'bg-blue-50 hover:bg-blue-100',
       iconColor: 'text-blue-600'
     },
     {
@@ -44,7 +45,7 @@ export function HomePage() {
       description: 'Interactive oral examination with AI',
       icon: Brain,
       path: '/viva',
-      color: 'bg-purple-50 hover:bg-purple-100 border-purple-200',
+      color: 'bg-purple-50 hover:bg-purple-100',
       iconColor: 'text-purple-600'
     },
     {
@@ -54,7 +55,7 @@ export function HomePage() {
         : 'No test generated yet',
       icon: FileText,
       path: appState.last_generated_test ? `/view-test/${appState.last_generated_test.id}` : '/view-test',
-      color: 'bg-secondary-50 hover:bg-secondary-100 border-secondary-200',
+      color: 'bg-secondary-50 hover:bg-secondary-100',
       iconColor: 'text-secondary-600',
       disabled: !appState.last_generated_test
     },
@@ -65,7 +66,7 @@ export function HomePage() {
         : 'No feedback available yet',
       icon: MessageSquare,
       path: appState.last_generated_feedback ? `/view-feedback/${appState.last_generated_feedback.id}` : '/view-feedback',
-      color: 'bg-neutral-50 hover:bg-neutral-100 border-neutral-200',
+      color: 'bg-neutral-50 hover:bg-neutral-100',
       iconColor: 'text-neutral-600',
       disabled: !appState.last_generated_feedback
     }
@@ -80,23 +81,35 @@ export function HomePage() {
   return (
     <div className="min-h-screen bg-cream">
       <Header />
+      {BYPASS_AUTH && (
+        <div
+          className="mx-4 sm:mx-6 lg:mx-8 mt-6 mb-2 rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-3 text-sm text-yellow-800"
+          role="alert"
+        >
+          {/* DEV ONLY: highlight that auth is bypassed locally */}
+          <p className="font-semibold">Auth bypass enabled for local development</p>
+          <p>Remove VITE_BYPASS_AUTH before committing or deploying to production.</p>
+        </div>
+      )}
       
       <div className="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        {/* Welcome Section */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-48 h-auto">
+            <img src="/Evater_logo_2.png" alt="Evater Logo" className="w-48 h-auto object-fill" />
+          </div>
+          <h1 className="text-4xl font-bold text-dark mb-4">
+            Welcome back, {profile?.name ? profile.name.split(' ')[0] : 'Educator'}!
+          </h1>
+          <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+            Ready to create, evaluate, and enhance your learning experience
+          </p>
+        </div>
         {/* Account Status Section - Full Width */}
-        <Card className="mb-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200">
+        <Card className="mb-8 bg-gradient-to-r from-yellow-50 to-orange-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center mr-4">
-                  <User className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-dark mb-1">Account Status</h2>
-                  <p className="text-sm text-neutral-600">Your current account information and credits</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-8">
+              <div className="flex items-center justify-evenly w-full">
                 {/* Name */}
                 <div className="text-center">
                   <div className="flex items-center mb-1">
@@ -154,19 +167,6 @@ export function HomePage() {
           </CardContent>
         </Card>
 
-        {/* Welcome Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary-500 rounded-2xl shadow-lg mb-6">
-            <Sparkles className="h-10 w-10 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-dark mb-4">
-            Welcome Back to Evater
-          </h1>
-          <p className="text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed">
-            Ready to create, evaluate, and enhance your learning experience
-          </p>
-        </div>
-
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {navigationOptions.map((option) => {
@@ -205,65 +205,12 @@ export function HomePage() {
           })}
         </div>
 
-        {/* Recent Activity Overview */}
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            <div className="flex items-center mb-6">
-              <Clock className="h-6 w-6 text-primary-600 mr-3" />
-              <h2 className="text-2xl font-bold text-dark">Recent Activity</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Last Generated Test */}
-              <div className="p-6 bg-primary-50 rounded-xl border border-primary-200">
-                <h3 className="font-semibold text-primary-900 mb-4 flex items-center">
-                  <PlusCircle className="h-5 w-5 mr-2" />
-                  Last Generated Test
-                </h3>
-                {appState.last_generated_test ? (
-                  <div className="space-y-2 text-sm text-primary-800">
-                    <p><span className="font-medium">Subject:</span> {appState.last_generated_test.subject}</p>
-                    <p><span className="font-medium">Chapter:</span> {appState.last_generated_test.chapter}</p>
-                    <p><span className="font-medium">Grade:</span> {appState.last_generated_test.grade}</p>
-                    <p><span className="font-medium">Created:</span> {new Date(appState.last_generated_test.created_at).toLocaleDateString()}</p>
-                  </div>
-                ) : (
-                  <p className="text-sm text-primary-600 italic">No test generated in this session</p>
-                )}
-              </div>
-              
-              {/* Last Feedback */}
-              <div className="p-6 bg-secondary-50 rounded-xl border border-secondary-200">
-                <h3 className="font-semibold text-secondary-900 mb-4 flex items-center">
-                  <MessageSquare className="h-5 w-5 mr-2" />
-                  Last Feedback
-                </h3>
-                {appState.last_generated_feedback ? (
-                  <div className="space-y-2 text-sm text-secondary-800">
-                    <p><span className="font-medium">Evaluation ID:</span> {appState.last_generated_feedback.id}</p>
-                    <p><span className="font-medium">Created:</span> {new Date(appState.last_generated_feedback.created_at).toLocaleDateString()}</p>
-                    <div className="inline-flex items-center px-2 py-1 bg-primary-200 text-primary-800 rounded-full text-xs font-medium mt-2">
-                      <div className="w-2 h-2 bg-primary-500 rounded-full mr-1"></div>
-                      Completed
-                    </div>
-                  </div>
-                ) : (
-                  <p className="text-sm text-secondary-600 italic">No feedback generated in this session</p>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Blog Section for Dashboard */}
-        <div className="mb-8">
-          <BlogSection showInDashboard />
-        </div>
 
         {/* General Feedback Section */}
-        <Card className="bg-pink-50 border-2 border-pink-200">
+        <Card className="bg-primary-100">
           <CardContent className="p-8 text-center">
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center shadow-lg">
                 <Heart className="h-8 w-8 text-white" />
               </div>
             </div>
@@ -273,7 +220,7 @@ export function HomePage() {
             </p>
             <button
               onClick={() => navigate('/general-feedback')}
-              className="inline-flex items-center px-8 py-4 bg-pink-500 text-white font-medium rounded-xl hover:bg-pink-600 transition-colors duration-200 shadow-sm hover:shadow-md"
+              className="inline-flex items-center px-8 py-4 bg-primary-500 text-white font-medium rounded-xl hover:bg-primary-600 transition-colors duration-200 shadow-sm hover:shadow-md"
             >
               <MessageSquare className="h-5 w-5 mr-3" />
               Share Your Feedback
