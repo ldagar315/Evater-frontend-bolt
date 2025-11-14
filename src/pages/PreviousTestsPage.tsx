@@ -149,7 +149,7 @@ export function PreviousTestsPage() {
         )}
         {/* Summary Stats */}
         {filteredTests.length > 0 && (
-          <Card className="mt-6">
+          <Card className="mt-6 mb-6">
             <CardContent className="p-6">
               <h3 className="text-lg font-semibold text-dark mb-4">
                 Quick Stats
@@ -260,133 +260,6 @@ export function PreviousTestsPage() {
             <span>Sorted by creation date (newest first)</span>
           </div>
         </div>
-
-        {/* Tests Table */}
-        <Card>
-          <CardContent className="p-0">
-            {filteredTests.length === 0 ? (
-              <div className="p-12 text-center">
-                <FileText className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-dark mb-2">
-                  {tests.length === 0
-                    ? "No Tests Created Yet"
-                    : "No Tests Found"}
-                </h3>
-                <p className="text-neutral-600 mb-4">
-                  {tests.length === 0
-                    ? "You haven't created any tests yet. Create your first test to get started!"
-                    : "No tests match your current filters. Try adjusting your search criteria."}
-                </p>
-                <Button
-                  onClick={() => navigate("/create-test")}
-                  className="flex items-center"
-                >
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  {tests.length === 0
-                    ? "Create Your First Test"
-                    : "Create New Test"}
-                </Button>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-neutral-50 border-b border-neutral-200">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Created Date
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Subject
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Topic/Chapter
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Grade
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Difficulty
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Questions
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-neutral-200">
-                    {filteredTests.map((test) => (
-                      <tr
-                        key={test.id}
-                        className="hover:bg-neutral-50 transition-colors duration-150"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <Calendar className="h-4 w-4 text-neutral-400 mr-2" />
-                            <div>
-                              <div className="text-sm font-medium text-dark">
-                                {formatDate(test.created_at).split(",")[0]}
-                              </div>
-                              <div className="text-xs text-neutral-500">
-                                {formatDate(test.created_at).split(",")[1]}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <BookOpen className="h-4 w-4 text-primary-600 mr-2" />
-                            <span className="text-sm font-medium text-dark">
-                              {test.subject || "N/A"}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div
-                            className="text-sm text-dark max-w-xs truncate"
-                            title={test.chapter || ""}
-                          >
-                            {test.chapter || "N/A"}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            Grade {test.grade || "N/A"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getDifficultyColor(
-                              test.difficulty_level
-                            )}`}
-                          >
-                            {test.difficulty_level || "N/A"}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-dark font-medium">
-                            {getQuestionCount(test)} questions
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Button
-                            size="sm"
-                            onClick={() => navigate(`/view-test/${test.id}`)}
-                            className="flex items-center"
-                          >
-                            <Eye className="h-4 w-4 mr-1" />
-                            View Test
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
         {/* Tests Table */}
         <Card>
           <CardContent className="p-0">
@@ -525,7 +398,7 @@ export function PreviousTestsPage() {
                 {/* 2. CARD LAYOUT (For Mobile/Small Screens) */}
                 {/* Shown by default, hidden from 'lg' breakpoint up */}
                 {/* ============================================== */}
-                <div className="lg:hidden p-4 space-y-4">
+                <div className="lg:hidden p-1 space-y-4">
                   {filteredTests.map((test) => (
                     <div
                       key={test.id}
@@ -535,11 +408,10 @@ export function PreviousTestsPage() {
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex-1 min-w-0 pr-2">
                           <p className="text-xs font-medium text-neutral-500 uppercase">
-                            Subject / Chapter
+                            {test.chapter || ""}
                           </p>
                           <div
-                            className="text-base font-semibold text-dark truncate"
-                            title={test.chapter || ""}
+                            className="text-xs font-semibold text-dark truncate"
                           >
                             {test.subject || "N/A"} - {test.chapter || "N/A"}
                           </div>
