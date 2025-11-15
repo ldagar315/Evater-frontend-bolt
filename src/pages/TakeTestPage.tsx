@@ -447,10 +447,10 @@ export function TakeTestPage() {
 
         {/* Progress bar */}
         <div className="mb-8">
-          <div className="w-full bg-neutral-200 rounded-full h-3 shadow-inner">
-            <div className="flex justify-between text-sm text-neutral-600 mt-2">
+          <div className="flex justify-between text-sm text-neutral-600 mt-2">
               <span>{Math.round(progress)}% Complete</span>
             </div>
+          <div className="w-full bg-neutral-200 rounded-full h-3 shadow-inner">
             <div
               className="bg-primary-500 h-3 rounded-full transition-all duration-300 shadow-sm"
               style={{ width: `${progress}%` }}
@@ -462,17 +462,12 @@ export function TakeTestPage() {
         <Card className="mb-8 shadow-lg border-neutral-200">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h2 className="text-lg font-semibold sm:text-2xl sm:font-bold text-dark mb-6">
-                {currentQuestion.isMultipleCorrect
-                  ? "Select all correct answers"
-                  : "Select the correct answer"}
-              </h2>
 
               {/* Question header with number and text in one row */}
-              <div className="max-w-4xl mx-auto mb-4 sm:mb-8">
+              <div className="max-w-4xl mx-auto mb-4 sm:mb-8 text-left flex items-start">
                 {/* Question text */}
-                <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center shadow-sm">
-                  <span className="text-lg font-bold text-white">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-primary-50 rounded-xl flex items-center justify-center shadow-sm">
+                  <span className="text-base font-bold text-primary-600">
                     {currentQuestion.question_number}
                   </span>
                 </div>
@@ -489,13 +484,13 @@ export function TakeTestPage() {
               </div>
 
               {/* Question type and marks - larger and more prominent */}
-              <div className="flex justify-center space-x-6 mb-4 sm:mb-8">
-                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-base font-normal sm:text-lg sm:font-bold shadow-lg">
+              <div className="flex justify-start space-x-6 mb-4 sm:mb-8">
+                <span className="bg-blue-50 text-blue-500 px-2 py-1 rounded-lg text-base font-normal sm:text-lg sm:font-bold">
                   {currentQuestion.isMultipleCorrect
                     ? "Multiple Correct"
                     : "Single Correct"}
                 </span>
-                <span className="bg-green-50 text-green-700 px-2 py-1 rounded-xl text-base font-normal sm:text-lg sm:font-bold shadow-lg">
+                <span className="bg-green-50 text-green-500 px-2 py-1 rounded-lg text-base font-normal sm:text-lg sm:font-bold">
                   {currentQuestion.maximum_marks} marks
                 </span>
               </div>
