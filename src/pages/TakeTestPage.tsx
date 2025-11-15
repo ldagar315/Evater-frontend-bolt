@@ -419,13 +419,13 @@ export function TakeTestPage() {
   return (
     <div className="min-h-screen bg-cream">
       <Header />
-      
+
       <div className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         {/* Header with progress and stats */}
         <div className="mb-8 flex items-center justify-between">
           <Button
             variant="ghost"
-            onClick={() => navigate('/previous-tests')}
+            onClick={() => navigate("/previous-tests")}
             className="flex items-center text-neutral-700 hover:text-primary-600"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -436,7 +436,9 @@ export function TakeTestPage() {
               <div className="flex items-center text-primary-800">
                 <Clock className="h-5 w-5 mr-3 text-primary-600" />
                 <div className="text-center">
-                  <div className="text-xl font-bold text-primary-700 sm:text-2xl">{formatTime(timeElapsed)}</div>
+                  <div className="text-lg font-bold text-primary-700 sm:text-2xl">
+                    {formatTime(timeElapsed)}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -446,50 +448,54 @@ export function TakeTestPage() {
         {/* Progress bar */}
         <div className="mb-8">
           <div className="w-full bg-neutral-200 rounded-full h-3 shadow-inner">
-            <div 
-              className="bg-gradient-to-r from-primary-500 to-primary-600 h-3 rounded-full transition-all duration-300 shadow-sm"
+            <div className="flex justify-between text-sm text-neutral-600 mt-2">
+              <span>{Math.round(progress)}% Complete</span>
+            </div>
+            <div
+              className="bg-primary-500 h-3 rounded-full transition-all duration-300 shadow-sm"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="flex justify-between text-sm text-neutral-600 mt-2">
-            <span>{Math.round(progress)}% Complete</span>
-          </div>
         </div>
-
 
         {/* Question Card */}
         <Card className="mb-8 shadow-lg border-neutral-200">
           <CardContent className="p-8">
             <div className="text-center mb-8">
               <h2 className="text-lg font-semibold sm:text-2xl sm:font-bold text-dark mb-6">
-                {currentQuestion.isMultipleCorrect ? 'Select all correct answers' : 'Select the correct answer'}
+                {currentQuestion.isMultipleCorrect
+                  ? "Select all correct answers"
+                  : "Select the correct answer"}
               </h2>
 
               {/* Question header with number and text in one row */}
-              <div className="max-w-4xl mx-auto mb-8">
-                <div className="flex items-start gap-6 bg-neutral-50 p-6 rounded-xl border border-neutral-200">
-                  {/* Question text */}
-                  <div className="flex-1 text-left">
-                    <div className="text-base sm:text-lg text-dark leading-relaxed">
-                    <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center shadow-sm">
-                      <span className="text-lg font-bold text-white">{currentQuestion.question_number}</span>
-                    </div>
-                      {currentQuestion.contains_math_expression ? (
-                        <MathText text={currentQuestion.question_text} className="text-dark" />
-                      ) : (
-                        <p className="text-dark">{currentQuestion.question_text}</p>
-                      )}
-                    </div>
-                  </div>
+              <div className="max-w-4xl mx-auto mb-4 sm:mb-8">
+                {/* Question text */}
+                <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center shadow-sm">
+                  <span className="text-lg font-bold text-white">
+                    {currentQuestion.question_number}
+                  </span>
+                </div>
+                <div className="text-base sm:text-lg text-dark leading-relaxed">
+                  {currentQuestion.contains_math_expression ? (
+                    <MathText
+                      text={currentQuestion.question_text}
+                      className="text-dark"
+                    />
+                  ) : (
+                    <p className="text-dark">{currentQuestion.question_text}</p>
+                  )}
                 </div>
               </div>
 
               {/* Question type and marks - larger and more prominent */}
-              <div className="flex justify-center space-x-6 mb-8">
-                <span className="bg-blue-500 text-white px-1 py-1 rounded-xl text-base font-normal sm:text-lg sm:font-bold shadow-lg">
-                  {currentQuestion.isMultipleCorrect ? 'Multiple Correct' : 'Single Correct'}
+              <div className="flex justify-center space-x-6 mb-4 sm:mb-8">
+                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-base font-normal sm:text-lg sm:font-bold shadow-lg">
+                  {currentQuestion.isMultipleCorrect
+                    ? "Multiple Correct"
+                    : "Single Correct"}
                 </span>
-                <span className="bg-green-500 text-white px-1 py-1 rounded-xl text-base font-normal sm:text-lg sm:font-bold shadow-lg">
+                <span className="bg-green-50 text-green-700 px-2 py-1 rounded-xl text-base font-normal sm:text-lg sm:font-bold shadow-lg">
                   {currentQuestion.maximum_marks} marks
                 </span>
               </div>
@@ -502,8 +508,12 @@ export function TakeTestPage() {
                   key={option.id}
                   onClick={() => handleOptionSelect(option.id)}
                   disabled={showAnswer}
-                  className={`w-full p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ${getOptionStyle(option)} ${
-                    showAnswer ? 'cursor-default' : 'cursor-pointer hover:scale-[1.02] hover:shadow-md'
+                  className={`w-full p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ${getOptionStyle(
+                    option
+                  )} ${
+                    showAnswer
+                      ? "cursor-default"
+                      : "cursor-pointer hover:scale-[1.02] hover:shadow-md"
                   }`}
                 >
                   <div className="flex items-center">
@@ -528,10 +538,9 @@ export function TakeTestPage() {
               <div className="mt-8 p-6 bg-neutral-50 rounded-xl max-w-3xl mx-auto border border-neutral-200">
                 <h4 className="font-semibold text-dark mb-2">Explanation:</h4>
                 <p className="text-neutral-700 text-sm">
-                  {userAnswers[currentQuestionIndex]?.isCorrect 
+                  {userAnswers[currentQuestionIndex]?.isCorrect
                     ? "Correct! Well done on selecting the right answer(s)."
-                    : "Incorrect. The correct answer(s) are highlighted in green above."
-                  }
+                    : "Incorrect. The correct answer(s) are highlighted in green above."}
                 </p>
               </div>
             )}
@@ -547,18 +556,18 @@ export function TakeTestPage() {
             className="px-8 py-3 text-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           >
             {!showAnswer ? (
-              'Submit Answer'
+              "Submit Answer"
             ) : currentQuestionIndex < questions.length - 1 ? (
               <>
                 Next Question
                 <ArrowRight className="h-5 w-5 ml-2" />
               </>
             ) : (
-              'Complete Test'
+              "Complete Test"
             )}
           </Button>
         </div>
       </div>
     </div>
-  )
+  );
 }
