@@ -426,14 +426,12 @@ export function TakeTestPage() {
           <Button
             variant="ghost"
             onClick={() => navigate("/previous-tests")}
-            className="flex items-center text-neutral-700 bg-primary-600"
+            className="flex items-center text-primary-600 bg-primary-50"
           >
             <ArrowLeft className="h-4 w-4" />
             Exit Test
           </Button>
-          <Card className="bg-primary-50">
-            <CardContent className="px-4 py-2 sm:px-6 sm:py-4">
-              <div className="flex items-center text-primary-800">
+              <div className="bg-primary-50 px-6 py-2 flex items-center text-primary-800">
                 <Clock className="h-5 w-5 mr-3 text-primary-600" />
                 <div className="text-center">
                   <div className="text-lg font-bold text-primary-700 sm:text-2xl">
@@ -441,8 +439,6 @@ export function TakeTestPage() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Progress bar */}
@@ -462,13 +458,13 @@ export function TakeTestPage() {
         <Card className="mb-8 shadow-lg border-neutral-200">
           <CardContent className="p-4 sm:p-8">
           {/* Question type and marks - larger and more prominent */}
-              <div className="flex justify-start space-x-6 mb-4 sm:mb-8">
-                <span className="bg-blue-50 text-blue-500 px-2 py-1 rounded-lg text-base font-normal sm:text-lg sm:font-bold">
+              <div className="flex justify-between space-x-6 mb-4 sm:mb-8">
+                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-xs font-normal sm:text-lg sm:font-bold">
                   {currentQuestion.isMultipleCorrect
                     ? "Multiple Correct"
                     : "Single Correct"}
                 </span>
-                <span className="bg-green-50 text-green-500 px-2 py-1 rounded-lg text-base font-normal sm:text-lg sm:font-bold">
+                <span className="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-xs font-normal sm:text-lg sm:font-bold">
                   {currentQuestion.maximum_marks} marks
                 </span>
               </div>
@@ -476,12 +472,12 @@ export function TakeTestPage() {
               {/* Question header with number and text in one row */}
               <div className="max-w-4xl mx-auto mb-4 sm:mb-8 text-left flex items-start">
                 {/* Question text */}
-                <div className="w-12 h-6 sm:w-24 sm:h-12 bg-primary-50 rounded mr-0 flex items-center justify-center shadow-sm">
-                  <span className="text-base font-bold text-primary-600">
+                <div className="w-8 h-6 sm:w-24 sm:h-12 bg-primary-50 rounded mr-1 flex items-center justify-center shadow-sm">
+                  <span className="text-sm font-bold text-primary-600">
                     {currentQuestion.question_number}
                   </span>
                 </div>
-                <div className="text-base sm:text-lg text-dark leading-relaxed">
+                <div className="text-sm sm:text-lg text-dark leading-relaxed">
                   {currentQuestion.contains_math_expression ? (
                     <MathText
                       text={currentQuestion.question_text}
