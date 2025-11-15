@@ -43,7 +43,7 @@ interface MathTextProps {
 
 export function MathText({ text, className = '' }: MathTextProps) {
   // Simple regex to detect LaTeX math expressions
-  const mathRegex = /\$\$([^$]+)\$\$|\$([^$]+)\$/g
+  const mathRegex = /\$\$([\s\S]+?)\$\$|\$([\s\S]+?)\$|\\\(([\s\S]+?)\\\)|\\\[([\s\S]+?)\\\]/g;
   
   const parts = []
   let lastIndex = 0
@@ -60,8 +60,8 @@ export function MathText({ text, className = '' }: MathTextProps) {
     }
 
     // Add the math part
-    const mathContent = match[1] || match[2] // $$ or $ delimited
-    const isDisplayMode = !!match[1] // $$ is display mode
+    const mathContent = match[1] || match[2] || match[3] || match[4]; // $$ or $ delimited
+    const isDisplayMode = !!match[1] || !!match[4]; // $$ is display mode
     
     parts.push(
       <MathRenderer
