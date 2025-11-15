@@ -458,8 +458,8 @@ export function TakeTestPage() {
         <Card className="mb-8 shadow-lg border-neutral-200">
           <CardContent className="p-4 sm:p-8">
           {/* Question type and marks - larger and more prominent */}
-              <div className="flex justify-between space-x-6 mb-4 sm:mb-8">
-                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-sm font-normal sm:text-base">
+              <div className="flex justify-end space-x-6 mb-4 sm:mb-8">
+                <span className="bg-secondary-50 text-secondary-700 px-2 py-1 rounded-lg text-sm font-normal sm:text-base">
                   {currentQuestion.isMultipleCorrect
                     ? "Multiple Correct"
                     : "Single Correct"}
@@ -468,7 +468,7 @@ export function TakeTestPage() {
                   {currentQuestion.maximum_marks} marks
                 </span>
               </div>
-            <div className="text-center mb-8">
+            <div className="text-center mb-4 sm:mb-8">
               {/* Question header with number and text in one row */}
               <div className="max-w-4xl mx-auto mb-4 sm:mb-8 text-left flex items-start">
                 {/* Question text */}
@@ -542,7 +542,7 @@ export function TakeTestPage() {
             onClick={handleNext}
             disabled={selectedOptions.length === 0 && !showAnswer}
             size="lg"
-            className="px-8 py-3 text-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+            className="px-8 py-3 text-base sm:text-lg font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           >
             {!showAnswer ? (
               "Submit Answer"
