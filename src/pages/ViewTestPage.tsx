@@ -98,10 +98,10 @@ export function ViewTestPage() {
               )}
             </h3>
             <div className="flex items-center space-x-2 text-sm text-neutral-500">
-              <span className ="text-secondary-800">
+              <span className ="text-secondary-800 bg-secondary-50 px-2 py-1 rounded">
                 {question.question_type.replace('_', ' ')}
               </span>
-              <span className=" text-green-800">
+              <span className=" text-green-800 bg-primary-50 px-2 py-1 rounded">
                 {question.maximum_marks} marks
               </span>
             </div>
@@ -236,15 +236,14 @@ export function ViewTestPage() {
                 </h1>
                 <div className="flex flex-wrap gap-1 sm:gap-2 text-sm text-neutral-600">
                   <span>Class {test.grade}</span>
-                  <span>•</span>
+                  <span>|</span>
                   <span>{test.subject}</span>
-                  <span>•</span>
+                  <span>|</span>
                   <span className="capitalize">{test.difficulty_level}</span>
-                  <span>•</span>
-                  <span>Created: {new Date(test.created_at).toLocaleDateString()}</span>
-                  <span>•</span>
+                  <span>|</span>
                   <span>{questions.length} Questions</span>
                 </div>
+                <span>Created at {new Date(test.created_at).toLocaleDateString()}</span>
               </div>
             </div>
             

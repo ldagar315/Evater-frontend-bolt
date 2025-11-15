@@ -414,7 +414,7 @@ export function TakeTestPage() {
   }
 
   const currentQuestion = questions[currentQuestionIndex]
-  const progress = ((currentQuestionIndex + 1) / questions.length) * 100
+  const progress = ((currentQuestionIndex) / questions.length) * 100
 
   return (
     <div className="min-h-screen bg-cream">
@@ -431,12 +431,16 @@ export function TakeTestPage() {
             <ArrowLeft className="h-4 w-4 mr-2" />
             Exit Test
           </Button>
-          
-          <div className="flex items-center space-x-6 text-neutral-700">
-            <div className="text-sm font-medium">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </div>
-          </div>
+          <Card className="bg-primary-50">
+            <CardContent className="px-6 py-4">
+              <div className="flex items-center text-primary-800">
+                <Clock className="h-5 w-5 mr-3 text-primary-600" />
+                <div className="text-center">
+                  <div className="text-xl font-bold text-primary-700 sm:text-2xl">{formatTime(timeElapsed)}</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Progress bar */}
@@ -448,47 +452,28 @@ export function TakeTestPage() {
             />
           </div>
           <div className="flex justify-between text-sm text-neutral-600 mt-2">
-            <span>Progress</span>
             <span>{Math.round(progress)}% Complete</span>
           </div>
         </div>
 
-        {/* Timer Element - Moved to top */}
-        <div className="mb-8 flex justify-center">
-          <Card className="bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
-            <CardContent className="px-6 py-4">
-              <div className="flex items-center text-primary-800">
-                <Clock className="h-5 w-5 mr-3 text-primary-600" />
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary-700">{formatTime(timeElapsed)}</div>
-                  <div className="text-sm text-primary-600">Time Taken</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Question Card */}
         <Card className="mb-8 shadow-lg border-neutral-200">
           <CardContent className="p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-dark mb-6">
+              <h2 className="text-lg font-semibold sm:text-2xl sm:font-bold text-dark mb-6">
                 {currentQuestion.isMultipleCorrect ? 'Select all correct answers' : 'Select the correct answer'}
               </h2>
 
               {/* Question header with number and text in one row */}
               <div className="max-w-4xl mx-auto mb-8">
                 <div className="flex items-start gap-6 bg-neutral-50 p-6 rounded-xl border border-neutral-200">
-                  {/* Question number - smaller size */}
-                  <div className="flex-shrink-0">
+                  {/* Question text */}
+                  <div className="flex-1 text-left">
+                    <div className="text-base sm:text-lg text-dark leading-relaxed">
                     <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center shadow-sm">
                       <span className="text-lg font-bold text-white">{currentQuestion.question_number}</span>
                     </div>
-                  </div>
-                  
-                  {/* Question text */}
-                  <div className="flex-1 text-left">
-                    <div className="text-lg text-dark leading-relaxed">
                       {currentQuestion.contains_math_expression ? (
                         <MathText text={currentQuestion.question_text} className="text-dark" />
                       ) : (
@@ -501,10 +486,10 @@ export function TakeTestPage() {
 
               {/* Question type and marks - larger and more prominent */}
               <div className="flex justify-center space-x-6 mb-8">
-                <span className="bg-blue-500 text-white px-6 py-3 rounded-xl text-lg font-bold shadow-lg">
+                <span className="bg-blue-500 text-white px-1 py-1 rounded-xl text-base font-normal sm:text-lg sm:font-bold shadow-lg">
                   {currentQuestion.isMultipleCorrect ? 'Multiple Correct' : 'Single Correct'}
                 </span>
-                <span className="bg-green-500 text-white px-6 py-3 rounded-xl text-lg font-bold shadow-lg">
+                <span className="bg-green-500 text-white px-1 py-1 rounded-xl text-base font-normal sm:text-lg sm:font-bold shadow-lg">
                   {currentQuestion.maximum_marks} marks
                 </span>
               </div>
