@@ -443,7 +443,7 @@ export function TakeTestPage() {
 
         {/* Progress bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-sm text-neutral-600 mt-2 font-bold mb-1">
+          <div className="flex justify-between text-sm text-neutral-600 mt-2 font-bold mb-1 sm:mb-2 sm:text-base">
               <span>{Math.round(progress)}% Complete</span>
           </div>
           <div className="w-full bg-neutral-200 rounded-full h-3 shadow-inner">
