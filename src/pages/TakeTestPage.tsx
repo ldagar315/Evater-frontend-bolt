@@ -426,7 +426,7 @@ export function TakeTestPage() {
           <Button
             variant="ghost"
             onClick={() => navigate("/previous-tests")}
-            className="flex items-center text-primary-600 bg-primary-50"
+            className="flex items-center text-red-600 bg-red-50"
           >
             <ArrowLeft className="h-4 w-4" />
             Exit Test
@@ -434,7 +434,7 @@ export function TakeTestPage() {
               <div className="bg-primary-50 px-6 py-2 flex items-center text-primary-800">
                 <Clock className="h-5 w-5 mr-3 text-primary-600" />
                 <div className="text-center">
-                  <div className="text-lg font-bold text-primary-700 sm:text-2xl">
+                  <div className="text-base font-semibold text-primary-700 sm:text-lg">
                     {formatTime(timeElapsed)}
                   </div>
                 </div>
@@ -459,12 +459,12 @@ export function TakeTestPage() {
           <CardContent className="p-4 sm:p-8">
           {/* Question type and marks - larger and more prominent */}
               <div className="flex justify-between space-x-6 mb-4 sm:mb-8">
-                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-sm font-normal sm:text-lg">
+                <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-sm font-normal sm:text-base">
                   {currentQuestion.isMultipleCorrect
                     ? "Multiple Correct"
                     : "Single Correct"}
                 </span>
-                <span className="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-sm font-normal sm:text-lg">
+                <span className="bg-green-50 text-green-700 px-2 py-1 rounded-lg text-sm font-normal sm:text-base">
                   {currentQuestion.maximum_marks} marks
                 </span>
               </div>
@@ -472,7 +472,7 @@ export function TakeTestPage() {
               {/* Question header with number and text in one row */}
               <div className="max-w-4xl mx-auto mb-4 sm:mb-8 text-left flex items-start">
                 {/* Question text */}
-                <div className="w-8 h-6 sm:w-12 sm:h-12 sm:text-lg bg-primary-50 rounded mr-2 sm:mr-4 flex items-center justify-center shadow-sm">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 sm:text-lg bg-primary-50 rounded-full mr-2 sm:mr-4 flex items-center justify-center shadow-sm">
                   <span className="text-sm font-bold text-primary-600">
                     {currentQuestion.question_number}
                   </span>
@@ -497,7 +497,7 @@ export function TakeTestPage() {
                   key={option.id}
                   onClick={() => handleOptionSelect(option.id)}
                   disabled={showAnswer}
-                  className={`w-full p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ${getOptionStyle(
+                  className={`w-full p-2 sm:p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between ${getOptionStyle(
                     option
                   )} ${
                     showAnswer
