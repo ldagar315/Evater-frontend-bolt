@@ -15,60 +15,81 @@ export function HomePage() {
   const { user } = useAuthContext()
   const { profile } = useProfile(user?.id)
 
-  const navigationOptions = [
+  const navigationSections = [
     {
-      title: 'Create Test',
-      description: 'Generate a new test with AI assistance',
-      icon: PlusCircle,
-      path: '/create-test',
-      color: 'bg-primary-50 hover:bg-primary-100',
-      iconColor: 'text-primary-600'
+      title: 'Give Tests',
+      options: [
+        {
+          title: 'Create Test',
+          description: 'Generate a new test with AI assistance',
+          icon: PlusCircle,
+          path: '/create-test',
+          color: 'bg-primary-50 hover:bg-primary-100',
+          iconColor: 'text-primary-600'
+        },
+        {
+          title: 'AI Viva Session',
+          description: 'Interactive oral examination with AI',
+          icon: Brain,
+          path: '/viva',
+          color: 'bg-purple-50 hover:bg-purple-100',
+          iconColor: 'text-purple-600'
+        }
+      ]
     },
     {
       title: 'Previous Tests',
-      description: 'View all your previously created tests',
-      icon: History,
-      path: '/previous-tests',
-      color: 'bg-purple-50 hover:bg-purple-100',
-      iconColor: 'text-purple-600'
+      options: [
+        {
+          title: 'View Last Generated Test',
+          description: appState.last_generated_test
+            ? `${appState.last_generated_test.subject} - ${appState.last_generated_test.chapter}`
+            : 'No test generated yet',
+          icon: FileText,
+          path: appState.last_generated_test
+            ? `/view-test/${appState.last_generated_test.id}`
+            : '/view-test',
+          color: 'bg-secondary-50 hover:bg-secondary-100',
+          iconColor: 'text-secondary-600',
+          disabled: !appState.last_generated_test
+        },
+        {
+          title: 'Previous Tests',
+          description: 'View all your previously created tests',
+          icon: History,
+          path: '/previous-tests',
+          color: 'bg-purple-50 hover:bg-purple-100',
+          iconColor: 'text-purple-600'
+        }
+      ]
     },
     {
       title: 'Previous Feedbacks',
-      description: 'View all your previous test evaluations',
-      icon: BarChart3,
-      path: '/previous-feedbacks',
-      color: 'bg-blue-50 hover:bg-blue-100',
-      iconColor: 'text-blue-600'
-    },
-    {
-      title: 'AI Viva Session',
-      description: 'Interactive oral examination with AI',
-      icon: Brain,
-      path: '/viva',
-      color: 'bg-purple-50 hover:bg-purple-100',
-      iconColor: 'text-purple-600'
-    },
-    {
-      title: 'View Last Generated Test',
-      description: appState.last_generated_test 
-        ? `${appState.last_generated_test.subject} - ${appState.last_generated_test.chapter}`
-        : 'No test generated yet',
-      icon: FileText,
-      path: appState.last_generated_test ? `/view-test/${appState.last_generated_test.id}` : '/view-test',
-      color: 'bg-secondary-50 hover:bg-secondary-100',
-      iconColor: 'text-secondary-600',
-      disabled: !appState.last_generated_test
-    },
-    {
-      title: 'View Last Feedback',
-      description: appState.last_generated_feedback 
-        ? `Review evaluation from ${new Date(appState.last_generated_feedback.created_at).toLocaleDateString()}`
-        : 'No feedback available yet',
-      icon: MessageSquare,
-      path: appState.last_generated_feedback ? `/view-feedback/${appState.last_generated_feedback.id}` : '/view-feedback',
-      color: 'bg-neutral-50 hover:bg-neutral-100',
-      iconColor: 'text-neutral-600',
-      disabled: !appState.last_generated_feedback
+      options: [
+        {
+          title: 'View Last Feedback',
+          description: appState.last_generated_feedback
+            ? `Review evaluation from ${new Date(
+                appState.last_generated_feedback.created_at
+              ).toLocaleDateString()}`
+            : 'No feedback available yet',
+          icon: MessageSquare,
+          path: appState.last_generated_feedback
+            ? `/view-feedback/${appState.last_generated_feedback.id}`
+            : '/view-feedback',
+          color: 'bg-neutral-50 hover:bg-neutral-100',
+          iconColor: 'text-neutral-600',
+          disabled: !appState.last_generated_feedback
+        },
+        {
+          title: 'Previous Feedbacks',
+          description: 'View all your previous test evaluations',
+          icon: BarChart3,
+          path: '/previous-feedbacks',
+          color: 'bg-blue-50 hover:bg-blue-100',
+          iconColor: 'text-blue-600'
+        }
+      ]
     }
   ]
 
@@ -182,57 +203,66 @@ export function HomePage() {
         </Card>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {navigationOptions.map((option) => {
-            const Icon = option.icon;
-            const isDisabled = option.disabled;
-            return (
-              <div
-                key={option.path}
-                className={`cursor-pointer transition-all duration-300 ${
-                  option.color
-                } hover:shadow-lg rounded-2xl shadow-sm border-2 transform hover:scale-105 hover:-translate-y-1 ${
-                  isDisabled
-                    ? "opacity-60 cursor-not-allowed hover:scale-100 hover:translate-y-0"
-                    : ""
-                }`}
-                onClick={() => handleNavigation(option.path, isDisabled)}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="flex justify-center mb-4">
+        <div className="space-y-10 mb-12">
+          {navigationSections.map((section) => (
+            <div key={section.title}>
+              <h2 className="text-xl font-semibold text-dark mb-4">
+                {section.title}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {section.options.map((option) => {
+                  const Icon = option.icon;
+                  const isDisabled = option.disabled;
+                  return (
                     <div
-                      className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                        isDisabled ? "bg-neutral-200" : "bg-white shadow-sm"
+                      key={option.path}
+                      className={`cursor-pointer transition-all duration-300 ${
+                        option.color
+                      } hover:shadow-lg rounded-2xl shadow-sm border-2 transform hover:scale-105 hover:-translate-y-1 ${
+                        isDisabled
+                          ? "opacity-60 cursor-not-allowed hover:scale-100 hover:translate-y-0"
+                          : ""
                       }`}
+                      onClick={() => handleNavigation(option.path, isDisabled)}
                     >
-                      <Icon
-                        className={`h-6 w-6 ${
-                          isDisabled ? "text-neutral-400" : option.iconColor
-                        }`}
-                      />
+                      <CardContent className="p-6 text-center">
+                        <div className="flex justify-center mb-4">
+                          <div
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                              isDisabled ? "bg-neutral-200" : "bg-white shadow-sm"
+                            }`}
+                          >
+                            <Icon
+                              className={`h-6 w-6 ${
+                                isDisabled ? "text-neutral-400" : option.iconColor
+                              }`}
+                            />
+                          </div>
+                        </div>
+                        <h3 className="text-lg font-semibold text-dark mb-2">
+                          {option.title}
+                        </h3>
+                        <p
+                          className={`text-sm leading-relaxed ${
+                            isDisabled ? "text-neutral-400" : "text-neutral-600"
+                          }`}
+                        >
+                          {option.description}
+                        </p>
+                        {isDisabled && (
+                          <div className="mt-3">
+                            <span className="inline-block bg-neutral-200 text-neutral-500 px-2 py-1 rounded-full text-xs font-medium">
+                              Not Available
+                            </span>
+                          </div>
+                        )}
+                      </CardContent>
                     </div>
-                  </div>
-                  <h3 className="text-lg font-semibold text-dark mb-2">
-                    {option.title}
-                  </h3>
-                  <p
-                    className={`text-sm leading-relaxed ${
-                      isDisabled ? "text-neutral-400" : "text-neutral-600"
-                    }`}
-                  >
-                    {option.description}
-                  </p>
-                  {isDisabled && (
-                    <div className="mt-3">
-                      <span className="inline-block bg-neutral-200 text-neutral-500 px-2 py-1 rounded-full text-xs font-medium">
-                        Not Available
-                      </span>
-                    </div>
-                  )}
-                </CardContent>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
         {/* General Feedback Section */}
