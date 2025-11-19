@@ -58,6 +58,21 @@ export function ImageCropper({
     const x = clientX - rect.left;
     const y = clientY - rect.top;
     return { x, y };
+  };
+
+  const handleMouseDown = (index: number) => {
+    setActiveCornerIndex(index);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (activeCornerIndex === null || !imageRef.current) return;
+
+    const coords = getScaledCoordinates(e);
+    if (!coords) return;
+
+    // Constrain to image bounds
+    const x = Math.max(0, Math.min(coords.x, imageRef.current.width));
+    const y = Math.max(0, Math.min(coords.y, imageRef.current.height));
 
     setCorners((prev) => {
       const newCorners = [...prev];
