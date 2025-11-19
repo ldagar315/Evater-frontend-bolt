@@ -24,6 +24,8 @@ export function QuestionCard({
   const isMCQ =
     question.question_type === "mcq_single" ||
     question.question_type === "mcq_multi";
+  const isTrueFalse = question.question_type === "true_false";
+  const options = isTrueFalse ? ["True", "False"] : question.options;
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -33,12 +35,7 @@ export function QuestionCard({
   };
 
   const handleCropComplete = (croppedBlob: Blob) => {
-    // Convert blob to base64 or keep as blob for upload
-    // For preview, we create a URL
     const url = URL.createObjectURL(croppedBlob);
-
-    // We need to store the actual file/blob for upload later
-    // For now, let's store an object with both preview URL and blob
     onAnswerChange({
       ...answer,
       image: {
@@ -46,7 +43,6 @@ export function QuestionCard({
         previewUrl: url,
       },
     });
-
     setShowCropper(false);
     setSelectedImage(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -67,14 +63,13 @@ export function QuestionCard({
 
   const handleMCQSelect = (optionIndex: number) => {
     if (question.question_type === "mcq_multi") {
-      // Toggle selection for multi-select
       const currentSelected = (answer?.selectedOptions as number[]) || [];
       const newSelected = currentSelected.includes(optionIndex)
         ? currentSelected.filter((i) => i !== optionIndex)
         : [...currentSelected, optionIndex];
       onAnswerChange({ ...answer, selectedOptions: newSelected });
     } else {
-      // Single select
+      // Single select (works for True/False too)
       onAnswerChange({ ...answer, selectedOptions: [optionIndex] });
     }
   };
@@ -110,9 +105,9 @@ export function QuestionCard({
           )}
         </div>
 
-        {isMCQ ? (
+        {isMCQ || isTrueFalse ? (
           <div className="space-y-3">
-            {question.options?.map((option, index) => {
+            {options?.map((option, index) => {
               const isSelected = (
                 answer?.selectedOptions as number[]
               )?.includes(index);
