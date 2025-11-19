@@ -96,6 +96,14 @@ export function Header() {
                 Blog
               </Button>
             )}
+            <Button
+              onClick={() => navigate("/about")}
+              variant="ghost"
+              size="sm"
+              className="text-neutral-600 hover:text-primary-600 hover:bg-primary-50"
+            >
+              About
+            </Button>
 
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -293,8 +301,8 @@ export function Header() {
                 </Button>
               </div>
             )}
-            {(!user || !isBlogPage) && (
-              <div className="pt-4 border-t border-neutral-100">
+            <div className="pt-4 border-t border-neutral-100 space-y-2">
+              {(!user || !isBlogPage) && (
                 <Button
                   onClick={() => navigate("/blog")}
                   variant="ghost"
@@ -302,8 +310,15 @@ export function Header() {
                 >
                   Blog
                 </Button>
-              </div>
-            )}
+              )}
+              <Button
+                onClick={() => navigate("/about")}
+                variant="ghost"
+                className="w-full justify-start"
+              >
+                About
+              </Button>
+            </div>
           </div>
         </div>
       )}

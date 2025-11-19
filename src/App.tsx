@@ -21,6 +21,7 @@ import { PreviousFeedbacksPage } from './pages/PreviousFeedbacksPage'
 import { BlogPage } from './pages/BlogPage'
 import { BlogPostPage } from './pages/BlogPostPage'
 import { VivaPage } from './pages/VivaPage'
+import { AboutPage } from './pages/AboutPage'
 import { BYPASS_AUTH } from './lib/auth/devBypass'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -96,6 +97,7 @@ function AppRoutes() {
           <Route path="/" element={!user ? <LandingPage /> : <Navigate to="/home" replace />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="/about" element={<AboutPage />} />
           
           {!user ? (
             <>
