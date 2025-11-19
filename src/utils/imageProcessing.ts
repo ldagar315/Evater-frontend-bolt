@@ -32,10 +32,9 @@ function getPerspectiveTransform(src: Point[], dst: Point[]): number[] {
     b.push(yp);
   }
 
-  // Gaussian elimination to solve Ax = b
+  // Gaussian elimination
   const n = 8;
   for (let i = 0; i < n; i++) {
-    // Find pivot
     let maxEl = Math.abs(a[i][i]);
     let maxRow = i;
     for (let k = i + 1; k < n; k++) {
@@ -45,7 +44,6 @@ function getPerspectiveTransform(src: Point[], dst: Point[]): number[] {
       }
     }
 
-    // Swap rows
     for (let k = i; k < n; k++) {
       const tmp = a[maxRow][k];
       a[maxRow][k] = a[i][k];
@@ -55,7 +53,6 @@ function getPerspectiveTransform(src: Point[], dst: Point[]): number[] {
     b[maxRow] = b[i];
     b[i] = tmp;
 
-    // Make all rows below this one 0 in current column
     for (let k = i + 1; k < n; k++) {
       const c = -a[k][i] / a[i][i];
       for (let j = i; j < n; j++) {
@@ -69,7 +66,6 @@ function getPerspectiveTransform(src: Point[], dst: Point[]): number[] {
     }
   }
 
-  // Solve equation Ax=b for an upper triangular matrix A
   const x = new Array(n).fill(0);
   for (let i = n - 1; i >= 0; i--) {
     let sum = 0;
@@ -79,7 +75,7 @@ function getPerspectiveTransform(src: Point[], dst: Point[]): number[] {
     x[i] = (b[i] - sum) / a[i][i];
   }
 
-  return [...x, 1]; // h8 = 1
+  return [...x, 1];
 }
 
 /**

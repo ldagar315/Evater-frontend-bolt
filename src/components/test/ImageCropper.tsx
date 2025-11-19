@@ -58,21 +58,6 @@ export function ImageCropper({
     const x = clientX - rect.left;
     const y = clientY - rect.top;
     return { x, y };
-  };
-
-  const handleMouseDown = (index: number) => {
-    setActiveCornerIndex(index);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (activeCornerIndex === null || !imageRef.current) return;
-
-    const coords = getScaledCoordinates(e);
-    if (!coords) return;
-
-    // Constrain to image bounds
-    const x = Math.max(0, Math.min(coords.x, imageRef.current.width));
-    const y = Math.max(0, Math.min(coords.y, imageRef.current.height));
 
     setCorners((prev) => {
       const newCorners = [...prev];
@@ -147,6 +132,9 @@ export function ImageCropper({
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
+          onTouchCancel={handleMouseUp}
         >
           {imageSrc && (
             <div className="relative shadow-2xl inline-block">
@@ -182,6 +170,10 @@ export function ImageCropper({
                     r={8}
                     className="fill-blue-500 stroke-white stroke-2 cursor-move pointer-events-auto hover:scale-125 transition-transform"
                     onMouseDown={(e) => {
+                      e.stopPropagation();
+                      handleMouseDown(index);
+                    }}
+                    onTouchStart={(e) => {
                       e.stopPropagation();
                       handleMouseDown(index);
                     }}
