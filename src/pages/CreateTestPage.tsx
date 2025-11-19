@@ -1,345 +1,494 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Button } from '../components/ui/Button'
-import { Input } from '../components/ui/Input'
-import { Select } from '../components/ui/Select'
-import { Card, CardContent, CardHeader } from '../components/ui/Card'
-import { Header } from '../components/layout/Header'
-import { useAuthContext } from '../contexts/AuthContext'
-import { useAppState } from '../contexts/AppStateContext'
-import { supabase } from '../lib/supabase'
-import { TestGenerationParams, Question, ChapterContent } from '../types'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/Button";
+import { Select } from "../components/ui/Select";
+import { Card, CardContent } from "../components/ui/Card";
+import { Header } from "../components/layout/Header";
+import { useAuthContext } from "../contexts/AuthContext";
+import { useAppState } from "../contexts/AppStateContext";
+import { supabase } from "../lib/supabase";
+import { TestGenerationParams, Question, ChapterContent } from "../types";
+import {
+  BookOpen,
+  Calculator,
+  FlaskConical,
+  History as HistoryIcon,
+  Globe,
+  Languages,
+  Brain,
+  Atom,
+  Dna,
+  Zap,
+  CheckCircle2,
+  Clock,
+  AlertCircle,
+  ChevronRight,
+  GraduationCap,
+  Layout,
+  FileText,
+  Sparkles,
+} from "lucide-react";
 
 interface ApiQuestion {
-  question_text: string
-  question_type: 'short_answer' | 'long_answer' | 'mcq_single' | 'mcq_multi' | 'true_false'
-  question_number: number
-  maximum_marks: number
-  difficulty: 'Easy' | 'Medium' | 'Hard'
-  contains_math_expression: boolean
-  options?: string[] | null
+  question_text: string;
+  question_type:
+    | "short_answer"
+    | "long_answer"
+    | "mcq_single"
+    | "mcq_multi"
+    | "true_false";
+  question_number: number;
+  maximum_marks: number;
+  difficulty: "Easy" | "Medium" | "Hard";
+  contains_math_expression: boolean;
+  options?: string[] | null;
 }
 
 interface ApiResponse {
-  questions: ApiQuestion[]
+  questions: ApiQuestion[];
 }
 
 export function CreateTestPage() {
-  const navigate = useNavigate()
-  const { user } = useAuthContext()
-  const { setLastGeneratedTest } = useAppState()
-  
-  const [selectedGrade, setSelectedGrade] = useState('')
-  const [subject, setSubject] = useState('')
-  const [chapter, setChapter] = useState('')
-  const [difficulty, setDifficulty] = useState<'Easy' | 'Medium' | 'Hard'>('Medium')
-  const [length, setLength] = useState<'Short' | 'Long'>('Short')
-  const [specialInstructions, setSpecialInstructions] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  
-  const [chapterContents, setChapterContents] = useState<ChapterContent[]>([])
-  const [availableSubjects, setAvailableSubjects] = useState<string[]>([])
-  const [availableChapters, setAvailableChapters] = useState<string[]>([])
+  const navigate = useNavigate();
+  const { user } = useAuthContext();
+  const { setLastGeneratedTest } = useAppState();
 
-  const gradeOptions = Array.from({ length: 12 }, (_, i) => ({
-    value: (i + 1).toString(),
-    label: `Grade ${i + 1}`
-  }))
+  const [selectedGrade, setSelectedGrade] = useState("");
+  const [subject, setSubject] = useState("");
+  const [chapter, setChapter] = useState("");
+  const [difficulty, setDifficulty] = useState<"Easy" | "Medium" | "Hard">(
+    "Medium"
+  );
+  const [length, setLength] = useState<"Short" | "Long">("Short");
+  const [specialInstructions, setSpecialInstructions] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const [chapterContents, setChapterContents] = useState<ChapterContent[]>([]);
+  const [availableSubjects, setAvailableSubjects] = useState<string[]>([]);
+  const [availableChapters, setAvailableChapters] = useState<string[]>([]);
+
+  const gradeOptions = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
 
   const instructionOptions = [
-    'only mcq',
-    'only subjective', 
-    'numerical focused',
-    'theory focused'
-  ]
+    { id: "only mcq", label: "Only MCQ", icon: CheckCircle2 },
+    { id: "only subjective", label: "Only Subjective", icon: FileText },
+    { id: "numerical focused", label: "Numerical Focused", icon: Calculator },
+    { id: "theory focused", label: "Theory Focused", icon: BookOpen },
+  ];
 
   useEffect(() => {
-    fetchChapterContents()
-  }, [])
+    fetchChapterContents();
+  }, []);
 
   useEffect(() => {
     if (selectedGrade) {
       const subjects = chapterContents
-        .filter(content => content.grade === selectedGrade)
-        .map(content => content.subject)
-        .filter((subject, index, self) => subject && self.indexOf(subject) === index)
-      setAvailableSubjects(subjects as string[])
-      setSubject('')
-      setChapter('')
+        .filter((content) => content.grade === selectedGrade)
+        .map((content) => content.subject)
+        .filter(
+          (subject, index, self) => subject && self.indexOf(subject) === index
+        );
+      setAvailableSubjects(subjects as string[]);
+      setSubject("");
+      setChapter("");
     }
-  }, [selectedGrade, chapterContents])
+  }, [selectedGrade, chapterContents]);
 
   useEffect(() => {
     if (selectedGrade && subject) {
       const chapters = chapterContents
-        .filter(content => content.grade === selectedGrade && content.subject === subject)
-        .map(content => content.chapter)
-        .filter((chapter, index, self) => chapter && self.indexOf(chapter) === index)
-      setAvailableChapters(chapters as string[])
-      setChapter('')
+        .filter(
+          (content) =>
+            content.grade === selectedGrade && content.subject === subject
+        )
+        .map((content) => content.chapter)
+        .filter(
+          (chapter, index, self) => chapter && self.indexOf(chapter) === index
+        );
+      setAvailableChapters(chapters as string[]);
+      setChapter("");
     }
-  }, [selectedGrade, subject, chapterContents])
+  }, [selectedGrade, subject, chapterContents]);
 
   const fetchChapterContents = async () => {
     try {
       const { data, error } = await supabase
-        .from('Chapter_contents')
-        .select('*')
+        .from("Chapter_contents")
+        .select("*");
 
-      if (error) throw error
-      setChapterContents(data || [])
+      if (error) throw error;
+      setChapterContents(data || []);
     } catch (err) {
-      console.error('Error fetching chapter contents:', err)
+      console.error("Error fetching chapter contents:", err);
     }
-  }
+  };
 
   const handleInstructionToggle = (instruction: string) => {
-    setSpecialInstructions(prev =>
+    setSpecialInstructions((prev) =>
       prev.includes(instruction)
-        ? prev.filter(i => i !== instruction)
+        ? prev.filter((i) => i !== instruction)
         : [...prev, instruction]
-    )
-  }
+    );
+  };
+
+  const getSubjectIcon = (subjectName: string) => {
+    const s = subjectName.toLowerCase();
+    if (s.includes("math")) return Calculator;
+    if (s.includes("science")) return FlaskConical;
+    if (s.includes("history")) return HistoryIcon;
+    if (s.includes("geography")) return Globe;
+    if (s.includes("english")) return Languages;
+    if (s.includes("physics")) return Atom;
+    if (s.includes("chemistry")) return FlaskConical;
+    if (s.includes("biology")) return Dna;
+    if (s.includes("computer") || s.includes("tech")) return Layout;
+    return BookOpen;
+  };
 
   const callGenerateQuestionsAPI = async (params: {
-    grade: string
-    subject: string
-    topic: string
-    difficulty_level: string
-    length: string
-    special_instructions: string[]
+    grade: string;
+    subject: string;
+    topic: string;
+    difficulty_level: string;
+    length: string;
+    special_instructions: string[];
   }): Promise<ApiQuestion[]> => {
-    // Use Netlify function in production, proxy in development
-    const apiUrl = process.env.NODE_ENV === 'production' 
-      ? '/.netlify/functions/generate-questions'
-      : '/api/external/api/gen_question'
+    const apiUrl =
+      process.env.NODE_ENV === "production"
+        ? "/.netlify/functions/generate-questions"
+        : "/api/external/api/gen_question";
 
     const response = await fetch(apiUrl, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(params)
-    })
+      body: JSON.stringify(params),
+    });
 
     if (!response.ok) {
       if (response.status === 400) {
-        throw new Error('Missing required fields. Please fill in all form fields.')
+        throw new Error(
+          "Missing required fields. Please fill in all form fields."
+        );
       } else if (response.status === 500) {
-        throw new Error('Server error. Please try again later.')
+        throw new Error("Server error. Please try again later.");
       } else {
-        throw new Error(`API error: ${response.status}`)
+        throw new Error(`API error: ${response.status}`);
       }
     }
 
-    const data: ApiResponse = await response.json()
-    return data.questions
-  }
+    const data: ApiResponse = await response.json();
+    return data.questions;
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+  const handleSubmit = async () => {
+    setError("");
+    setLoading(true);
 
     try {
-      // Validate required fields
       if (!selectedGrade || !subject || !chapter) {
-        throw new Error('Please fill in all required fields')
+        throw new Error("Please fill in all required fields");
       }
 
-      // Prepare API payload - matching InputDataQuestion exactly
       const apiPayload = {
-        grade: selectedGrade, // Changed from class to grade, and kept as string
+        grade: selectedGrade,
         subject: subject,
-        topic: chapter, // Using chapter as topic
+        topic: chapter,
         difficulty_level: difficulty,
         length: length,
-        special_instructions: specialInstructions
-      }
+        special_instructions: specialInstructions,
+      };
 
-      console.log('API Payload:', apiPayload) // Debug log
+      const questions = await callGenerateQuestionsAPI(apiPayload);
 
-      // Call the external API
-      const questions = await callGenerateQuestionsAPI(apiPayload)
-
-      // Convert API response to our format
-      const convertedQuestions: Question[] = questions.map(q => ({
+      const convertedQuestions: Question[] = questions.map((q) => ({
         question_text: q.question_text,
         question_type: q.question_type,
         question_number: q.question_number,
         maximum_marks: q.maximum_marks,
-        difficulty: q.difficulty.toLowerCase() as 'easy' | 'medium' | 'hard',
+        difficulty: q.difficulty.toLowerCase() as "easy" | "medium" | "hard",
         contains_math_expression: q.contains_math_expression,
-        options: q.options || undefined
-      }))
+        options: q.options || undefined,
+      }));
 
-      // Save to database
       const { data, error } = await supabase
-        .from('Questions_Created')
-        .insert([{
-          created_by: user!.id,
-          grade: selectedGrade,
-          subject: subject,
-          chapter: chapter,
-          difficulty_level: difficulty.toLowerCase(),
-          length: length.toLowerCase(),
-          special_instructions: specialInstructions,
-          test: convertedQuestions
-        }])
+        .from("Questions_Created")
+        .insert([
+          {
+            created_by: user!.id,
+            grade: selectedGrade,
+            subject: subject,
+            chapter: chapter,
+            difficulty_level: difficulty.toLowerCase(),
+            length: length.toLowerCase(),
+            special_instructions: specialInstructions,
+            test: convertedQuestions,
+          },
+        ])
         .select()
-        .single()
+        .single();
 
-      if (error) throw error
+      if (error) throw error;
 
-      // Store in app state
-      setLastGeneratedTest(data)
-
-      navigate(`/view-test/${data.id}`)
+      setLastGeneratedTest(data);
+      navigate(`/view-test/${data.id}`);
     } catch (err) {
-      console.error('Error generating test:', err)
-      setError(err instanceof Error ? err.message : 'Failed to generate test. Please try again.')
+      console.error("Error generating test:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to generate test. Please try again."
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-cream font-sans pb-20">
       <Header />
-      
-      <div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <Card>
-          <CardHeader>
-            <h2 className="text-2xl font-bold text-dark">Create New Test</h2>
-            <p className="text-sm text-neutral-600">
-              Fill in the details below to generate a custom test using AI
-            </p>
-          </CardHeader>
-          
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+
+      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 mb-4">
+            <Sparkles className="h-8 w-8 text-primary-600" />
+          </div>
+          <h1 className="text-3xl font-bold text-dark mb-2">Create New Test</h1>
+          <p className="text-neutral-500 max-w-lg mx-auto">
+            Customize your assessment by selecting the grade, subject, and
+            difficulty.
+          </p>
+        </div>
+
+        <div className="space-y-12">
+          {/* Grade Selection */}
+          <section>
+            <h2 className="text-lg font-semibold text-dark mb-4 flex items-center">
+              <GraduationCap className="w-5 h-5 mr-2 text-primary-600" />
+              Select Grade
+            </h2>
+            <div className="grid grid-cols-6 md:grid-cols-12 gap-3">
+              {gradeOptions.map((grade) => (
+                <button
+                  key={grade}
+                  onClick={() => setSelectedGrade(grade)}
+                  className={`
+                    aspect-square rounded-xl flex items-center justify-center text-lg font-bold transition-all duration-200
+                    ${
+                      selectedGrade === grade
+                        ? "bg-primary-600 text-white shadow-lg scale-105"
+                        : "bg-white text-neutral-600 hover:bg-primary-50 hover:text-primary-600 border border-neutral-200"
+                    }
+                  `}
+                >
+                  {grade}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Subject Selection */}
+          <section
+            className={`transition-opacity duration-300 ${
+              !selectedGrade ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
+            <h2 className="text-lg font-semibold text-dark mb-4 flex items-center">
+              <BookOpen className="w-5 h-5 mr-2 text-primary-600" />
+              Select Subject
+            </h2>
+            {availableSubjects.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                {availableSubjects.map((s) => {
+                  const Icon = getSubjectIcon(s);
+                  return (
+                    <button
+                      key={s}
+                      onClick={() => setSubject(s)}
+                      className={`
+                        p-4 rounded-xl border-2 text-left transition-all duration-200 flex flex-col items-start gap-3
+                        ${
+                          subject === s
+                            ? "border-primary-600 bg-primary-50 shadow-md"
+                            : "border-transparent bg-white hover:border-primary-100 hover:shadow-sm"
+                        }
+                      `}
+                    >
+                      <div
+                        className={`p-2 rounded-lg ${
+                          subject === s
+                            ? "bg-white text-primary-600"
+                            : "bg-primary-50 text-primary-600"
+                        }`}
+                      >
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <span
+                        className={`font-semibold ${
+                          subject === s
+                            ? "text-primary-900"
+                            : "text-neutral-700"
+                        }`}
+                      >
+                        {s}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl p-8 text-center border border-dashed border-neutral-300">
+                <p className="text-neutral-400">
+                  Select a grade to view subjects
+                </p>
+              </div>
+            )}
+          </section>
+
+          {/* Chapter Selection */}
+          <section
+            className={`transition-opacity duration-300 ${
+              !subject ? "opacity-50 pointer-events-none" : ""
+            }`}
+          >
+            <h2 className="text-lg font-semibold text-dark mb-4 flex items-center">
+              <Layout className="w-5 h-5 mr-2 text-primary-600" />
+              Select Topic/Chapter
+            </h2>
+            <div className="bg-white p-1 rounded-xl shadow-sm border border-neutral-200">
               <Select
-                label="Grade"
-                value={selectedGrade}
-                onChange={(e) => setSelectedGrade(e.target.value)}
-                options={[{ value: '', label: 'Select grade' }, ...gradeOptions]}
-                required
-              />
-              
-              <Select
-                label="Subject"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                options={[
-                  { value: '', label: 'Select subject' },
-                  ...availableSubjects.map(s => ({ value: s, label: s }))
-                ]}
-                required
-                disabled={!selectedGrade}
-              />
-              
-              <Select
-                label="Topic/Chapter"
                 value={chapter}
                 onChange={(e) => setChapter(e.target.value)}
                 options={[
-                  { value: '', label: 'Select topic/chapter' },
-                  ...availableChapters.map(c => ({ value: c, label: c }))
+                  { value: "", label: "Select topic/chapter" },
+                  ...availableChapters.map((c) => ({ value: c, label: c })),
                 ]}
-                required
+                className="border-0 focus:ring-0 text-lg py-3"
                 disabled={!subject}
               />
-              
-              <div>
-                <label className="block text-sm font-medium text-dark mb-3">
-                  Difficulty Level
-                </label>
-                <div className="flex space-x-4">
-                  {['Easy', 'Medium', 'Hard'].map((level) => (
-                    <label key={level} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="difficulty"
-                        value={level}
-                        checked={difficulty === level}
-                        onChange={(e) => setDifficulty(e.target.value as 'Easy' | 'Medium' | 'Hard')}
-                        className="mr-2"
-                      />
-                      {level}
-                    </label>
-                  ))}
-                </div>
+            </div>
+          </section>
+
+          {/* Difficulty & Length */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <section>
+              <h2 className="text-lg font-semibold text-dark mb-4 flex items-center">
+                <Brain className="w-5 h-5 mr-2 text-primary-600" />
+                Difficulty
+              </h2>
+              <div className="grid grid-cols-3 gap-3">
+                {["Easy", "Medium", "Hard"].map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => setDifficulty(level as any)}
+                    className={`
+                      py-3 px-2 rounded-xl text-sm font-bold transition-all duration-200 border-2
+                      ${
+                        difficulty === level
+                          ? level === "Easy"
+                            ? "border-green-500 bg-green-50 text-green-700"
+                            : level === "Medium"
+                            ? "border-yellow-500 bg-yellow-50 text-yellow-700"
+                            : "border-red-500 bg-red-50 text-red-700"
+                          : "border-transparent bg-white text-neutral-500 hover:bg-neutral-50"
+                      }
+                    `}
+                  >
+                    {level}
+                  </button>
+                ))}
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-dark mb-3">
-                  Test Length
-                </label>
-                <div className="flex space-x-4">
-                  {['Short', 'Long'].map((testLength) => (
-                    <label key={testLength} className="flex items-center">
-                      <input
-                        type="radio"
-                        name="length"
-                        value={testLength}
-                        checked={length === testLength}
-                        onChange={(e) => setLength(e.target.value as 'Short' | 'Long')}
-                        className="mr-2"
-                      />
-                      {testLength} ({testLength === 'Short' ? '~5 questions' : '~10 questions'})
-                    </label>
-                  ))}
-                </div>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold text-dark mb-4 flex items-center">
+                <Clock className="w-5 h-5 mr-2 text-primary-600" />
+                Length
+              </h2>
+              <div className="grid grid-cols-2 gap-3">
+                {["Short", "Long"].map((l) => (
+                  <button
+                    key={l}
+                    onClick={() => setLength(l as any)}
+                    className={`
+                      py-3 px-4 rounded-xl text-sm font-bold transition-all duration-200 border-2
+                      ${
+                        length === l
+                          ? "border-primary-600 bg-primary-50 text-primary-700"
+                          : "border-transparent bg-white text-neutral-500 hover:bg-neutral-50"
+                      }
+                    `}
+                  >
+                    {l}{" "}
+                    <span className="block text-xs font-normal opacity-70 mt-1">
+                      {l === "Short" ? "~5 Qs" : "~10 Qs"}
+                    </span>
+                  </button>
+                ))}
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-dark mb-3">
-                  Special Instructions
-                </label>
-                <div className="space-y-2">
-                  {instructionOptions.map((instruction) => (
-                    <label key={instruction} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={specialInstructions.includes(instruction)}
-                        onChange={() => handleInstructionToggle(instruction)}
-                        className="mr-2"
-                      />
-                      {instruction}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              
-              {error && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                  <p className="text-sm text-red-600">{error}</p>
-                </div>
-              )}
-              
-              <div className="flex space-x-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate('/home')}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1"
-                  loading={loading}
-                  disabled={!selectedGrade || !subject || !chapter}
-                >
-                  {loading ? 'Generating Test...' : 'Generate Test'}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+            </section>
+          </div>
+
+          {/* Special Instructions */}
+          <section>
+            <h2 className="text-lg font-semibold text-dark mb-4 flex items-center">
+              <AlertCircle className="w-5 h-5 mr-2 text-primary-600" />
+              Special Instructions
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {instructionOptions.map((opt) => {
+                const Icon = opt.icon;
+                const isSelected = specialInstructions.includes(opt.id);
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => handleInstructionToggle(opt.id)}
+                    className={`
+                      flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
+                      ${
+                        isSelected
+                          ? "bg-dark text-white border-dark"
+                          : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                      }
+                    `}
+                  >
+                    <Icon className="w-4 h-4 mr-2" />
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-600 mr-3 mt-0.5" />
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
+          <div className="flex items-center justify-end pt-6 border-t border-neutral-200">
+            <Button
+              variant="outline"
+              onClick={() => navigate("/home")}
+              className="mr-4 border-neutral-300 text-neutral-600 hover:bg-neutral-50"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              loading={loading}
+              disabled={!selectedGrade || !subject || !chapter}
+              className="px-8 py-6 text-lg rounded-xl shadow-lg shadow-primary-200 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+            >
+              {loading ? "Generating Test..." : "Generate Test"}
+              {!loading && <ChevronRight className="ml-2 w-5 h-5" />}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
