@@ -1,59 +1,67 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Calendar, Clock, User, Share2, BookOpen, Tag } from 'lucide-react'
-import { Header } from '../components/layout/Header'
-import { Footer } from '../components/layout/Footer'
-import { BlogCard } from '../components/blog/BlogCard'
-import { Button } from '../components/ui/Button'
-import { Card, CardContent } from '../components/ui/Card'
-import { useAuthContext } from '../contexts/AuthContext'
-import { getPostBySlug, getRelatedPosts } from '../data/blogPosts'
-import { BlogPost } from '../types/blog'
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  Calendar,
+  Clock,
+  Share2,
+  Tag,
+  ChevronRight,
+  Home,
+} from "lucide-react";
+import Markdown from "react-markdown";
+import { Header } from "../components/layout/Header";
+import { Footer } from "../components/layout/Footer";
+import { BlogCard } from "../components/blog/BlogCard";
+import { Button } from "../components/ui/Button";
+import { Card, CardContent } from "../components/ui/Card";
+import { useAuthContext } from "../contexts/AuthContext";
+import { getPostBySlug, getRelatedPosts } from "../data/blogPosts";
+import { BlogPost } from "../types/blog";
 
 export function BlogPostPage() {
-  const { slug } = useParams<{ slug: string }>()
-  const navigate = useNavigate()
-  const { user } = useAuthContext()
-  const [post, setPost] = useState<BlogPost | null>(null)
-  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([])
-  const [loading, setLoading] = useState(true)
+  const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuthContext();
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('BlogPostPage useEffect triggered with slug:', slug)
-    
     if (slug) {
-      console.log('Attempting to find post with slug:', slug)
-      const foundPost = getPostBySlug(slug)
-      console.log('Found post:', foundPost)
-      
+      const foundPost = getPostBySlug(slug);
+
       if (foundPost) {
-        setPost(foundPost)
-        setRelatedPosts(getRelatedPosts(foundPost))
-        
+        setPost(foundPost);
+        setRelatedPosts(getRelatedPosts(foundPost));
+
         // Update page title and meta description
-        document.title = foundPost.seo?.meta_title || `${foundPost.title} - Evater Blog`
-        
-        const metaDescription = document.querySelector('meta[name="description"]')
+        document.title =
+          foundPost.seo?.meta_title || `${foundPost.title} - Evater Blog`;
+
+        const metaDescription = document.querySelector(
+          'meta[name="description"]'
+        );
         if (metaDescription) {
-          metaDescription.setAttribute('content', foundPost.seo?.meta_description || foundPost.excerpt)
+          metaDescription.setAttribute(
+            "content",
+            foundPost.seo?.meta_description || foundPost.excerpt
+          );
         }
-      } else {
-        console.error('No post found for slug:', slug)
       }
-      setLoading(false)
+      setLoading(false);
     } else {
-      console.error('No slug provided')
-      setLoading(false)
+      setLoading(false);
     }
-  }, [slug])
+  }, [slug]);
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   const handleShare = async () => {
     if (navigator.share && post) {
@@ -62,54 +70,14 @@ export function BlogPostPage() {
           title: post.title,
           text: post.excerpt,
           url: window.location.href,
-        })
+        });
       } catch (err) {
-        // Fallback to copying URL
-        navigator.clipboard.writeText(window.location.href)
+        navigator.clipboard.writeText(window.location.href);
       }
     } else {
-      // Fallback to copying URL
-      navigator.clipboard.writeText(window.location.href)
+      navigator.clipboard.writeText(window.location.href);
     }
-  }
-
-  // Convert markdown-like content to HTML (basic implementation)
-  const renderContent = (content: string) => {
-    return content
-      .split('\n')
-      .map((line, index) => {
-        // Headers
-        if (line.startsWith('# ')) {
-          return <h1 key={index} className="text-3xl font-bold text-dark mb-6 mt-8">{line.substring(2)}</h1>
-        }
-        if (line.startsWith('## ')) {
-          return <h2 key={index} className="text-2xl font-bold text-dark mb-4 mt-6">{line.substring(3)}</h2>
-        }
-        if (line.startsWith('### ')) {
-          return <h3 key={index} className="text-xl font-semibold text-dark mb-3 mt-5">{line.substring(4)}</h3>
-        }
-        
-        // Bold text
-        if (line.startsWith('**') && line.endsWith('**')) {
-          return <p key={index} className="font-bold text-dark mb-3">{line.slice(2, -2)}</p>
-        }
-        
-        // Lists
-        if (line.startsWith('- ')) {
-          return <li key={index} className="text-neutral-700 mb-2 ml-4">{line.substring(2)}</li>
-        }
-        
-        // Empty lines
-        if (line.trim() === '') {
-          return <br key={index} />
-        }
-        
-        // Regular paragraphs
-        return <p key={index} className="text-neutral-700 mb-4 leading-relaxed">{line}</p>
-      })
-  }
-
-  console.log('BlogPostPage render - loading:', loading, 'post:', post)
+  };
 
   if (loading) {
     return (
@@ -123,7 +91,7 @@ export function BlogPostPage() {
         </div>
         <Footer />
       </div>
-    )
+    );
   }
 
   if (!post) {
@@ -133,140 +101,168 @@ export function BlogPostPage() {
         <div className="flex-1 flex items-center justify-center">
           <Card className="max-w-md w-full mx-4">
             <CardContent className="p-8 text-center">
-              <BookOpen className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
-              <h2 className="text-xl font-bold text-dark mb-2">Article Not Found</h2>
-              <p className="text-neutral-600 mb-4">
-                The article you're looking for doesn't exist or has been removed.
-                <br />
-                <small>Slug: {slug}</small>
+              <h2 className="text-xl font-bold text-dark mb-2">
+                Article Not Found
+              </h2>
+              <p className="text-neutral-600 mb-6">
+                The article you're looking for doesn't exist or has been
+                removed.
               </p>
-              <Button onClick={() => navigate('/blog')}>
-                Back to Blog
-              </Button>
+              <Button onClick={() => navigate("/blog")}>Back to Blog</Button>
             </CardContent>
           </Card>
         </div>
         <Footer />
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream">
-      {/* Always show header/navigation */}
+    <div className="min-h-screen flex flex-col bg-cream font-sans">
       <Header />
-      
+
       <div className="flex-1">
+        {/* Breadcrumb */}
+        <div className="bg-white border-b border-neutral-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center text-sm text-neutral-500">
+              <Home
+                className="h-4 w-4 mr-2 cursor-pointer hover:text-primary-600"
+                onClick={() => navigate("/")}
+              />
+              <ChevronRight className="h-4 w-4 mx-2" />
+              <span
+                className="cursor-pointer hover:text-primary-600"
+                onClick={() => navigate("/blog")}
+              >
+                Blog
+              </span>
+              <ChevronRight className="h-4 w-4 mx-2" />
+              <span className="text-neutral-800 font-medium truncate max-w-[200px] sm:max-w-md">
+                {post.title}
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* Hero Section */}
-        <section className="relative py-16 lg:py-24 bg-gradient-to-br from-neutral-900 to-neutral-800 overflow-hidden">
+        <section className="relative py-20 lg:py-32 bg-dark overflow-hidden">
           <div className="absolute inset-0">
             <img
               src={post.featured_image}
               alt={post.title}
-              className="w-full h-full object-cover opacity-30"
+              className="w-full h-full object-cover opacity-20 blur-sm scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/80 to-neutral-900/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-dark via-dark/80 to-dark/40"></div>
           </div>
-          
-          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-6">
-              <Button
-                variant="ghost"
-                onClick={() => navigate('/blog')}
-                className="text-white hover:text-primary-300 hover:bg-white/10"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Blog
-              </Button>
-            </div>
-            
-            <div className="mb-6">
-              <span className="bg-primary-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+
+          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="mb-8">
+              <span className="bg-primary-500 text-white px-4 py-1.5 rounded-full text-sm font-bold tracking-wide uppercase shadow-lg shadow-primary-500/20">
                 {post.category}
               </span>
             </div>
-            
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+
+            <h1 className="text-4xl lg:text-6xl font-bold text-white mb-8 leading-tight tracking-tight">
               {post.title}
             </h1>
-            
-            <p className="text-xl text-neutral-200 mb-8 leading-relaxed">
-              {post.excerpt}
-            </p>
-            
-            <div className="flex flex-wrap items-center gap-6 text-neutral-300">
+
+            <div className="flex flex-wrap items-center justify-center gap-6 text-neutral-300 mb-8">
               <div className="flex items-center">
                 <img
-                  src={post.author.avatar || 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1'}
+                  src={
+                    post.author.avatar ||
+                    "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1"
+                  }
                   alt={post.author.name}
-                  className="w-10 h-10 rounded-full mr-3"
+                  className="w-10 h-10 rounded-full mr-3 border-2 border-white/10"
                 />
-                <div>
-                  <div className="font-medium text-white">{post.author.name}</div>
-                  <div className="text-sm text-neutral-400">{post.author.bio}</div>
+                <div className="text-left">
+                  <div className="font-bold text-white text-sm">
+                    {post.author.name}
+                  </div>
+                  <div className="text-xs text-primary-400">Author</div>
                 </div>
               </div>
-              
-              <div className="flex items-center text-sm">
-                <Calendar className="h-4 w-4 mr-2" />
+
+              <div className="w-px h-8 bg-white/10 hidden sm:block"></div>
+
+              <div className="flex items-center text-sm font-medium">
+                <Calendar className="h-4 w-4 mr-2 text-primary-400" />
                 {formatDate(post.published_date)}
               </div>
-              
-              <div className="flex items-center text-sm">
-                <Clock className="h-4 w-4 mr-2" />
+
+              <div className="flex items-center text-sm font-medium">
+                <Clock className="h-4 w-4 mr-2 text-primary-400" />
                 {post.read_time} min read
               </div>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleShare}
-                className="text-neutral-300 hover:text-white hover:bg-white/10"
-              >
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
-              </Button>
             </div>
           </div>
         </section>
 
         {/* Article Content */}
-        <section className="py-16 bg-white">
+        <section className="relative -mt-10 pb-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <article className="prose prose-lg max-w-none">
-              <div className="text-lg leading-relaxed">
-                {renderContent(post.content)}
-              </div>
-            </article>
-            
-            {/* Tags */}
-            {post.tags.length > 0 && (
-              <div className="mt-12 pt-8 border-t border-neutral-200">
-                <div className="flex items-center flex-wrap gap-2">
-                  <Tag className="h-4 w-4 text-neutral-500 mr-2" />
-                  {post.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-neutral-100 text-neutral-700 px-3 py-1 rounded-full text-sm font-medium hover:bg-primary-100 hover:text-primary-800 transition-colors duration-200 cursor-pointer"
+            <div className="bg-white rounded-2xl shadow-xl border border-neutral-100 overflow-hidden">
+              <div className="p-8 lg:p-12">
+                <article className="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-dark prose-p:text-neutral-600 prose-p:leading-relaxed prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl prose-strong:text-dark prose-blockquote:border-l-4 prose-blockquote:border-primary-500 prose-blockquote:bg-primary-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic prose-li:text-neutral-600">
+                  <Markdown>{post.content}</Markdown>
+                </article>
+
+                {/* Tags */}
+                {post.tags.length > 0 && (
+                  <div className="mt-12 pt-8 border-t border-neutral-100">
+                    <div className="flex items-center flex-wrap gap-2">
+                      <Tag className="h-4 w-4 text-neutral-400 mr-2" />
+                      {post.tags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="bg-neutral-50 text-neutral-600 border border-neutral-200 px-3 py-1 rounded-full text-sm font-medium hover:bg-primary-50 hover:text-primary-700 hover:border-primary-200 transition-all duration-200 cursor-pointer"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Share & Author */}
+                <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-neutral-100">
+                  <div className="flex items-center space-x-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleShare}
+                      className="text-neutral-600 hover:text-primary-600 hover:border-primary-200"
                     >
-                      {tag}
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Share Article
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center">
+                    <span className="text-neutral-500 text-sm mr-4">
+                      Written by
                     </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            {/* Author Bio */}
-            <div className="mt-12 pt-8 border-t border-neutral-200">
-              <div className="flex items-start">
-                <img
-                  src={post.author.avatar || 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=80&h=80&dpr=1'}
-                  alt={post.author.name}
-                  className="w-16 h-16 rounded-full mr-4"
-                />
-                <div>
-                  <h3 className="text-lg font-semibold text-dark mb-1">About {post.author.name}</h3>
-                  <p className="text-neutral-600">{post.author.bio}</p>
+                    <div className="flex items-center">
+                      <img
+                        src={
+                          post.author.avatar ||
+                          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1"
+                        }
+                        alt={post.author.name}
+                        className="w-10 h-10 rounded-full mr-3"
+                      />
+                      <div>
+                        <div className="font-bold text-dark text-sm">
+                          {post.author.name}
+                        </div>
+                        <div className="text-xs text-neutral-500">
+                          {post.author.bio}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -275,15 +271,24 @@ export function BlogPostPage() {
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
-          <section className="py-16 bg-neutral-50">
+          <section className="py-16 bg-neutral-50 border-t border-neutral-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl font-bold text-dark mb-12 text-center">
-                Related Articles
-              </h2>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="flex items-center justify-between mb-10">
+                <h2 className="text-2xl font-bold text-dark">
+                  Related Articles
+                </h2>
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate("/blog")}
+                  className="text-primary-600 hover:text-primary-700 hover:bg-primary-50"
+                >
+                  View All <ArrowLeft className="h-4 w-4 ml-2 rotate-180" />
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost) => (
-                  <BlogCard key={relatedPost.id} post={relatedPost} featured />
+                  <BlogCard key={relatedPost.id} post={relatedPost} />
                 ))}
               </div>
             </div>
@@ -291,27 +296,29 @@ export function BlogPostPage() {
         )}
 
         {/* CTA Section */}
-        <section className="py-16 bg-gradient-to-r from-primary-600 to-secondary-600">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">
+        <section className="py-20 bg-gradient-to-r from-primary-600 to-secondary-600 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
               Ready to Transform Your Learning?
             </h2>
-            <p className="text-xl text-white/90 mb-8">
-              Join thousands of teachers and students using Evater to create better assessments
+            <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+              Join thousands of teachers and students using Evater to create
+              better assessments and improve learning outcomes.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 variant="secondary"
                 size="lg"
-                onClick={() => navigate(user ? '/home' : '/auth')}
-                className="text-dark font-bold"
+                onClick={() => navigate(user ? "/home" : "/auth")}
+                className="text-dark font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
               >
-                {user ? 'Go to Dashboard' : 'Get Started Free'}
+                {user ? "Go to Dashboard" : "Get Started Free"}
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => navigate('/blog')}
+                onClick={() => navigate("/blog")}
                 className="text-white border-white hover:bg-white hover:text-primary-600"
               >
                 Read More Articles
@@ -320,8 +327,8 @@ export function BlogPostPage() {
           </div>
         </section>
       </div>
-      
+
       <Footer />
     </div>
-  )
+  );
 }
