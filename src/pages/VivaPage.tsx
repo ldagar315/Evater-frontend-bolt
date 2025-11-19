@@ -4,17 +4,12 @@ import {
   ArrowLeft,
   Mic,
   MicOff,
-  Volume2,
-  Play,
-  Pause,
   MessageSquare,
   Brain,
-  Award,
   AlertCircle,
   X,
 } from "lucide-react";
 import { Button } from "../components/ui/Button";
-import { Input } from "../components/ui/Input";
 import { Select } from "../components/ui/Select";
 import { Card, CardContent, CardHeader } from "../components/ui/Card";
 import { Header } from "../components/layout/Header";
@@ -43,6 +38,7 @@ interface VivaResults {
   scores: Record<string, ConceptScore>;
   feedback: string[];
 }
+
 export function VivaPage() {
   const navigate = useNavigate();
   const { user } = useAuthContext();
@@ -71,6 +67,7 @@ export function VivaPage() {
   const [questionCount, setQuestionCount] = useState(0);
   const [answerCount, setAnswerCount] = useState(0);
   const [currentFeedback, setCurrentFeedback] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   // WebSocket and audio refs
   const wsRef = useRef<WebSocket | null>(null);
@@ -244,6 +241,7 @@ export function VivaPage() {
       setQuestionCount(0);
       setAnswerCount(0);
       setCurrentFeedback(null);
+      setShowHistory(false);
       initializeWebSocket();
     } catch (err) {
       console.error("Error accessing microphone:", err);
@@ -450,255 +448,178 @@ export function VivaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream pb-20">
-      <Header />
-
-      <div className="w-full mx-auto py-2 sm:py-4 px-0 sm:px-4 lg:px-8 max-w-4xl">
-        {/* Session Header - Compact on Mobile */}
-        <div className="bg-white border-b sm:border sm:rounded-lg sm:mb-4 shadow-sm">
-          <div className="p-3 sm:p-4">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <h1 className="text-lg sm:text-2xl font-bold text-dark mb-1 truncate">
-                  AI Viva
-                </h1>
-                <p className="text-xs sm:text-sm text-neutral-600 truncate">
-                  {subject} - {chapter}
-                </p>
-                <p className="text-xs text-neutral-500 sm:hidden">
-                  Grade {selectedGrade}
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2">
-                <div
-                  className={`flex items-center px-2 py-1 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm ${
-                    wsConnected
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  <div
-                    className={`w-2 h-2 rounded-full mr-1.5 ${
-                      wsConnected ? "bg-green-500 animate-pulse" : "bg-red-500"
-                    }`}
-                  ></div>
-                  <span className="hidden sm:inline">
-                    {wsConnected ? "Connected" : "Disconnected"}
-                  </span>
-                  <span className="sm:hidden">{wsConnected ? "●" : "○"}</span>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={endViva}
-                  size="sm"
-                  className="text-xs sm:text-sm h-8 sm:h-10"
-                >
-                  <X className="h-3 w-3 sm:h-4 sm:w-4 sm:mr-1" />
-                  <span className="hidden sm:inline">End</span>
-                </Button>
-              </div>
-            </div>
+    <div className="fixed inset-0 bg-cream flex flex-col z-50 overflow-hidden font-sans">
+      {/* Immersive Session Header */}
+      <div className="flex-none bg-white/80 backdrop-blur-md border-b border-neutral-100 px-4 py-3 flex items-center justify-between z-20">
+        <div className="flex items-center space-x-3">
+          <div
+            className={`flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+              wsConnected
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            <div
+              className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                wsConnected ? "bg-green-500 animate-pulse" : "bg-red-500"
+              }`}
+            />
+            {wsConnected ? "Live" : "Offline"}
+          </div>
+          <div className="h-4 w-px bg-neutral-200" />
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+              {subject}
+            </span>
+            <span className="text-xs text-neutral-400 truncate max-w-[150px] sm:max-w-xs">
+              {chapter}
+            </span>
           </div>
         </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowHistory(!showHistory)}
+            className={`text-neutral-500 hover:text-primary-600 ${
+              showHistory ? "bg-primary-50 text-primary-600" : ""
+            }`}
+          >
+            <MessageSquare className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={endViva}
+            className="text-neutral-400 hover:text-red-600 hover:bg-red-50"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
 
-        {/* Current Question - Prominent and Centered */}
-        {currentQuestion && (
-          <div className="mx-2 sm:mx-0 mb-4 animate-fade-in">
-            <Card className="bg-gradient-to-br from-primary-50 via-primary-100 to-primary-50 border-primary-200 shadow-md">
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-start sm:items-center gap-3 sm:gap-4">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-                    <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm sm:text-base font-semibold text-primary-900 mb-1 sm:mb-2">
-                      Question:
-                    </h3>
-                    <p className="text-lg sm:text-xl md:text-2xl font-medium text-primary-900 leading-relaxed break-words">
-                      {currentQuestion}
-                    </p>
-                  </div>
+      {/* Main Content Area - Scrollable */}
+      <div className="flex-1 overflow-y-auto p-4 pb-32 sm:pb-4 scroll-smooth">
+        <div className="max-w-3xl mx-auto w-full space-y-6 pt-4 sm:pt-10">
+          {/* Question Card */}
+          {currentQuestion && (
+            <div className="animate-fade-in">
+              <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-neutral-100 relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary-400 to-primary-600" />
+                <div className="flex flex-col gap-4">
+                  <span className="inline-flex self-start items-center px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-xs font-bold uppercase tracking-wider">
+                    Question {questionCount}
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-dark leading-tight tracking-tight">
+                    {currentQuestion}
+                  </h3>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+              </div>
+            </div>
+          )}
 
-        {/* Current Feedback - Shows immediately after answer */}
-        {currentFeedback && (
-          <div className="mx-2 sm:mx-0 mb-4 animate-slide-up">
-            <Card className="bg-gradient-to-br from-green-50 via-green-100 to-green-50 border-green-200 shadow-md">
-              <CardContent className="p-4 sm:p-5">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+          {/* Feedback Card */}
+          {currentFeedback && (
+            <div className="animate-slide-up">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5 sm:p-8 border border-green-100 shadow-sm">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0 shadow-sm text-white">
+                    <Brain className="h-6 w-6" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-xs sm:text-sm font-semibold text-green-900 mb-1">
-                      AI Feedback:
-                    </h3>
-                    <p className="text-sm sm:text-base text-green-800 leading-relaxed break-words">
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-bold text-green-800 uppercase tracking-wide">
+                      Feedback
+                    </h4>
+                    <p className="text-base sm:text-lg text-green-900 leading-relaxed">
                       {currentFeedback}
                     </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {/* Recording Controls - Big and Accessible */}
-        <div className="fixed bottom-0 left-0 right-0 sm:relative bg-white sm:bg-transparent border-t sm:border-0 shadow-lg sm:shadow-none p-3 sm:p-0 sm:mx-2 sm:mb-4">
-          <Card className="sm:shadow-md border-0 sm:border">
-            <CardContent className="p-3 sm:p-6">
-              <div className="flex flex-col items-center space-y-3 sm:space-y-4">
-                {!isRecording ? (
-                  <Button
-                    onClick={startRecording}
-                    disabled={!wsConnected || !currentQuestion}
-                    size="lg"
-                    className="w-full sm:w-auto flex items-center justify-center px-6 sm:px-12 h-14 sm:h-16 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <Mic className="h-6 w-6 sm:h-7 sm:w-7 mr-2 sm:mr-3" />
-                    Start Recording Answer
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={stopRecording}
-                    variant="secondary"
-                    size="lg"
-                    className="w-full sm:w-auto flex items-center justify-center px-6 sm:px-12 h-14 sm:h-16 text-base sm:text-lg font-semibold bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl transition-all"
-                  >
-                    <MicOff className="h-6 w-6 sm:h-7 sm:w-7 mr-2 sm:mr-3" />
-                    Stop Recording
-                  </Button>
-                )}
-
-                {isRecording && (
-                  <div className="flex items-center text-red-600">
-                    <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse mr-2"></div>
-                    <span className="font-semibold text-sm sm:text-base">
-                      Recording in progress...
-                    </span>
-                  </div>
-                )}
-
-                {!wsConnected && (
-                  <div className="flex items-center text-neutral-500 text-xs sm:text-sm">
-                    <AlertCircle className="h-4 w-4 mr-2" />
-                    <span>Waiting for connection to server...</span>
-                  </div>
-                )}
-
-                {wsConnected && !currentQuestion && (
-                  <div className="flex items-center text-neutral-500 text-xs sm:text-sm">
-                    <Brain className="h-4 w-4 mr-2 animate-pulse" />
-                    <span>AI is preparing your first question...</span>
-                  </div>
-                )}
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          )}
 
-        {/* Session History - Collapsible on Mobile */}
-        <div className="mx-2 sm:mx-0 mb-4 mt-4 sm:mt-0">
-          <Card className={sessionCompleted ? "mb-6" : ""}>
-            <CardHeader className="bg-neutral-50 border-b">
-              <h3 className="text-base sm:text-lg font-semibold text-dark">
-                Session History
-              </h3>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="max-h-64 sm:max-h-96 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4">
-                {messages.length === 0 ? (
-                  <div className="text-center py-6 sm:py-8">
-                    <MessageSquare className="h-10 w-10 sm:h-12 sm:w-12 text-neutral-400 mx-auto mb-3 sm:mb-4" />
-                    <p className="text-sm sm:text-base text-neutral-500">
-                      Viva session will begin shortly...
-                    </p>
-                  </div>
-                ) : (
-                  messages.map((message, index) => (
-                    <div
-                      key={index}
-                      className={`flex items-start space-x-2 sm:space-x-3 p-3 sm:p-4 rounded-lg ${
+          {/* Empty State / Loading */}
+          {!currentQuestion && wsConnected && (
+            <div className="flex flex-col items-center justify-center py-20 text-neutral-400 animate-pulse">
+              <Brain className="h-12 w-12 mb-4 opacity-50" />
+              <p className="text-lg font-medium">Preparing your session...</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* History Drawer (Mobile) / Panel (Desktop) */}
+      {showHistory && (
+        <div className="absolute inset-0 z-30 bg-cream/95 backdrop-blur-sm sm:static sm:bg-transparent sm:backdrop-blur-none sm:border-l sm:border-neutral-100 sm:w-80 sm:flex-none transition-all duration-300">
+          <div className="h-full flex flex-col p-4 sm:p-0">
+            <div className="flex items-center justify-between mb-4 sm:hidden">
+              <h3 className="text-lg font-bold text-dark">Session History</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowHistory(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="flex-1 overflow-y-auto space-y-4 sm:p-4">
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`p-3 rounded-xl text-sm ${
+                    message.type === "question"
+                      ? "bg-white border border-neutral-100 shadow-sm"
+                      : message.type === "feedback"
+                      ? "bg-green-50 border border-green-100"
+                      : "bg-neutral-50"
+                  }`}
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <span
+                      className={`text-xs font-bold uppercase ${
                         message.type === "question"
-                          ? "bg-primary-50"
-                          : message.type === "error"
-                          ? "bg-red-50"
+                          ? "text-primary-600"
                           : message.type === "feedback"
-                          ? "bg-green-50"
-                          : "bg-neutral-50"
+                          ? "text-green-600"
+                          : "text-neutral-500"
                       }`}
                     >
-                      <div
-                        className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          message.type === "question"
-                            ? "bg-primary-500"
-                            : message.type === "error"
-                            ? "bg-red-500"
-                            : message.type === "feedback"
-                            ? "bg-green-500"
-                            : "bg-neutral-500"
-                        }`}
-                      >
-                        {message.type === "question" ? (
-                          <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                        ) : message.type === "error" ? (
-                          <AlertCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                        ) : message.type === "feedback" ? (
-                          <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                        ) : (
-                          <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1 gap-2">
-                          <span
-                            className={`text-xs sm:text-sm font-medium truncate ${
-                              message.type === "question"
-                                ? "text-primary-900"
-                                : message.type === "error"
-                                ? "text-red-900"
-                                : message.type === "feedback"
-                                ? "text-green-900"
-                                : "text-neutral-900"
-                            }`}
-                          >
-                            {message.type === "question"
-                              ? "AI Question"
-                              : message.type === "error"
-                              ? "Error"
-                              : message.type === "feedback"
-                              ? "AI Feedback"
-                              : "System"}
-                          </span>
-                          <span className="text-[10px] sm:text-xs text-neutral-500 flex-shrink-0">
-                            {formatTime(message.timestamp)}
-                          </span>
-                        </div>
-                        <p
-                          className={`text-xs sm:text-sm break-words ${
-                            message.type === "question"
-                              ? "text-primary-800"
-                              : message.type === "error"
-                              ? "text-red-800"
-                              : message.type === "feedback"
-                              ? "text-green-800"
-                              : "text-neutral-700"
-                          }`}
-                        >
-                          {message.content}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-            </CardContent>
-          </Card>
+                      {message.type}
+                    </span>
+                    <span className="text-[10px] text-neutral-400">
+                      {formatTime(message.timestamp)}
+                    </span>
+                  </div>
+                  <p className="text-dark leading-relaxed">{message.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom Action Bar (FAB) */}
+      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-cream via-cream to-transparent z-40 pointer-events-none flex justify-center">
+        <div className="pointer-events-auto flex items-center gap-6">
+          {!isRecording ? (
+            <button
+              onClick={startRecording}
+              disabled={!wsConnected || !currentQuestion}
+              className="group relative flex items-center justify-center w-20 h-20 rounded-full bg-dark text-white shadow-2xl shadow-neutral-400 hover:scale-105 active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div className="absolute inset-0 rounded-full bg-white/10 group-hover:scale-110 transition-transform duration-500" />
+              <Mic className="h-8 w-8" />
+            </button>
+          ) : (
+            <button
+              onClick={stopRecording}
+              className="group relative flex items-center justify-center w-20 h-20 rounded-full bg-red-500 text-white shadow-2xl shadow-red-200 hover:scale-105 active:scale-95 transition-all duration-300"
+            >
+              <div className="absolute inset-0 rounded-full border-4 border-red-200 animate-ping" />
+              <div className="w-8 h-8 bg-white rounded-lg" />
+            </button>
+          )}
         </div>
       </div>
 

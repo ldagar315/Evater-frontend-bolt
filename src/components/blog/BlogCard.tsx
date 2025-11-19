@@ -1,51 +1,40 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Calendar, Clock, User, ArrowRight } from 'lucide-react'
-import { Card, CardContent } from '../ui/Card'
-import { BlogPost } from '../../types/blog'
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Calendar, Clock, User, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "../ui/Card";
+import { BlogPost } from "../../types/blog";
 
 interface BlogCardProps {
-  post: BlogPost
-  featured?: boolean
+  post: BlogPost;
+  featured?: boolean;
 }
 
 export function BlogCard({ post, featured = false }: BlogCardProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    
-    console.log('BlogCard clicked:', post.slug) // Debug logging
-    console.log('Navigating to:', `/blog/${post.slug}`) // Debug logging
-    console.log('Post data:', post) // Debug the full post object
-    
-    try {
-      navigate(`/blog/${post.slug}`)
-      console.log('Navigation completed successfully')
-    } catch (error) {
-      console.error('Navigation error:', error)
-    }
-  }
+    e.stopPropagation();
+    navigate(`/blog/${post.slug}`);
+  };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
-  }
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   if (featured) {
     return (
-      <Card 
+      <Card
         className="group cursor-pointer overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent hover:border-primary-200"
         onClick={handleClick}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            handleClick(e as any)
+          if (e.key === "Enter" || e.key === " ") {
+            handleClick(e as any);
           }
         }}
       >
@@ -55,8 +44,8 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             onError={(e) => {
-              console.log('Image failed to load:', post.featured_image)
-              e.currentTarget.src = 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+              e.currentTarget.src =
+                "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
             }}
           />
           <div className="absolute top-4 left-4">
@@ -65,16 +54,16 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             </span>
           </div>
         </div>
-        
+
         <CardContent className="p-6">
           <h3 className="text-xl font-bold text-dark mb-3 group-hover:text-primary-600 transition-colors duration-200 line-clamp-2">
             {post.title}
           </h3>
-          
+
           <p className="text-neutral-600 mb-4 line-clamp-3 leading-relaxed">
             {post.excerpt}
           </p>
-          
+
           <div className="flex items-center justify-between text-sm text-neutral-500 mb-4">
             <div className="flex items-center space-x-4">
               <div className="flex items-center">
@@ -87,20 +76,26 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <img
-                src={post.author.avatar || 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1'}
+                src={
+                  post.author.avatar ||
+                  "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1"
+                }
                 alt={post.author.name}
                 className="w-8 h-8 rounded-full mr-3"
                 onError={(e) => {
-                  e.currentTarget.src = 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1'
+                  e.currentTarget.src =
+                    "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=1";
                 }}
               />
-              <span className="text-sm font-medium text-dark">{post.author.name}</span>
+              <span className="text-sm font-medium text-dark">
+                {post.author.name}
+              </span>
             </div>
-            
+
             <div className="flex items-center text-primary-600 group-hover:text-primary-700 font-medium">
               <span className="text-sm mr-1">Read More</span>
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
@@ -108,18 +103,18 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
           </div>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
-    <Card 
+    <Card
       className="group cursor-pointer hover:shadow-lg transition-all duration-200 hover:border-primary-200"
       onClick={handleClick}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick(e as any)
+        if (e.key === "Enter" || e.key === " ") {
+          handleClick(e as any);
         }
       }}
     >
@@ -130,27 +125,27 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
             alt={post.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
             onError={(e) => {
-              console.log('Image failed to load:', post.featured_image)
-              e.currentTarget.src = 'https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+              e.currentTarget.src =
+                "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
             }}
           />
         </div>
-        
+
         <CardContent className="w-2/3 p-4">
           <div className="mb-2">
             <span className="bg-secondary-100 text-secondary-800 px-2 py-1 rounded text-xs font-medium">
               {post.category}
             </span>
           </div>
-          
+
           <h3 className="text-lg font-semibold text-dark mb-2 group-hover:text-primary-600 transition-colors duration-200 line-clamp-2">
             {post.title}
           </h3>
-          
+
           <p className="text-neutral-600 text-sm mb-3 line-clamp-2">
             {post.excerpt}
           </p>
-          
+
           <div className="flex items-center justify-between text-xs text-neutral-500">
             <div className="flex items-center space-x-3">
               <div className="flex items-center">
@@ -170,5 +165,5 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
         </CardContent>
       </div>
     </Card>
-  )
+  );
 }
