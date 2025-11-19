@@ -4,7 +4,6 @@ import { MathText } from "../ui/MathRenderer";
 import { Card, CardContent } from "../ui/Card";
 import { Button } from "../ui/Button";
 import { Calculator, Image as ImageIcon, X } from "lucide-react";
-import { VoiceInput } from "./VoiceInput";
 import { ImageCropper } from "./ImageCropper";
 
 interface QuestionCardProps {
@@ -64,11 +63,6 @@ export function QuestionCard({
       ...answer,
       text: text,
     });
-  };
-
-  const handleVoiceTranscript = (text: string) => {
-    const currentText = answer?.text || "";
-    handleTextChange(currentText + (currentText ? " " : "") + text);
   };
 
   const handleMCQSelect = (optionIndex: number) => {
@@ -173,9 +167,6 @@ export function QuestionCard({
                 placeholder="Type your answer here..."
                 className="w-full min-h-[150px] p-4 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-y"
               />
-              <div className="absolute bottom-3 right-3">
-                <VoiceInput onTranscript={handleVoiceTranscript} />
-              </div>
             </div>
 
             <div className="flex items-center gap-4">
