@@ -68,6 +68,8 @@ export function VivaPage() {
   const [answerCount, setAnswerCount] = useState(0);
   const [currentFeedback, setCurrentFeedback] = useState<string | null>(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [isFeedbackExpanded, setIsFeedbackExpanded] = useState(true);
 
   // WebSocket and audio refs
   const wsRef = useRef<WebSocket | null>(null);
@@ -186,10 +188,14 @@ export function VivaPage() {
           } else if (data.question) {
             setCurrentQuestion(data.question);
             setQuestionCount((prev) => prev + 1);
-            setCurrentFeedback(null); // Clear previous feedback
+            // Don't clear currentFeedback here, just collapse it
+            setIsFeedbackExpanded(false);
+            setIsEvaluating(false);
             addMessage("question", data.question);
           } else if (data.answer) {
             setCurrentFeedback(data.answer);
+            setIsFeedbackExpanded(true);
+            setIsEvaluating(false);
             addMessage("feedback", data.answer);
           } else if (data.feedback) {
             // Final session results
@@ -212,12 +218,14 @@ export function VivaPage() {
       console.error("WebSocket error:", error);
       addMessage("error", "Connection error occurred");
       setWsConnected(false);
+      setIsEvaluating(false);
     };
 
     ws.onclose = () => {
       console.log("WebSocket disconnected");
       setWsConnected(false);
       addMessage("status", "Viva session ended");
+      setIsEvaluating(false);
     };
   };
 
@@ -257,6 +265,10 @@ export function VivaPage() {
       return;
     }
 
+    // Clear feedback when starting new recording
+    setCurrentFeedback(null);
+    setIsFeedbackExpanded(false);
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -283,6 +295,7 @@ export function VivaPage() {
           wsRef.current.send(audioBlob);
           setAnswerCount((prev) => prev + 1);
           addMessage("status", "Answer submitted, processing...");
+          setIsEvaluating(true); // Start evaluating state
         }
 
         // Stop all tracks
@@ -518,24 +531,49 @@ export function VivaPage() {
             </div>
           )}
 
-          {/* Feedback Card */}
+          {/* Collapsible Feedback Card */}
           {currentFeedback && (
-            <div className="animate-slide-up">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5 sm:p-8 border border-green-100 shadow-sm">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0 shadow-sm text-white">
-                    <Brain className="h-6 w-6" />
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-bold text-green-800 uppercase tracking-wide">
-                      Feedback
-                    </h4>
-                    <p className="text-base sm:text-lg text-green-900 leading-relaxed">
-                      {currentFeedback}
-                    </p>
+            <div className="animate-slide-up transition-all duration-300 ease-in-out">
+              {isFeedbackExpanded ? (
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-5 sm:p-8 border border-green-100 shadow-sm relative">
+                  <button
+                    onClick={() => setIsFeedbackExpanded(false)}
+                    className="absolute top-4 right-4 text-green-700 hover:text-green-900 p-1 rounded-full hover:bg-green-100 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0 shadow-sm text-white">
+                      <Brain className="h-6 w-6" />
+                    </div>
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-bold text-green-800 uppercase tracking-wide">
+                        Feedback
+                      </h4>
+                      <p className="text-base sm:text-lg text-green-900 leading-relaxed">
+                        {currentFeedback}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <button
+                  onClick={() => setIsFeedbackExpanded(true)}
+                  className="w-full bg-white border border-green-100 rounded-xl p-4 shadow-sm flex items-center justify-between hover:bg-green-50 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600 group-hover:bg-green-200 transition-colors">
+                      <Brain className="h-4 w-4" />
+                    </div>
+                    <span className="text-sm font-medium text-green-800">
+                      View Feedback for Question {questionCount - 1}
+                    </span>
+                  </div>
+                  <div className="text-green-400">
+                    <ArrowLeft className="h-4 w-4 rotate-[-90deg]" />
+                  </div>
+                </button>
+              )}
             </div>
           )}
 
@@ -602,7 +640,16 @@ export function VivaPage() {
       {/* Bottom Action Bar (FAB) */}
       <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-cream via-cream to-transparent z-40 pointer-events-none flex justify-center">
         <div className="pointer-events-auto flex items-center gap-6">
-          {!isRecording ? (
+          {isEvaluating ? (
+            <div className="flex flex-col items-center gap-3 animate-pulse">
+              <div className="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center border-4 border-primary-200">
+                <Brain className="h-8 w-8 text-primary-600 animate-bounce" />
+              </div>
+              <span className="text-sm font-bold text-primary-700 bg-white/80 backdrop-blur px-3 py-1 rounded-full shadow-sm">
+                Evaluating...
+              </span>
+            </div>
+          ) : !isRecording ? (
             <button
               onClick={startRecording}
               disabled={!wsConnected || !currentQuestion}
