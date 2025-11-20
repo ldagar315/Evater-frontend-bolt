@@ -60,7 +60,9 @@ export function CreateTestPage() {
     "Medium"
   );
   const [length, setLength] = useState<"Short" | "Long">("Short");
-  const [specialInstructions, setSpecialInstructions] = useState<string[]>([]);
+  const [testType, setTestType] = useState<
+    "objective" | "subjective" | "mixed"
+  >("mixed");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -70,11 +72,25 @@ export function CreateTestPage() {
 
   const gradeOptions = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
 
-  const instructionOptions = [
-    { id: "only mcq", label: "Only MCQ", icon: CheckCircle2 },
-    { id: "only subjective", label: "Only Subjective", icon: FileText },
-    { id: "numerical focused", label: "Numerical Focused", icon: Calculator },
-    { id: "theory focused", label: "Theory Focused", icon: BookOpen },
+  const testTypeOptions = [
+    {
+      id: "objective",
+      label: "Objective (MCQ)",
+      icon: CheckCircle2,
+      description: "Multiple choice questions only",
+    },
+    {
+      id: "subjective",
+      label: "Subjective (Theory)",
+      icon: FileText,
+      description: "Long and short answer questions",
+    },
+    {
+      id: "mixed",
+      label: "Mixed (Standard)",
+      icon: Brain,
+      description: "Combination of both types",
+    },
   ];
 
   useEffect(() => {
@@ -124,14 +140,6 @@ export function CreateTestPage() {
     }
   };
 
-  const handleInstructionToggle = (instruction: string) => {
-    setSpecialInstructions((prev) =>
-      prev.includes(instruction)
-        ? prev.filter((i) => i !== instruction)
-        : [...prev, instruction]
-    );
-  };
-
   const getSubjectIcon = (subjectName: string) => {
     const s = subjectName.toLowerCase();
     if (s.includes("math")) return Calculator;
@@ -152,6 +160,7 @@ export function CreateTestPage() {
     topic: string;
     difficulty_level: string;
     length: string;
+    test_type: string;
     special_instructions: string[];
   }): Promise<ApiQuestion[]> => {
     const apiUrl =
@@ -198,7 +207,8 @@ export function CreateTestPage() {
         topic: chapter,
         difficulty_level: difficulty,
         length: length,
-        special_instructions: specialInstructions,
+        test_type: testType,
+        special_instructions: [], // Kept empty as we moved to explicit test types
       };
 
       const questions = await callGenerateQuestionsAPI(apiPayload);
@@ -223,7 +233,7 @@ export function CreateTestPage() {
             chapter: chapter,
             difficulty_level: difficulty.toLowerCase(),
             length: length.toLowerCase(),
-            special_instructions: specialInstructions,
+            special_instructions: [testType], // Storing test type in special instructions for backward compatibility/reference
             test: convertedQuestions,
           },
         ])
@@ -233,7 +243,13 @@ export function CreateTestPage() {
       if (error) throw error;
 
       setLastGeneratedTest(data);
-      navigate(`/view-test/${data.id}`);
+
+      // Route based on test type
+      if (testType === "objective") {
+        navigate(`/take-test/${data.id}`);
+      } else {
+        navigate(`/view-test/${data.id}`);
+      }
     } catch (err) {
       console.error("Error generating test:", err);
       setError(
@@ -431,31 +447,44 @@ export function CreateTestPage() {
             </section>
           </div>
 
-          {/* Special Instructions */}
+          {/* Test Type Selection */}
           <section>
             <h2 className="text-lg font-semibold text-dark mb-4 flex items-center">
-              <AlertCircle className="w-5 h-5 mr-2 text-primary-600" />
-              Special Instructions
+              <Brain className="w-5 h-5 mr-2 text-primary-600" />
+              Test Type
             </h2>
-            <div className="flex flex-wrap gap-3">
-              {instructionOptions.map((opt) => {
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {testTypeOptions.map((opt) => {
                 const Icon = opt.icon;
-                const isSelected = specialInstructions.includes(opt.id);
+                const isSelected = testType === opt.id;
                 return (
                   <button
                     key={opt.id}
-                    onClick={() => handleInstructionToggle(opt.id)}
+                    onClick={() => setTestType(opt.id as any)}
                     className={`
-                      flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
+                      flex flex-col items-start p-4 rounded-xl border-2 transition-all duration-200 text-left
                       ${
                         isSelected
-                          ? "bg-dark text-white border-dark"
-                          : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300"
+                          ? "bg-primary-600 text-white border-primary-600 shadow-md"
+                          : "bg-white text-neutral-600 border-neutral-200 hover:border-primary-200 hover:bg-neutral-50"
                       }
                     `}
                   >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {opt.label}
+                    <div className="flex items-center mb-2">
+                      <Icon
+                        className={`w-5 h-5 mr-2 ${
+                          isSelected ? "text-white" : "text-primary-600"
+                        }`}
+                      />
+                      <span className="font-bold">{opt.label}</span>
+                    </div>
+                    <p
+                      className={`text-xs ${
+                        isSelected ? "text-primary-100" : "text-neutral-500"
+                      }`}
+                    >
+                      {opt.description}
+                    </p>
                   </button>
                 );
               })}
