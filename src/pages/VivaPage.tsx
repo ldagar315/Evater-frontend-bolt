@@ -76,6 +76,7 @@ export function VivaPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const gradeOptions = Array.from({ length: 12 }, (_, i) => ({
     value: (i + 1).toString(),
@@ -88,6 +89,9 @@ export function VivaPage() {
       // Cleanup WebSocket on unmount
       if (wsRef.current) {
         wsRef.current.close();
+      }
+      if (pingIntervalRef.current) {
+        clearInterval(pingIntervalRef.current);
       }
     };
   }, []);
@@ -166,6 +170,14 @@ export function VivaPage() {
       console.log("WebSocket connected");
       setWsConnected(true);
       addMessage("status", "Connected to Viva session");
+
+      // Start ping interval
+      if (pingIntervalRef.current) clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: "ping" }));
+        }
+      }, 30000);
     };
 
     ws.onmessage = (event) => {
@@ -226,6 +238,10 @@ export function VivaPage() {
       setWsConnected(false);
       addMessage("status", "Viva session ended");
       setIsEvaluating(false);
+      if (pingIntervalRef.current) {
+        clearInterval(pingIntervalRef.current);
+        pingIntervalRef.current = null;
+      }
     };
   };
 
